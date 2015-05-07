@@ -1,0 +1,19 @@
+/*Receipt styles start*/
+#receipt_wrapper {
+    font-family: Arial;
+    width: 92% !important;
+    font-size: 13px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
+
+#sale_return_policy {
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+}   
+  
+#receipt_items td {
+  //position: relative;
+  padding: 3px;
+}   
