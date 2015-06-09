@@ -35,7 +35,7 @@
     <div class="row">
         <div class="col-xs-6">
             <p>
-                <?php echo TbHtml::image(Yii::app()->baseUrl . '/images/vitking_house.jpg','Company\'s logo',array('width'=>'150')); ?> <br>
+                <?php echo TbHtml::image(Yii::app()->baseUrl . '/images/logo.jpg','Company\'s logo',array('width'=>'150')); ?> <br>
                 <!--
                 <?php //echo TbHtml::encode('The Best Healthy Foods'); ?> <br>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php //echo TbHtml::encode('For Your Health'); ?><br> -->

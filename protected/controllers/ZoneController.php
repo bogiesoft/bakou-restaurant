@@ -264,22 +264,22 @@ class ZoneController extends Controller
 	/**
 	 * Manages all models.
 	 */
-	public function actionAdmin()
-	{
-            if (Yii::app()->user->checkAccess('zone.index') || Yii::app()->user->checkAccess('zone.update') || Yii::app()->user->checkAccess('zone.create')) {
-                $model=new Zone('search');
-		$model->unsetAttributes();  // clear any default values
-		if (isset($_GET['Zone'])) {
-			$model->attributes=$_GET['Zone'];
-		}
-
-		$this->render('admin',array(
-			'model'=>$model,
-		));
-            } else {
-                throw new CHttpException(403, 'You are not authorized to perform this action');
+    public function actionAdmin()
+    {
+        if (Yii::app()->user->checkAccess('zone.index') || Yii::app()->user->checkAccess('zone.update') || Yii::app()->user->checkAccess('zone.create')) {
+            $model = new Zone('search');
+            $model->unsetAttributes();  // clear any default values
+            if (isset($_GET['Zone'])) {
+                $model->attributes = $_GET['Zone'];
             }
-	}
+
+            $this->render('admin', array(
+                'model' => $model,
+            ));
+        } else {
+            throw new CHttpException(403, 'You are not authorized to perform this action');
+        }
+    }
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
@@ -328,7 +328,8 @@ class ZoneController extends Controller
             $model= PriceTierZone::model()->findByPk($data->id);
             if ($model) {
                 $price_tier = PriceTier::model()->findByPk($model->price_tier_id);
-                echo TbHtml::encode($price_tier->tier_name);
+                $tier_name = $price_tier !==null ? $price_tier->tier_name : 'N/A';
+                echo TbHtml::encode($tier_name);
             } else {
                 echo TbHtml::encode(Null);
             }
