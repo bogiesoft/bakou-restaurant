@@ -49,7 +49,7 @@
         <div class="form-group <?php echo $has_error; ?>">
             <label class="col-sm-3 control-label" for="Item_item_number">Promotion Start</label>
             <div class="col-sm-9">
-            <?php $this->widget('yiiwheels.widgets.datepicker.WhDatePicker', array('model' => $item_price_promo,'attribute' =>'start_date','pluginOptions' => array('format' => 'dd/mm/yyyy'),'htmlOptions'=>array('class'=>'span3 form-control'))); ?>
+            <?php $this->widget('yiiwheels.widgets.datepicker.WhDatePicker', array('model' => $item_price_promo,'attribute' =>'start_date','pluginOptions' => array('format' => 'dd/mm/yyyy'),'htmlOptions'=>array('class'=>'span3 form-control','readonly'=>true))); ?>
                 <span class="help-block"> <?php echo $form->error($item_price_promo,'start_date'); ?> </span>
             </div>
         </div>
@@ -57,7 +57,7 @@
         <div class="form-group <?php echo $has_error; ?>">
             <label class="col-sm-3 control-label" for="Item_item_number">Promotion End</label>
             <div class="col-sm-9">
-                <?php $this->widget('yiiwheels.widgets.datepicker.WhDatePicker', array('model' => $item_price_promo,'attribute' =>'end_date','pluginOptions' => array('format' => 'dd/mm/yyyy'),'htmlOptions'=>array('class'=>'span3 form-control'))); ?>
+                <?php $this->widget('yiiwheels.widgets.datepicker.WhDatePicker', array('model' => $item_price_promo,'attribute' =>'end_date','pluginOptions' => array('format' => 'dd/mm/yyyy'),'htmlOptions'=>array('class'=>'span3 form-control','readonly'=>true))); ?>
                 <span class="help-block"> <?php echo $form->error($item_price_promo,'end_date'); ?> </span>
             </div>
         </div>

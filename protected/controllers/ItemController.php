@@ -76,7 +76,7 @@ class ItemController extends Controller
                 $model->cost_price=$cost_price;
 
                 $valid = $model->validate();
-                if (!empty($_POST['ItemPricePromo']['unit_price'])) {
+                if ( !empty($_POST['ItemPricePromo']['unit_price']) || !empty($_POST['ItemPricePromo']['start_date']) || !empty($_POST['ItemPricePromo']['end_date'] ) ) {
                     if (!$item_price_promo->validate()) {
                         $has_error = 'has-error';
                     }
@@ -169,7 +169,7 @@ class ItemController extends Controller
                 $item_price_promo->attributes = $_POST['ItemPricePromo'];
 
                 $valid = $model->validate();
-                if (!empty($_POST['ItemPricePromo']['unit_price'])) {
+                if ( !empty($_POST['ItemPricePromo']['unit_price']) || !empty($_POST['ItemPricePromo']['start_date']) || !empty($_POST['ItemPricePromo']['end_date'] ) ) {
                     if (!$item_price_promo->validate()) {
                         $has_error = 'has-error';
                     }
