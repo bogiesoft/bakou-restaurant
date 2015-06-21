@@ -261,7 +261,6 @@ class ShoppingCart extends CApplicationComponent
         //Get all items in the cart so far...
         $items = $this->getCart();
 
-        //$model = Item::model()->findbyPk($item_id);
         $models = Item::model()->getItemPriceTier($item_id, $this->getPriceTier());
 
         foreach ($models as $model) {

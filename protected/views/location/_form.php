@@ -39,6 +39,8 @@
             <?php echo $form->textFieldControlGroup($model,'wifi_password',array('span'=>5,'maxlength'=>30)); ?>
 
             <?php echo $form->textFieldControlGroup($model,'email',array('span'=>5,'maxlength'=>30)); ?>
+
+            <?php echo $form->textFieldControlGroup($model,'vat',array('span'=>5,'maxlength'=>5)); ?>
     
             <?php echo $form->textFieldControlGroup($model,'printer_food',array('span'=>5,'maxlength'=>30)); ?>
     

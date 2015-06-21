@@ -7,7 +7,7 @@
 
 <?php $this->widget( 'ext.modaldlg.EModalDlg' ); ?>
 
-<?php //echo 'Price Tier ' .  Yii::app()->orderingCart->getPriceTier(); ?>
+<?php //echo 'Location Session ' .  Yii::app()->getsetSession->getLocationVat(); ?>
 <?php //echo 'Debugging ID : ' .  Yii::app()->getsetSession->getLocationId(); ?>
 <?php //print_r($payments); ?>
 

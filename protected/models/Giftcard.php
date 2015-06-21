@@ -131,19 +131,20 @@ class Giftcard extends CActiveRecord
 	{
 		return parent::model($className);
 	}
-        
-        public static function getGiftcard($name = '') {
 
-            // Recommended: Secure Way to Write SQL in Yii 
-            $sql = 'SELECT id ,concat_ws(" - discount %",giftcard_number,discount_amount) AS text 
+    public static function getGiftcard($name = '')
+    {
+
+        // Recommended: Secure Way to Write SQL in Yii
+        $sql = 'SELECT id ,concat_ws(" - discount %",giftcard_number,discount_amount) AS text
                     FROM giftcard 
                     WHERE giftcard_number= :name
                     AND status=:active_status';
-            
-            //$name = '%' . $name . '%';
-            return Yii::app()->db->createCommand($sql)->queryAll(true, array(':name' => $name,':active_status'=>'1'));
-       
-        }
+
+        //$name = '%' . $name . '%';
+        return Yii::app()->db->createCommand($sql)->queryAll(true, array(':name' => $name, ':active_status' => Yii::app()->params['active_status'] ));
+
+    }
         
         /**
 	 * Suggests a list of existing values matching the specified keyword.
@@ -151,28 +152,28 @@ class Giftcard extends CActiveRecord
 	 * @param integer maximum number of names to be returned
 	 * @return array list of matching lastnames
 	 */
-	public function suggest($keyword,$limit=20)
-	{
-		
-            $models=$this->findAll(array(
-                    'condition'=>'giftcard_number=:keyword and status=:active_status',
-                    'order'=>'giftcard_number',
-                    'limit'=>$limit,
-                    'params'=>array(':keyword'=>"$keyword",':active_status'=> $this::_active_status)
-            ));
+    public function suggest($keyword, $limit = 20)
+    {
 
-            $suggest=array();
+        $models = $this->findAll(array(
+            'condition' => 'giftcard_number like :keyword and status=:active_status',
+            'order' => 'giftcard_number',
+            'limit' => $limit,
+            'params' => array(':keyword' => $keyword . '%', ':active_status' => Yii::app()->params['active_status'])
+        ));
 
-            foreach($models as $model) {
-                    $suggest[] = array(
-                            'label'=>$model->giftcard_number . ' - ' . $model->discount_amount ,  // label for dropdown list
-                            'value'=>$model->giftcard_number,  // value for input field
-                            'id'=>$model->id,       // return values from autocomplete
-                            //'unit_price'=>$model->unit_price,
-                            //'quantity'=>$model->quantity,
-                    );
-            }
-               
-            return $suggest;
-	}
+        $suggest = array();
+
+        foreach ($models as $model) {
+            $suggest[] = array(
+                'label' => $model->giftcard_number . ' - ' . $model->discount_amount,  // label for dropdown list
+                'value' => $model->giftcard_number,  // value for input field
+                'id' => $model->id,       // return values from autocomplete
+                //'unit_price'=>$model->unit_price,
+                //'quantity'=>$model->quantity,
+            );
+        }
+
+        return $suggest;
+    }
 }

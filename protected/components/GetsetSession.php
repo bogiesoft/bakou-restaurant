@@ -233,6 +233,21 @@ class GetsetSession extends CApplicationComponent
         $this->session['printer_receipt'] = $data;
     }
 
+    public function getLocationVat()
+    {
+        $this->setSession(Yii::app()->session);
+        if (!isset($this->session['location_vat'])) {
+            $this->setLocationVat(array());
+        }
+        return $this->session['location_vat'];
+    }
+
+    public function setLocationVat($data)
+    {
+        $this->setSession(Yii::app()->session);
+        $this->session['location_vat'] = $data;
+    }
+
 }
 
 ?>

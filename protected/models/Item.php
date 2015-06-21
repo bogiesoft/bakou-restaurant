@@ -503,11 +503,11 @@ class Item extends CActiveRecord
 
     public function deleteItem($item_id)
     {
-        Item::model()->updateByPk((int)$item_id, array('status' => $this->item_inactive));
+        Item::model()->updateByPk((int)$item_id, array('status' => Yii::app()->params['inactive_status']));
     }
 
     public function undodeleteItem($item_id)
     {
-        Item::model()->updateByPk((int)$item_id, array('status' => $this->item_active));
+        Item::model()->updateByPk((int)$item_id, array('status' => Yii::app()->params['active_status']));
     }
 }

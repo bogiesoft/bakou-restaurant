@@ -18,6 +18,7 @@
  * @property string $printer_food
  * @property string $printer_beverage
  * @property string $printer_receipt
+ * @property decimal $vat
  *
  * The followings are the available model relations:
  * @property EmployeeLocation[] $employeeLocations
@@ -41,22 +42,27 @@ class Location extends CActiveRecord
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-			array('name', 'required'),
-			array('name, name_kh, address, address1, address2', 'length', 'max'=>200),
-                        array('printer_food, printer_beverage, printer_receipt', 'length', 'max'=>100),
-			array('loc_code', 'length', 'max'=>10),
-			array('phone, phone1', 'length', 'max'=>20),
-			array('wifi_password, email', 'length', 'max'=>30),
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-			array('id, name, name_kh, loc_code, address, address1, address2, phone, phone1, wifi_password, email, printer_food, printer_beverage, printer_receipt', 'safe', 'on'=>'search'),
-		);
-	}
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('name', 'required'),
+            array('name, name_kh, address, address1, address2', 'length', 'max' => 200),
+            array('printer_food, printer_beverage, printer_receipt', 'length', 'max' => 100),
+            array('loc_code', 'length', 'max' => 10),
+            array('phone, phone1', 'length', 'max' => 20),
+            array('wifi_password, email', 'length', 'max' => 30),
+            array('vat', 'numerical'),
+            // The following rule is used by search().
+            // @todo Please remove those attributes that should not be searched.
+            array(
+                'name, name_kh, loc_code, address, address1, address2, phone, phone1, wifi_password, email, printer_food, printer_beverage, printer_receipt, vat',
+                'safe',
+                'on' => 'search'
+            ),
+        );
+    }
 
 	/**
 	 * @return array relational rules.
@@ -74,25 +80,25 @@ class Location extends CActiveRecord
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLabels()
-	{
-		return array(
-			'id' => 'ID',
-			'name' => 'Name',
-			'name_kh' => 'Name Kh',
-			'loc_code' => 'Loc Code',
-			'address' => 'Address',
-			'address1' => 'Address1',
-			'address2' => 'Address2',
-			'phone' => 'Phone',
-			'phone1' => 'Phone1',
-			'wifi_password' => 'Wifi Password',
-			'email' => 'Email',
-                        'printer_food' => 'Food Printer Name', 
-                        'printer_beverage' => 'Beverage Printer Name', 
-                        'printer_receipt' => 'Receipt Printer Name'
-		);
-	}
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'name' => 'Name',
+            'name_kh' => 'Name Kh',
+            'loc_code' => 'Loc Code',
+            'address' => 'Address',
+            'address1' => 'Address1',
+            'address2' => 'Address2',
+            'phone' => 'Phone',
+            'phone1' => 'Phone1',
+            'wifi_password' => 'Wifi Password',
+            'email' => 'Email',
+            'printer_food' => 'Food Printer Name',
+            'printer_beverage' => 'Beverage Printer Name',
+            'printer_receipt' => 'Receipt Printer Name'
+        );
+    }
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.

@@ -78,6 +78,7 @@ class UserIdentity extends CUserIdentity
                 Yii::app()->getsetSession->setLocationPrinterFood($location->printer_food); 
                 Yii::app()->getsetSession->setLocationPrinterBeverage($location->printer_beverage); 
                 Yii::app()->getsetSession->setLocationPrinterReceipt($location->printer_receipt);
+                Yii::app()->getsetSession->setLocationVat($location->vat);
             }
             
              //Saving User Login & out timing

@@ -133,22 +133,21 @@ class OrderingCart extends CApplicationComponent
 
     public function getSaleId()
     {
-        /*
-        $this->setSession(Yii::app()->session);
-        if (!isset($this->session['saleid'])) {
-            $this->setSaleId(null);
-        }
-        return $this->session['saleid'];
-         * 
-        */
-       $sale_order = SaleOrder::model()->find('desk_id=:desk_id and group_id=:group_id and location_id=:location_id and status=:status',array(':desk_id' => $this->getTableId(), ':group_id'=>$this->getGroupId(), ':location_id' => Yii::app()->getsetSession->getLocationId(),':status'=>$this->active_status));
-       return $sale_order->id;
+        $sale_order = SaleOrder::model()->find('desk_id=:desk_id and group_id=:group_id and location_id=:location_id and status=:status',
+            array(
+                ':desk_id' => $this->getTableId(),
+                ':group_id' => $this->getGroupId(),
+                ':location_id' => Yii::app()->getsetSession->getLocationId(),
+                ':status' => $this->active_status
+            ));
+
+        return $sale_order->id;
     }
 
-    public function setSaleId($saleid_data)
+    public function setSaleId($data)
     {
         $this->setSession(Yii::app()->session);
-        $this->session['saleid'] = $saleid_data;
+        $this->session['saleid'] = $data;
     }
 
     public function clearSaleId()
@@ -246,7 +245,7 @@ class OrderingCart extends CApplicationComponent
         $this->setSession(Yii::app()->session);
         $this->session['zoneid'] = $zoneid_data;
         
-        $this->setPricebyZone($zoneid_data);
+        $this->setPriceByZone($zoneid_data);
     }
 
     public function clearZoneId()
@@ -285,15 +284,15 @@ class OrderingCart extends CApplicationComponent
         return $this->session['tableid'];
     }
 
-    public function setTableId($tableid_data)
+    public function setTableId($data)
     {
         $this->setSession(Yii::app()->session);
-        $this->session['tableid'] = $tableid_data;
+        $this->session['tableid'] = $data;
         
-        $desk=Desk::model()->findByPk($tableid_data);
+        $desk=Desk::model()->findByPk($data);
         
         if ($desk) {
-            $this->setPricebyZone($desk->zone_id);
+            $this->setPriceByZone($desk->zone_id);
         }
     }
 
@@ -672,7 +671,7 @@ class OrderingCart extends CApplicationComponent
        return SaleOrder::model()->changeTable($this->getTableId(),$new_table_id,$this->getGroupId(),Yii::app()->getsetSession->getLocationId(),$this->getPriceTier(),Yii::app()->session['employeeid']);
     }
     
-    protected function setPricebyZone($zone_id)
+    protected function setPriceByZone($zone_id)
     {
         $model = PriceTierZone::model()->find('zone_id=:zone_id',array(":zone_id"=>$zone_id));
         if (isset($model)) {
