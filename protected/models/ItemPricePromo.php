@@ -31,13 +31,15 @@ class ItemPricePromo extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('unit_price', 'required'),
+			array('unit_price, start_date, end_date', 'required'),
 			array('item_id', 'numerical', 'integerOnly'=>true),
 			array('unit_price', 'numerical'),
+            array('start_date, end_date','date','format' => array('dd/MM/yyyy','d/MM/yyyy')),
+            array('end_date','compare','compareAttribute'=>'start_date','operator' => '>','message' => '{attribute} must be greater than "{compareValue}"'),
 			array('start_date, end_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, item_id, unit_price, start_date, end_date', 'safe', 'on'=>'search'),
+			array('item_id, unit_price, start_date, end_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -61,7 +63,7 @@ class ItemPricePromo extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'item_id' => 'Item',
-			'unit_price' => 'Unit Price',
+			'unit_price' => 'Promotion Price',
 			'start_date' => 'Start Date',
 			'end_date' => 'End Date',
 		);
@@ -106,4 +108,35 @@ class ItemPricePromo extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+    protected function beforeSave()
+    {
+        if ($this->start_date<> '' && $this->end_date <> '') {
+            $start_date = DateTime::createFromFormat('d/m/Y',$this->start_date);
+            $this->start_date = $start_date->format('Y-m-d');
+            $end_date = DateTime::createFromFormat('d/m/Y',$this->end_date);
+            $this->end_date = $end_date->format('Y-m-d');
+            parent::beforeSave();
+            return true;
+        }
+    }
+
+    protected function afterFind()
+    {
+        $start_date = DateTime::createFromFormat('Y-m-d H:i:s',$this->start_date);
+        $this->start_date = $start_date->format('d/m/Y');
+        $end_date = DateTime::createFromFormat('Y-m-d H:i:s',$this->end_date);
+        $this->end_date = $end_date->format('d/m/Y');
+        parent::afterFind();
+        return true;
+    }
+
+    public function itemPricePromoByItemID($item_id)
+    {
+        $model = ItemPricePromo::model()->find('item_id=:item_id', array(':item_id' => (int) $item_id));
+        if (!$model) {
+            $model = new ItemPricePromo;
+        }
+        return $model;
+    }
 }

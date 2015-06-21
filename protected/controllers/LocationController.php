@@ -130,43 +130,43 @@ class LocationController extends Controller
 	 * If deletion is successful, the browser will be redirected to the 'admin' page.
 	 * @param integer $id the ID of the model to be deleted
 	 */
-	public function actionDelete($id)
-	{
-            if (Yii::app()->user->checkAccess('branch.delete')) {
-                if (Yii::app()->request->isPostRequest) {
-			// we only allow deletion via POST request
-			Location::model()->deleteLocation($id);
+    public function actionDelete($id)
+    {
+        if (Yii::app()->user->checkAccess('branch.delete')) {
+            if (Yii::app()->request->isPostRequest) {
+                // we only allow deletion via POST request
+                Location::model()->deleteLocation($id);
 
-			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-			if (!isset($_GET['ajax'])) {
-				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-			}
-		} else {
-                    throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
-		}
+                // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+                if (!isset($_GET['ajax'])) {
+                    $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+                }
             } else {
-                throw new CHttpException(403, 'You are not authorized to perform this action');
+                throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
             }
-	}
-        
-        public function actionUndoDelete($id)
-	{
-            if (Yii::app()->user->checkAccess('branch.delete')) {
-                if (Yii::app()->request->isPostRequest) {
-                    //$this->loadModel($id)->delete();
-                    Location::model()->undodeleteLocation($id);
-                    
-                    // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-                    if (!isset($_GET['ajax'])) {
-                            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-                    }
-		} else {
-			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
-		}
+        } else {
+            throw new CHttpException(403, 'You are not authorized to perform this action');
+        }
+    }
+
+    public function actionUndoDelete($id)
+    {
+        if (Yii::app()->user->checkAccess('branch.delete')) {
+            if (Yii::app()->request->isPostRequest) {
+                //$this->loadModel($id)->delete();
+                Location::model()->undodeleteLocation($id);
+
+                // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+                if (!isset($_GET['ajax'])) {
+                    $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+                }
             } else {
-                throw new CHttpException(403, 'You are not authorized to perform this action');
+                throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
             }
-	}
+        } else {
+            throw new CHttpException(403, 'You are not authorized to perform this action');
+        }
+    }
 
 	/**
 	 * Lists all models.
@@ -182,22 +182,35 @@ class LocationController extends Controller
 	/**
 	 * Manages all models.
 	 */
-	public function actionAdmin()
-	{
-	    if (Yii::app()->user->checkAccess('branch.index') || Yii::app()->user->checkAccess('branch.update') || Yii::app()->user->checkAccess('branch.create')) {	
-                $model=new Location('search');
-		$model->unsetAttributes();  // clear any default values
-		if (isset($_GET['Location'])) {
-			$model->attributes=$_GET['Location'];
-		}
-
-		$this->render('admin',array(
-			'model'=>$model,
-		));
-            } else {
-                throw new CHttpException(403, 'You are not authorized to perform this action');
+    public function actionAdmin()
+    {
+        if (Yii::app()->user->checkAccess('branch.index') || Yii::app()->user->checkAccess('branch.update') || Yii::app()->user->checkAccess('branch.create')) {
+            $model = new Location('search');
+            $model->unsetAttributes();  // clear any default values
+            if (isset($_GET['Location'])) {
+                $model->attributes = $_GET['Location'];
             }
-	}
+
+            if (isset($_GET['pageSize'])) {
+                Yii::app()->user->setState('location_PageSize', (int)$_GET['pageSize']);
+                unset($_GET['pageSize']);
+            }
+
+            if (isset($_GET['Archived'])) {
+                Yii::app()->user->setState('location_archived', $_GET['Archived']);
+                unset($_GET['Archived']);
+            }
+
+            $model->location_archived = Yii::app()->user->getState('location_archived',
+                Yii::app()->params['defaultArchived']);
+
+            $this->render('admin', array(
+                'model' => $model,
+            ));
+        } else {
+            throw new CHttpException(403, 'You are not authorized to perform this action');
+        }
+    }
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.

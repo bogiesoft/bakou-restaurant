@@ -4,28 +4,9 @@
         'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
 )); ?>
 
-	<?php //echo $form->textFieldControlGroup($model,'id',array('class'=>'span4')); ?>
-
-	<?php echo $form->textFieldControlGroup($model,'first_name',array('class'=>'span4','maxlength'=>50)); ?>
-
-	<?php echo $form->textFieldControlGroup($model,'last_name',array('class'=>'span4','maxlength'=>50)); ?>
-
-	<?php echo $form->textFieldControlGroup($model,'mobile_no',array('class'=>'span4','maxlength'=>15)); ?>
-
-	<?php //echo $form->textFieldControlGroup($model,'adddress1',array('class'=>'span4','maxlength'=>60)); ?>
-
-	<?php //echo $form->textFieldControlGroup($model,'address2',array('class'=>'span4','maxlength'=>60)); ?>
-
-	<?php //echo $form->textFieldControlGroup($model,'city_id',array('class'=>'span4')); ?>
-
-	<?php //echo $form->textFieldControlGroup($model,'country_code',array('class'=>'span4','maxlength'=>2)); ?>
-
-	<?php //echo $form->textFieldControlGroup($model,'email',array('class'=>'span4','maxlength'=>30)); ?>
-
-	<?php //echo $form->textAreaRow($model,'notes',array('rows'=>6, 'cols'=>50, 'class'=>'span8')); ?>
-
-	<div class="form-actions">
-            <?php echo TbHtml::submitButton('Search',  array('color' => TbHtml::BUTTON_COLOR_PRIMARY,));?>
-	</div>
+    <span class="input-icon">
+        <?php echo CHtml::activeTelField($model,'search', array('class' => 'col-xs-12','placeholder' => Yii::t('app','Filter'))); ?>
+        <i class="ace-icon fa fa-search nav-search-icon"></i>
+    </span>
 
 <?php $this->endWidget(); ?>

@@ -16,7 +16,9 @@
  */
 class Giftcard extends CActiveRecord
 {
-        const _active_status='1';
+    public $giftcard_archived;
+
+    const _active_status='1';
     
         /**
 	 * @return string the associated database table name
@@ -98,9 +100,25 @@ class Giftcard extends CActiveRecord
 		$criteria->compare('status',$this->status,true);
 		$criteria->compare('client_id',$this->client_id);
 
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-		));
+        if  ( Yii::app()->user->getState('giftcard_archived', Yii::app()->params['defaultArchived'] ) == 'true' ) {
+            $criteria->condition = 'giftcard_number LIKE :search OR discount_amount LIKE :search';
+            $criteria->params = array(
+                ':search' => '%' . $this->giftcard_number . '%',
+            );
+        } else {
+            $criteria->condition = 'status=:active_status AND (giftcard_number LIKE :search OR discount_amount like :search)';
+            $criteria->params = array(
+                ':active_status' => Yii::app()->params['active_status'],
+                ':search' => '%' . $this->giftcard_number . '%',
+            );
+        }
+
+        return new CActiveDataProvider($this, array(
+            'criteria'=>$criteria,
+            'pagination' => array(
+                'pageSize' => Yii::app()->user->getState('giftcard_PageSize',Yii::app()->params['defaultPageSize']),
+            ),
+        ));
 	}
 
 	/**

@@ -41,20 +41,31 @@
     <![endif]-->
     
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/loading_animation.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/jquery-ui-1.10.4.custom.min.css" />
     
     <!-- ace settings handler -->
     <?php //$cs->registerScriptFile($baseUrl.'/js/bootstrap.min.js',CClientScript::POS_END); ?> 
    
     <?php
-        $cs->registerScriptFile($baseUrl.'/js/ace-extra.min.js',CClientScript::POS_END);
-        $cs->registerScriptFile($baseUrl.'/js/jquery-ui.custom.min.js',CClientScript::POS_END); 
-        $cs->registerScriptFile($baseUrl.'/js/jquery.ui.touch-punch.min.js',CClientScript::POS_END);
-        $cs->registerScriptFile($baseUrl.'/js/jquery.slimscroll.min.js',CClientScript::POS_END); 
-        $cs->registerScriptFile($baseUrl.'/js/jquery.colorbox-min.js',CClientScript::POS_END);
-        $cs->registerScriptFile($baseUrl.'/js/ace-elements.min.js',CClientScript::POS_END);  
-        $cs->registerScriptFile($baseUrl.'/js/ace.min.js',CClientScript::POS_END);
-        $cs->registerScriptFile($baseUrl.'/js/jquery.jkey.min.js',CClientScript::POS_END);
-        $cs->registerScriptFile($baseUrl.'/js/common.js',CClientScript::POS_END);
+        //$cs->registerScriptFile($baseUrl.'/js/ace-extra.min.js',CClientScript::POS_END);
+        //$cs->registerScriptFile($baseUrl.'/js/jquery-ui.custom.min.js',CClientScript::POS_END);
+        //$cs->registerScriptFile($baseUrl.'/js/jquery.ui.touch-punch.min.js',CClientScript::POS_END);
+        //$cs->registerScriptFile($baseUrl.'/js/jquery.slimscroll.min.js',CClientScript::POS_END);
+        //$cs->registerScriptFile($baseUrl.'/js/jquery.colorbox-min.js',CClientScript::POS_END);
+        //$cs->registerScriptFile($baseUrl.'/js/ace-elements.min.js',CClientScript::POS_END);
+        //$cs->registerScriptFile($baseUrl.'/js/ace.min.js',CClientScript::POS_END);
+        //$cs->registerScriptFile($baseUrl.'/js/jquery.jkey.min.js',CClientScript::POS_END);
+        //$cs->registerScriptFile($baseUrl.'/js/common.js',CClientScript::POS_END);
+    ?>
+
+    <?php
+    $cs->registerScriptFile($baseUrl.'/js/ace-extra.min.js',CClientScript::POS_END);
+    //$cs->registerScriptFile($baseUrl.'/js/jquery.colorbox-min.js',CClientScript::POS_END);
+    $cs->registerScriptFile($baseUrl.'/js/ace-elements.min.js',CClientScript::POS_END);
+    $cs->registerScriptFile($baseUrl.'/js/ace.min.js',CClientScript::POS_END);
+    //$cs->registerScriptFile($baseUrl.'/js/ace.ajax-content',CClientScript::POS_END);
+    $cs->registerScriptFile($baseUrl.'/js/jquery.form.min.js',CClientScript::POS_END);
+    $cs->registerScriptFile($baseUrl.'/js/jquery-ui.min.js',CClientScript::POS_END);
     ?>
     
     <?php 
@@ -90,7 +101,6 @@
             </script>
             <!-- #section:basics/sidebar -->
             <div class="sidebar responsive" id="sidebar">
-                
                 <?php require_once('tpl_sidebar.php')?>
             </div> <!-- /#side-bar --> 
 
@@ -102,15 +112,6 @@
                                     'links' => $this->breadcrumbs,
                               )); ?>
                         <?php endif?>
-
-                        <div class="nav-search" id="nav-search">
-                                <form class="form-search" />
-                                        <span class="input-icon">
-                                                <input type="text" placeholder="Search ..." class="input-small nav-search-input" id="nav-search-input" autocomplete="off" />
-                                                <i class="icon-search nav-search-icon"></i>
-                                        </span>
-                                </form>
-                        </div><!--#nav-search-->
                 </div>
 
                 <div class="page-content">

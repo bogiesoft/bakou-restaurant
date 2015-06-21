@@ -16,11 +16,12 @@
  */
 class Desk extends CActiveRecord
 {
-        public $list_table;
-        const _active_status='1';
-        
-        private $_active = '1';
-        private $_inactive = '0'; 
+    public $list_table;
+    public $desk_archived;
+    const _active_status = '1';
+
+    private $_active = '1';
+    private $_inactive = '0';
         
         
         
@@ -47,7 +48,7 @@ class Desk extends CActiveRecord
 			array('modified_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, name, zone_id, sort_order, status, modified_date', 'safe', 'on'=>'search'),
+			array('name, zone_id, sort_order', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -70,8 +71,8 @@ class Desk extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
-			'zone_id' => 'Zone',
+			'name' => 'Table Name',
+			'zone_id' => 'Zone Name',
 			'sort_order' => 'Sort Order',
 			'status' => 'Status',
 			'modified_date' => 'Modified Date',
@@ -90,24 +91,40 @@ class Desk extends CActiveRecord
 	 * @return CActiveDataProvider the data provider that can return the models
 	 * based on the search/filter conditions.
 	 */
-	public function search($zone_id=null)
+	public function search($zone_id = null)
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
+		//$criteria->compare('id',$this->id);
 		$criteria->compare('name',$this->name,true);
-		$criteria->compare('zone_id',$this->zone_id);
-		$criteria->compare('sort_order',$this->sort_order);
-		$criteria->compare('status',$this->status,true);
-		$criteria->compare('modified_date',$this->modified_date,true);
+        $criteria->with = array('zone');
+		//$criteria->compare('zone_id',$this->zone_id);
+		//$criteria->compare('sort_order',$this->sort_order);
+		//$criteria->compare('status',$this->status,true);
                 
-                $criteria->addSearchCondition('zone_id',$zone_id);
+        //$criteria->addSearchCondition('zone_id',$zone_id);
+        //$criteria->addSearchCondition('zone_id',$zone_id);
 
-		return new CActiveDataProvider($this, array(
+        if ($zone_id !== null ) {
+            $criteria->condition = 't.zone_id=:zone_id and t.name like :name';
+            $criteria->params = array(
+                ':zone_id' => $zone_id,
+                ':name' => $this->name . '%' );
+        }
+
+        if  ( Yii::app()->user->getState('desk_archived', Yii::app()->params['defaultArchived'] ) == 'false' ) {
+            $criteria->addSearchCondition('t.status',$this->_active);
+        }
+
+
+        return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
-                        'sort'=>array( 'defaultOrder'=>'name')
+            'pagination' => array(
+                'pageSize' => Yii::app()->user->getState('desk_PageSize',Yii::app()->params['defaultPageSize']),
+            ),
+            'sort'=>array( 'defaultOrder'=>'t.sort_order')
 		));
 	}
 

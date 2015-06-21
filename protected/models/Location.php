@@ -25,8 +25,10 @@
  */
 class Location extends CActiveRecord
 {
-	private $_active = '1';
-        private $_inactive = '0'; 
+	public $location_archived;
+
+    private $_active = '1';
+    private $_inactive = '0';
         
         /**
 	 * @return string the associated database table name
@@ -110,7 +112,7 @@ class Location extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
+		/*$criteria->compare('id',$this->id);
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('name_kh',$this->name_kh,true);
 		$criteria->compare('loc_code',$this->loc_code,true);
@@ -120,10 +122,28 @@ class Location extends CActiveRecord
 		$criteria->compare('phone',$this->phone,true);
 		$criteria->compare('phone1',$this->phone1,true);
 		$criteria->compare('wifi_password',$this->wifi_password,true);
-		$criteria->compare('email',$this->email,true);
+		$criteria->compare('email',$this->email,true);*/
+
+        if  ( Yii::app()->user->getState('location_archived', Yii::app()->params['defaultArchived'] ) == 'true' ) {
+            $criteria->condition = 'name LIKE :name OR phone LIKE :name';
+            $criteria->params = array(
+                ':name' => '%' . $this->name . '%',
+                ':phone' => $this->name . '%'
+            );
+        } else {
+            $criteria->condition = 'status=:active_status AND (name LIKE :name OR phone like :name)';
+            $criteria->params = array(
+                ':active_status' => Yii::app()->params['active_status'],
+                ':name' => '%' . $this->name . '%',
+                ':phone' => $this->name . '%'
+            );
+        }
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+            'pagination' => array(
+                'pageSize' => Yii::app()->user->getState('location_PageSize',Yii::app()->params['defaultPageSize']),
+            ),
 		));
 	}
 

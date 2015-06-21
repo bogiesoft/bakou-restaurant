@@ -22,15 +22,13 @@
  */
 class Employee extends CActiveRecord
 {
-	
-        public $login_id;
-        public $image;
-        public $location_id;
-        public $search;
-        
-        private $employee_active = '1';
-        private $employee_inactive = '0'; 
-    
+
+    public $login_id;
+    public $image;
+    public $location_id;
+    public $search;
+    public $employee_archived;
+
         /**
 	 * @return string the associated database table name
 	 */
@@ -78,22 +76,22 @@ class Employee extends CActiveRecord
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLabels()
-	{
-		return array(
-			'id' => 'ID',
-			'first_name' => Yii::t('app','First Name'), //'First Name',
-			'last_name' => Yii::t('app','Last Name'), //'Last Name',
-			'mobile_no' => Yii::t('app','Mobile No'), //'Mobile No',
-			'adddress1' => Yii::t('app','Address1'), //'Adddress1',
-			'address2' => Yii::t('app','Address2'), //Address2',
-			'city_id' => Yii::t('app','City'), //'City',
-			'country_code' => Yii::t('app','Country Code'), //'Country Code',
-			'email' => Yii::t('app','Email'), //'Email',
-			'notes' => Yii::t('app','Notes'), //'Notes',
-                        'search' => Yii::t('app','Search') . Yii::t('app','Employee'),
-		);
-	}
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'first_name' => Yii::t('app', 'First Name'), //'First Name',
+            'last_name' => Yii::t('app', 'Last Name'), //'Last Name',
+            'mobile_no' => Yii::t('app', 'Mobile No'), //'Mobile No',
+            'adddress1' => Yii::t('app', 'Address1'), //'Adddress1',
+            'address2' => Yii::t('app', 'Address2'), //Address2',
+            'city_id' => Yii::t('app', 'City'), //'City',
+            'country_code' => Yii::t('app', 'Country Code'), //'Country Code',
+            'email' => Yii::t('app', 'Email'), //'Email',
+            'notes' => Yii::t('app', 'Notes'), //'Notes',
+            'search' => Yii::t('app', 'Search') . Yii::t('app', 'Employee'),
+        );
+    }
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
@@ -107,39 +105,33 @@ class Employee extends CActiveRecord
 	 * @return CActiveDataProvider the data provider that can return the models
 	 * based on the search/filter conditions.
 	 */
-	public function search()
-	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
+    public function search()
+    {
+        // @todo Please modify the following code to remove attributes that should not be searched.
 
-		$criteria=new CDbCriteria;
+        $criteria = new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
-		//$criteria->compare('first_name',$this->first_name,true);
-		//$criteria->compare('last_name',$this->last_name,true);
-		//$criteria->compare('mobile_no',$this->mobile_no,true);
-		//$criteria->compare('adddress1',$this->adddress1,true);
-		//$criteria->compare('address2',$this->address2,true);
-		//$criteria->compare('city_id',$this->city_id);
-		//$criteria->compare('country_code',$this->country_code,true);
-		//$criteria->compare('email',$this->email,true);
-		//$criteria->compare('notes',$this->notes,true);
-		//$criteria->compare('status',$this->status,true);
-                
-                if ($this->search) {
-                
-                    $criteria->condition="(first_name=:search or last_name=:search or concat(first_name,last_name)=:fullname or concat(last_name,first_name)=:fullname  or mobile_no like :mobile_no)";
-                    $criteria->params = array(
-                                ':search' => $this->search, 
-                                ':fullname' => preg_replace('/\s+/', '',$this->search),
-                                ':mobile_no' => '%' . $this->search . '%',
-                    );
-                }
+        if  ( Yii::app()->user->getState('employee_archived', Yii::app()->params['defaultArchived'] ) == 'true' ) {
+            $criteria->condition = '(first_name=:search or last_name=:search or concat(first_name,last_name) like :search or concat(last_name,first_name) like :search or mobile_no like :search)';
+            $criteria->params = array(
+                ':search' => '%' . $this->search . '%',
+            );
+        } else {
+            $criteria->condition = 'status=:active_status and (first_name=:search or last_name=:search or concat(first_name,last_name) like :search or concat(last_name,first_name) like :search or mobile_no like :search) ';
+            $criteria->params = array(
+                ':active_status' => Yii::app()->params['active_status'],
+                ':search' => '%' . $this->search . '%',
+            );
+        }
 
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-                        //'sort'=>array( 'defaultOrder'=>'first_name'),
-		));
-	}
+        return new CActiveDataProvider($this, array(
+            'criteria' => $criteria,
+            'pagination' => array(
+                'pageSize' => Yii::app()->user->getState('employee_pageSize',Yii::app()->params['defaultPageSize']),
+            ),
+            //'sort'=>array( 'defaultOrder'=>'first_name'),
+        ));
+    }
 
 	/**
 	 * Returns the static model of the specified AR class.

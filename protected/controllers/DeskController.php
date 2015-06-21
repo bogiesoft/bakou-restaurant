@@ -264,22 +264,35 @@ class DeskController extends Controller
 	/**
 	 * Manages all models.
 	 */
-	public function actionAdmin($zone_id=0)
-	{
-            if (Yii::app()->user->checkAccess('zone.index') || Yii::app()->user->checkAccess('zone.update') || Yii::app()->user->checkAccess('zone.create')) {
-                $model=new Desk('search');
-		$model->unsetAttributes();  // clear any default values
-		if (isset($_GET['Desk'])) {
-			$model->attributes=$_GET['Desk'];
-		}
-
-		$this->render('admin',array(
-			'model'=>$model,'zone_id'=>$zone_id
-		));
-            } else {
-                throw new CHttpException(403, 'You are not authorized to perform this action');
+    public function actionAdmin($zone_id = null)
+    {
+        if (Yii::app()->user->checkAccess('zone.index') || Yii::app()->user->checkAccess('zone.update') || Yii::app()->user->checkAccess('zone.create')) {
+            $model = new Desk('search');
+            $model->unsetAttributes();  // clear any default values
+            if (isset($_GET['Desk'])) {
+                $model->attributes = $_GET['Desk'];
             }
-	}
+
+            if (isset($_GET['pageSize'])) {
+                Yii::app()->user->setState('desk_PageSize', (int)$_GET['pageSize']);
+                unset($_GET['pageSize']);
+            }
+
+            if (isset($_GET['DeskArchived'])) {
+                Yii::app()->user->setState('desk_archived',$_GET['DeskArchived']);
+                unset($_GET['DeskArchived']);
+            }
+
+            $model->desk_archived = Yii::app()->user->getState('desk_archived', Yii::app()->params['defaultArchived'] );
+
+            $this->render('admin', array(
+                'model' => $model,
+                'zone_id' => $zone_id
+            ));
+        } else {
+            throw new CHttpException(403, 'You are not authorized to perform this action');
+        }
+    }
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.

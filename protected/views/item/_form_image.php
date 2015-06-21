@@ -18,6 +18,8 @@
         <?php echo $form->textFieldControlGroup($model,'item_number',array('class'=>'span3','maxlength'=>255)); ?>
         
 	<?php echo $form->textFieldControlGroup($model,'name',array('class'=>'span3','maxlength'=>50)); ?>
+
+    <?php echo $form->dropDownListControlGroup($model,'category_id', Category::model()->getCategory(),array('class'=>'span3','prompt'=>'-- Select --')); ?>
         
         <div class="unittype-wrapper" style="display:none">    
             <?php //echo $form->textFieldControlGroup($model,'sub_quantity',array('class'=>'span2','prepend'=>'$')); ?>
@@ -38,27 +40,27 @@
         
         <?php //echo $form->textFieldControlGroup($model,'quantity',array('class'=>'span3')); ?>
         
-        <?php echo $form->textFieldControlGroup($model,'promo_price',array('class'=>'span3')); ?>
+        <?php echo $form->textFieldControlGroup($item_price_promo,'unit_price',array('class'=>'span3')); ?>
         
         <?php //echo $form->textFieldControlGroup($model,'promo_start_date',array('class'=>'span3')); ?>
         
         <?php //echo $form->textFieldControlGroup($model,'promo_end_date',array('class'=>'span3')); ?>
         
-        <div class="form-group">
+        <div class="form-group <?php echo $has_error; ?>">
             <label class="col-sm-3 control-label" for="Item_item_number">Promotion Start</label>
             <div class="col-sm-9">
-            <?php $this->widget('yiiwheels.widgets.datepicker.WhDatePicker', array('model'=>$model,'attribute' =>'promo_start_date','pluginOptions' => array('format' => 'dd/mm/yyyy'),'htmlOptions'=>array('class'=>'span3 form-control'))); ?>
+            <?php $this->widget('yiiwheels.widgets.datepicker.WhDatePicker', array('model' => $item_price_promo,'attribute' =>'start_date','pluginOptions' => array('format' => 'dd/mm/yyyy'),'htmlOptions'=>array('class'=>'span3 form-control'))); ?>
+                <span class="help-block"> <?php echo $form->error($item_price_promo,'start_date'); ?> </span>
             </div>
         </div>
         
-        <div class="form-group">
+        <div class="form-group <?php echo $has_error; ?>">
             <label class="col-sm-3 control-label" for="Item_item_number">Promotion End</label>
             <div class="col-sm-9">
-            <?php $this->widget('yiiwheels.widgets.datepicker.WhDatePicker', array('model'=>$model,'attribute' =>'promo_end_date','pluginOptions' => array('format' => 'dd/mm/yyyy'),'htmlOptions'=>array('class'=>'span3 form-control'))); ?>
+                <?php $this->widget('yiiwheels.widgets.datepicker.WhDatePicker', array('model' => $item_price_promo,'attribute' =>'end_date','pluginOptions' => array('format' => 'dd/mm/yyyy'),'htmlOptions'=>array('class'=>'span3 form-control'))); ?>
+                <span class="help-block"> <?php echo $form->error($item_price_promo,'end_date'); ?> </span>
             </div>
         </div>
-        
-        <?php echo $form->dropDownListControlGroup($model,'category_id', Category::model()->getCategory(),array('class'=>'span3','prompt'=>'-- Select --')); ?>
 
         <?php //echo $form->dropDownListControlGroup($model,'supplier_id', Supplier::model()->getSupplier(),array('class'=>'span3','prompt'=>'-- Select --')); ?>
         

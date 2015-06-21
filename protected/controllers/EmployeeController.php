@@ -331,6 +331,18 @@ class EmployeeController extends Controller
             if (isset($_GET['Employee']))
                 $model->attributes = $_GET['Employee'];
 
+            if (isset($_GET['pageSize'])) {
+                Yii::app()->user->setState('employee_pageSize',(int)$_GET['pageSize']);
+                unset($_GET['pageSize']);
+            }
+
+            if (isset($_GET['archived'])) {
+                Yii::app()->user->setState('employee_archived',$_GET['archived']);
+                unset($_GET['archived']);
+            }
+
+            $model->employee_archived = Yii::app()->user->getState('employee_archived', Yii::app()->params['defaultArchived'] );
+
             $this->render('admin', array(
                 'model' => $model,
             ));
@@ -368,7 +380,18 @@ class EmployeeController extends Controller
     {
         $model = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => $data->id));
 
-        echo ucwords($model->user_name);
+        if ($model) {
+            $user_name = ucwords($model->user_name);
+            if ( $data->status == '1' ) {
+                echo $user_name;
+            } else {
+                echo "<span class=\"text-muted\">  $user_name <span>";
+            }
+        } else {
+            echo "No Login ID";
+        }
+
+
     }
 
     /*

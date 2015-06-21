@@ -70,106 +70,95 @@ class GiftcardController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate()
-	{
-		$model=new Giftcard;
+    public function actionCreate()
+    {
+        $model = new Giftcard;
 
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-                
-                if(isset($_POST['Giftcard']))
-		{
-			$model->attributes=$_POST['Giftcard'];
-			if($model->validate())
-                        {
-                            if($model->save())
-                            { 
-                                Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-                                echo CJSON::encode(array(
-                                   'status'=>'success',
-                                   'div'=>"<div class=alert alert-info fade in>Successfully added ! </div>",
-                                   ));
-                                Yii::app()->end();
-                            }
-                        }
-		}
+        if (!Yii::app()->user->checkAccess('giftcard.create')) {
+            throw new CHttpException(403, 'You are not authorized to perform this action');
+        }
 
-		if(Yii::app()->request->isAjaxRequest)
-                {
-                    Yii::app()->clientScript->scriptMap['*.js'] = false;
-
-                    echo CJSON::encode( array(
-                        'status' => 'render',
-                        'div' => $this->renderPartial( '_form', array('model' => $model),true,false),
+        if (isset($_POST['Giftcard'])) {
+            $model->attributes = $_POST['Giftcard'];
+            if ($model->validate()) {
+                if ($model->save()) {
+                    Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+                    echo CJSON::encode(array(
+                        'status' => 'success',
+                        'div' => "<div class=alert alert-info fade in>Successfully added ! </div>",
                     ));
-
                     Yii::app()->end();
                 }
-                else
-                {
-                    $this->render('create',array('model' => $model)); 
-                }
+            }
+        }
 
-	}
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['*.js'] = false;
+
+            echo CJSON::encode(array(
+                'status' => 'render',
+                'div' => $this->renderPartial('_form', array('model' => $model), true, false),
+            ));
+
+            Yii::app()->end();
+        } else {
+            $this->render('create', array('model' => $model));
+        }
+
+    }
 
 	/**
 	 * Updates a particular model.
 	 * If update is successful, the browser will be redirected to the 'view' page.
 	 * @param integer $id the ID of the model to be updated
 	 */
-	public function actionUpdate($id)
-	{
-		$model=$this->loadModel($id);
+    public function actionUpdate($id)
+    {
+        $model = $this->loadModel($id);
 
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-                
-                if(isset($_POST['Giftcard']))
-		{
-			$model->attributes=$_POST['Giftcard'];
-                        
-                        if ($model->validate())
-                        {    
-                            $transaction=$model->dbConnection->beginTransaction(); 
-                            try
-                            {
-                                if ($model->save())
-                                {  
-                                    $transaction->commit(); 
-                                    Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-                                    echo CJSON::encode(array(
-                                        'status'=>'success',
-                                        'div'=>"<div class=alert alert-info fade in> Successfully updated ! </div>",
-                                        ));
-                                    Yii::app()->end();
 
-                                }
-                            }catch(Exception $e)
-                            {
-                                $transaction->rollback();
-                                print_r($e);
-                            } 
-                        }
-                        
-		}
-                
-                if(Yii::app()->request->isAjaxRequest)
-                {
-                    Yii::app()->clientScript->scriptMap['*.js'] = false;
+        if (!Yii::app()->user->checkAccess('giftcard.update')) {
+            throw new CHttpException(403, 'You are not authorized to perform this action');
+        }
 
-                    echo CJSON::encode( array(
-                        'status' => 'render',
-                        'div' => $this->renderPartial( '_form', array('model' => $model),true,false),
-                    ));
+        if (isset($_POST['Giftcard'])) {
+            $model->attributes = $_POST['Giftcard'];
 
-                    Yii::app()->end();
+            if ($model->validate()) {
+                $transaction = $model->dbConnection->beginTransaction();
+                try {
+                    if ($model->save()) {
+                        $transaction->commit();
+                        Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+                        echo CJSON::encode(array(
+                            'status' => 'success',
+                            'div' => "<div class=alert alert-info fade in> Successfully updated ! </div>",
+                        ));
+                        Yii::app()->end();
+
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollback();
+                    print_r($e);
                 }
-                else
-                {
-                    $this->render('update',array('model' => $model)); 
-                }
+            }
 
-	}
+        }
+
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['*.js'] = false;
+
+            echo CJSON::encode(array(
+                'status' => 'render',
+                'div' => $this->renderPartial('_form', array('model' => $model), true, false),
+            ));
+
+            Yii::app()->end();
+        } else {
+            $this->render('update', array('model' => $model));
+        }
+
+    }
 
 	/**
 	 * Deletes a particular model.
@@ -178,7 +167,11 @@ class GiftcardController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		if (Yii::app()->request->isPostRequest) {
+        if (!Yii::app()->user->checkAccess('giftcard.delete')) {
+            throw new CHttpException(403, 'You are not authorized to perform this action');
+        }
+
+        if (Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
 			$this->loadModel($id)->delete();
 
@@ -205,18 +198,31 @@ class GiftcardController extends Controller
 	/**
 	 * Manages all models.
 	 */
-	public function actionAdmin()
-	{
-		$model=new Giftcard('search');
-		$model->unsetAttributes();  // clear any default values
-		if (isset($_GET['Giftcard'])) {
-			$model->attributes=$_GET['Giftcard'];
-		}
+    public function actionAdmin()
+    {
+        $model = new Giftcard('search');
+        $model->unsetAttributes();  // clear any default values
+        if (isset($_GET['Giftcard'])) {
+            $model->attributes = $_GET['Giftcard'];
+        }
 
-		$this->render('admin',array(
-			'model'=>$model,
-		));
-	}
+        if (isset($_GET['pageSize'])) {
+            Yii::app()->user->setState('giftcard_PageSize', (int)$_GET['pageSize']);
+            unset($_GET['pageSize']);
+        }
+
+        if (isset($_GET['Archived'])) {
+            Yii::app()->user->setState('giftcard_archived', $_GET['Archived']);
+            unset($_GET['Archived']);
+        }
+
+        $model->giftcard_archived = Yii::app()->user->getState('giftcard_archived',
+            Yii::app()->params['defaultArchived']);
+
+        $this->render('admin', array(
+            'model' => $model,
+        ));
+    }
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.

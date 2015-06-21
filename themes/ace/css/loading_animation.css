@@ -27,3 +27,11 @@ body.loading {
 body.loading .waiting {
     display: block;
 }
+
+/* Many thanksk to this https://github.com/twbs/bootstrap/issues/9939
+*/
+/*
+.btn-group {
+  display: flex !important;
+}
+*/

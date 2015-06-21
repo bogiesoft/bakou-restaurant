@@ -15,9 +15,12 @@
  */
 class Zone extends CActiveRecord
 {
-        public $price_tier_id;
-        private $zone_active = '1';
-        private $zone_inactive = '0'; 
+    public $price_tier_id;
+    public $zone_archived;
+
+    private $zone_active = '1';
+    private $zone_inactive = '0';
+
     
 	/**
 	 * @return string the associated database table name
@@ -86,27 +89,29 @@ class Zone extends CActiveRecord
 	 * @return CActiveDataProvider the data provider that can return the models
 	 * based on the search/filter conditions.
 	 */
-	public function search()
-	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
+    public function search()
+    {
+        // @todo Please modify the following code to remove attributes that should not be searched.
 
-		$criteria=new CDbCriteria;
+        $criteria = new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('zone_name',$this->zone_name,true);
-		$criteria->compare('sort_order',$this->sort_order);
-                $criteria->with = array( 'location' );
-                $criteria->compare('location.id', $this->location_id, true );
-                
-		//$criteria->compare('status',$this->status,true);
-		//$criteria->compare('modified_date',$this->modified_date,true);
+        $criteria->compare('zone_name', $this->zone_name, true);
+        $criteria->with = array('location');
+        $criteria->compare('location.id', $this->location_id, true);
 
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-                        'pagination'=>false,
-                        'sort'=>array( 'defaultOrder'=>'name,zone_name')
-		));
-	}
+        if  ( Yii::app()->user->getState('zone_archived', Yii::app()->params['defaultArchived'] ) == 'false' ) {
+            $criteria->addSearchCondition('t.status', Yii::app()->params['active_status']);
+        }
+
+
+        return new CActiveDataProvider($this, array(
+            'criteria' => $criteria,
+            'pagination' => array(
+                'pageSize' => Yii::app()->user->getState('zone_pageSize',Yii::app()->params['defaultPageSize']),
+            ),
+            'sort' => array('defaultOrder' => 'name,zone_name')
+        ));
+    }
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -146,12 +151,12 @@ class Zone extends CActiveRecord
         
         public function deleteZone($id)
         {
-            $this->updateByPk((int)$id,array('status'=>$this->zone_inactive));
+            $this->updateByPk((int)$id,array('status'=> Yii::app()->params['inactive_status']));
         }
         
         public function undodeleteZone($id)
         {
-            $this->updateByPk((int)$id,array('status'=>$this->zone_active));
+            $this->updateByPk((int)$id,array('status'=>Yii::app()->params['active_status']));
         }
         
 }

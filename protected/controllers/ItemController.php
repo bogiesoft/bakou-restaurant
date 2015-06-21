@@ -56,103 +56,34 @@ class ItemController extends Controller
         ));
     }
 
-    /**
-     * Creates a new model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     */
-    public function actionCreate($grid_cart = 'N')
-    {
-        $model = new Item;
-        $price_tiers = PriceTier::model()->getListPriceTier();
-
-        // Uncomment the following line if AJAX validation is needed
-        // $this->performAjaxValidation($model);
-        if (Yii::app()->user->checkAccess('item.create')) {
-            if (isset($_POST['Item'])) {
-                $model->attributes = $_POST['Item'];
-                $qty = isset($_POST['Item']['quantity']) ? $_POST['Item']['quantity'] : 0;
-                $model->quantity = $qty;
-
-                if ($model->validate()) {
-                    $transaction = $model->dbConnection->beginTransaction();
-                    try {
-                        if ($model->save()) {
-                            if ($price_tiers) {
-                                foreach ($price_tiers as $i=>$price_tier) {
-                                    if ($_POST['ItemPrice'][$price_tier["tier_id"]]!="") {
-                                        $item_price_tier = new ItemPriceTier;
-                                        $item_price_tier->item_id=$model->id;
-                                        $item_price_tier->price_tier_id=$price_tier["tier_id"];
-                                        $item_price_tier->price=$_POST['ItemPrice'][$price_tier["tier_id"]];
-                                        $item_price_tier->save();
-                                    }
-                                }
-                            }    
-                            
-                            $transaction->commit();
-
-                            if ($grid_cart == 'S') {
-                                Yii::app()->shoppingCart->addItem($model->id);
-                            } elseif ($grid_cart == 'R') {
-                                Yii::app()->receivingCart->addItem($model->id);
-                            }
-
-                            Yii::app()->clientScript->scriptMap['*.js'] = false;
-                            echo CJSON::encode(array(
-                                'status' => 'success',
-                                'div' => "<div class=alert alert-info fade in> Successfully added ! </div>",
-                            ));
-                            Yii::app()->end();
-                        }
-                    } catch (Exception $e) {
-                        $transaction->rollback();
-                        print_r($e);
-                    }
-                }
-            }
-        } else {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
-        }
-
-
-        if (Yii::app()->request->isAjaxRequest) {
-            $cs = Yii::app()->clientScript;
-            $cs->scriptMap = array(
-                'jquery.js' => false,
-                'bootstrap.js' => false,
-                'jquery.min.js' => false,
-                'bootstrap.min.js' => false,
-                'bootstrap.notify.js' => false,
-                'bootstrap.bootbox.min.js' => false,
-            );
-
-            echo CJSON::encode(array(
-                'status' => 'render',
-                'div' => $this->renderPartial('_form', array('model' => $model,'price_tiers'=>$price_tiers), true, true),
-            ));
-
-            Yii::app()->end();
-        } else {
-            $this->render('create', array('model' => $model,'price_tiers'=>$price_tiers));
-        }
-    }
-
     public function actionCreateImage()
     {
         $model = new Item;
+        $item_price_promo = new ItemPricePromo;
         $price_tiers = PriceTier::model()->getListPriceTier();
+        $has_error="";
 
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
         if (Yii::app()->user->checkAccess('item.create')) {
             if (isset($_POST['Item'])) {
                 $model->attributes = $_POST['Item'];
+                $item_price_promo->attributes = $_POST['ItemPricePromo'];
+
                 $qty = isset($_POST['Item']['quantity']) ? $_POST['Item']['quantity'] : 0;
                 $cost_price = isset($_POST['Item']['cost_price']) ? $_POST['Item']['cost_price'] : 0;
                 $model->quantity = $qty;
                 $model->cost_price=$cost_price;
-                
-                if ($model->validate()) {
+
+                $valid = $model->validate();
+                if (!empty($_POST['ItemPricePromo']['unit_price'])) {
+                    if (!$item_price_promo->validate()) {
+                        $has_error = 'has-error';
+                    }
+                    $valid = $item_price_promo->validate() & $valid;
+                }
+
+                if ($valid) {
                     $transaction = Yii::app()->db->beginTransaction();
                     try {
                         if ($model->save()) {
@@ -167,20 +98,25 @@ class ItemController extends Controller
                                         $item_price_tier->save();
                                     }
                                 }
-                            }   
-                            
-                            if (!empty($_POST['Item']['promo_price'])) {
+                            }
+
+                            if (!empty($_POST['ItemPricePromo']['unit_price'])) {
+                                $item_price_promo->item_id = $model->id;
+                                $item_price_promo->save();
+                            }
+
+                            /*if (!empty($_POST['Item']['promo_price'])) {
                                 $item_price_promo = new ItemPricePromo;
                                 $item_price_promo->item_id=$model->id;
                                 $item_price_promo->unit_price=$_POST['Item']['promo_price'];
                                 $item_price_promo->start_date=str_to_date($_POST['Item']['promo_start_date'],'%d-%m-%Y');
                                 $item_price_promo->end_date=str_to_date($_POST['Item']['promo_end_date'],'%d-%m-%Y');
                                 $item_price_promo->save();
-                            }
-                            
-                            $this->addImages($model, $transaction);
+                            }*/
+
+                            //$this->addImages($model, $transaction);
                             $transaction->commit();
-                            Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,'<strong> Well done!</strong> Item Id #' . $model->id . ' have been saved successfully!' );
+                            Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,'<strong> Well done!</strong> Item Id #' . $model->name . ' have been saved successfully!' );
                             $this->redirect(array('createImage'));
                         }
                     } catch (Exception $e) {
@@ -208,12 +144,12 @@ class ItemController extends Controller
 
             echo CJSON::encode(array(
                 'status' => 'render',
-                'div' => $this->renderPartial('_form_image', array('model' => $model,'price_tiers'=>$price_tiers), true, true),
+                'div' => $this->renderPartial('_form_image', array('model' => $model,'price_tiers'=>$price_tiers, 'item_price_promo' => $item_price_promo, 'has_error' => $has_error), true, true),
             ));
 
             Yii::app()->end();
         } else {
-            $this->render('create_image', array('model' => $model,'price_tiers'=>$price_tiers));
+            $this->render('create_image', array('model' => $model,'price_tiers'=>$price_tiers, 'item_price_promo' => $item_price_promo, 'has_error' => $has_error));
         }
     }
 
@@ -221,6 +157,8 @@ class ItemController extends Controller
     {
         $model = $this->loadModel($id);
         $price_tiers = PriceTier::model()->getListPriceTierUpdate($id);
+        $item_price_promo = ItemPricePromo::model()->itemPricePromoByItemID($id);
+        $has_error = "";
 
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
@@ -228,10 +166,17 @@ class ItemController extends Controller
             if (isset($_POST['Item'])) {
                 $old_price = $model->unit_price;
                 $model->attributes = $_POST['Item'];
-                $qty = isset($_POST['Item']['quantity']) ? $_POST['Item']['quantity'] : 0;
-                $model->quantity = $qty;
+                $item_price_promo->attributes = $_POST['ItemPricePromo'];
 
-                if ($model->validate()) {
+                $valid = $model->validate();
+                if (!empty($_POST['ItemPricePromo']['unit_price'])) {
+                    if (!$item_price_promo->validate()) {
+                        $has_error = 'has-error';
+                    }
+                    $valid = $item_price_promo->validate() & $valid;
+                }
+
+                if ($valid) {
                     $transaction = Yii::app()->db->beginTransaction();
                     try {
                         if ($model->save()) {
@@ -246,21 +191,16 @@ class ItemController extends Controller
                                         $item_price_tier->save();
                                     }
                                 }
-                            } 
-  
-                            // Product Price (retail price) history
-                            if ($model->unit_price <> $old_price) {
-                                $item_price = new ItemPrice;
-                                $item_price->item_id = $model->id;
-                                $item_price->old_price = $old_price;
-                                $item_price->new_price = $model->unit_price;
-                                $item_price->employee_id = Yii::app()->session['employeeid'];
-                                $item_price->modified_date = date('Y-m-d H:i:s');
-                                $item_price->save();
                             }
-                            $this->addImages($model, $transaction);
+
+                            if (!empty($_POST['ItemPricePromo']['unit_price'])) {
+                                $item_price_promo->item_id = $model->id;
+                                $item_price_promo->save();
+                            }
+
+                            //$this->addImages($model, $transaction);
                             $transaction->commit();
-                            Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,'<strong> Well done!</strong> Item Id #' . $model->id . ' have been saved successfully!' );
+                            Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,'<strong> Well done!</strong> Item Id #' . $model->name . ' have been saved successfully!' );
                             $this->redirect(array('admin'));
                         }
                     } catch (Exception $e) {
@@ -274,93 +214,10 @@ class ItemController extends Controller
         }
 
 
-        $this->render('update_image', array('model' => $model,'price_tiers'=>$price_tiers));
+        $this->render('update_image', array('model' => $model,'price_tiers'=>$price_tiers, 'item_price_promo' => $item_price_promo, 'has_error' => $has_error));
     }
 
-    /**
-     * Updates a particular model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id the ID of the model to be updated
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->loadModel($id);
-        $price_tiers = PriceTier::model()->getListPriceTierUpdate($id);
 
-        // Uncomment the following line if AJAX validation is needed
-        // $this->performAjaxValidation($model);
-
-        if (Yii::app()->user->checkAccess('item.update')) {
-            if (isset($_POST['Item'])) {
-                $old_price = $model->unit_price;
-                $model->attributes = $_POST['Item'];
-                $qty = isset($_POST['Item']['quantity']) ? $_POST['Item']['quantity'] : 0;
-
-                if ($model->validate()) {
-                    $transaction = $model->dbConnection->beginTransaction();
-                    try {
-                        if ($model->save()) {
-                            // Product Price (retail price) history
-                            if ($model->unit_price <> $old_price) {
-                                $item_price = new ItemPrice;
-                                $item_price->item_id = $model->id;
-                                $item_price->old_price = $old_price;
-                                $item_price->new_price = $model->unit_price;
-                                $item_price->employee_id = Yii::app()->session['employeeid'];
-                                $item_price->modified_date = date('Y-m-d H:i:s');
-                                $item_price->save();
-                            }
-
-                            if ($price_tiers) {
-                                ItemPriceTier::model()->deleteItemPriceTier($model->id);
-                                foreach ($price_tiers as $i=>$price_tier) {
-                                    if ($_POST['ItemPrice'][$price_tier["tier_id"]]!="") {
-                                        $item_price_tier = new ItemPriceTier;
-                                        $item_price_tier->item_id=$model->id;
-                                        $item_price_tier->price_tier_id=$price_tier["tier_id"];
-                                        $item_price_tier->price=$_POST['ItemPrice'][$price_tier["tier_id"]];
-                                        $item_price_tier->save();
-                                    }
-                                }
-                            } 
-
-                            $transaction->commit();
-
-                            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-                            echo CJSON::encode(array(
-                                'status' => 'success',
-                                'div' => "<div class=alert alert-info fade in> Successfully updated ! </div>",
-                            ));
-                            Yii::app()->end();
-                        }
-                    } catch (Exception $e) {
-                        $transaction->rollback();
-                        print_r($e);
-                    }
-                }
-            }
-
-            if (Yii::app()->request->isAjaxRequest) {
-                $cs = Yii::app()->clientScript;
-                $cs->scriptMap = array(
-                    'jquery.js' => false,
-                    'bootstrap.js' => false,
-                    'jquery.min.js' => false,
-                    'bootstrap.notify.js' => false,
-                    'bootstrap.bootbox.min.js' => false,
-                );
-
-                echo CJSON::encode(array(
-                    'status' => 'render',
-                    'div' => $this->renderPartial('_form', array('model' => $model,'price_tiers'=>$price_tiers), true, true),
-                ));
-
-                Yii::app()->end();
-            } else
-                $this->render('update', array('model' => $model,'price_tiers'=>$price_tiers));
-        } else
-            throw new CHttpException(403, 'You are not authorized to perform this action');
-    }
 
     /**
      * Deletes a particular model.
@@ -431,6 +288,18 @@ class ItemController extends Controller
             $model->unsetAttributes();  // clear any default values
             if (isset($_GET['Item']))
                 $model->attributes = $_GET['Item'];
+
+            if (isset($_GET['pageSize'])) {
+                Yii::app()->user->setState('pageSize',(int)$_GET['pageSize']);
+                unset($_GET['pageSize']);
+            }
+
+            if (isset($_GET['archivedItem'])) {
+                Yii::app()->user->setState('archived',$_GET['archivedItem']);
+                unset($_GET['archivedItem']);
+            }
+
+            $model->item_archived = Yii::app()->user->getState('archived', Yii::app()->params['defaultArchived'] );
 
             $this->render('admin', array(
                 'model' => $model,

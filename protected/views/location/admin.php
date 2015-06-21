@@ -4,7 +4,6 @@
 }
 </style>
 
-
 <?php
 
 $this->breadcrumbs=array(
@@ -35,39 +34,78 @@ $('.search-form form').submit(function(){
                   'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
     )); ?>
 
-    <?php echo TbHtml::linkButton(Yii::t('app','Search'),array('class'=>'search-button btn','size'=>TbHtml::BUTTON_SIZE_SMALL,'icon'=>'ace-icon fa fa-search',)); ?>
-    <div class="search-form" style="display:none">
-    <?php $this->renderPartial('_search',array(
-            'model'=>$model,
-    )); ?>
-    </div><!-- search-form -->
-    
     <?php $this->widget( 'ext.modaldlg.EModalDlg' ); ?>
-    
-    <?php if (Yii::app()->user->checkAccess('branch.create')) { ?>
-    
-        <?php echo TbHtml::linkButton(Yii::t( 'app', 'form.button.addnew' ),array(
-            'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
-            'size'=>TbHtml::BUTTON_SIZE_SMALL,
-            'icon'=>'ace-icon fa fa-plus white',
-            'url'=>$this->createUrl('create'),
+
+    <div class="page-header">
+        <div class="nav-search" id="nav-search">
+            <?php $this->renderPartial('_search',array(
+                    'model'=>$model,
+            )); ?>
+        </div><!-- search-form -->
+
+        <?php if (Yii::app()->user->checkAccess('branch.create')) { ?>
+
+            <?php echo TbHtml::linkButton(Yii::t( 'app', 'New Branch' ),array(
+                'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
+                'size'=>TbHtml::BUTTON_SIZE_SMALL,
+                'icon'=>'ace-icon fa fa-plus white',
+                'url'=>$this->createUrl('create'),
+            )); ?>
+
+         <?php } ?>
+
+        &nbsp;&nbsp;
+
+        <?php echo CHtml::activeCheckBox($model, 'location_archived', array(
+            'value' => 1,
+            'uncheckValue' => 0,
+            'checked' => ($model->location_archived == 'false') ? false : true,
+            'onclick' => "$.fn.yiiGridView.update('location-grid',{data:{Archived:$(this).is(':checked')}});"
         )); ?>
-    
-     <?php } ?>
+
+        Show archived/deleted location
+    </div>
+
+    <?php
+    $pageSize = Yii::app()->user->getState( 'location_PageSize', Yii::app()->params[ 'defaultPageSize' ] );
+    $pageSizeDropDown = CHtml::dropDownList(
+        'pageSize',
+        $pageSize,
+        array( 10 => 10, 25 => 25, 50 => 50, 100 => 100 ),
+        array(
+            'class'  => 'change-pagesize',
+            'onchange' => "$.fn.yiiGridView.update('location-grid',{data:{pageSize:$(this).val()}});",
+        )
+    );
+    ?>
 
     <?php $this->widget('\TbGridView',array(
             'id'=>'location-grid',
             'dataProvider'=>$model->search(),
+            'template' => "{items}\n{summary}\n{pager}",
+            'summaryText' => 'Showing {start}-{end} of {count} entries ' . $pageSizeDropDown . ' rows per page',
             'htmlOptions'=>array('class'=>'table-responsive panel'),
             'columns'=>array(
-                    'id',
-                    'name',
-                    'address',
-                    'phone',
-                    'phone1',
+                    //'id',
+                    array('name' => 'name',
+                        'value' => '$data->status=="1" ? $data->name : "<span class=\"text-muted\">  $data->name <span>" ',
+                        'type'  => 'raw',
+                    ),
+                    array('name' => 'address',
+                        'value' => '$data->status=="1" ? $data->address : "<span class=\"text-muted\">  $data->address <span>" ',
+                        'type'  => 'raw',
+                    ),
+                    array('name' => 'phone',
+                        'value' => '$data->status=="1" ? $data->phone : "<span class=\"text-muted\">  $data->phone <span>" ',
+                        'type'  => 'raw',
+                    ),
+                    array('name' => 'phone1',
+                        'value' => '$data->status=="1" ? $data->phone1 : "<span class=\"text-muted\">  $data->phone1 <span>" ',
+                        'type'  => 'raw',
+                    ),
                     array('name'=>'status',
                         'type'=>'raw',
-                        'value'=>'$data->status==1 ? TbHtml::labelTb("Activated", array("color" => TbHtml::LABEL_COLOR_SUCCESS)) : TbHtml::labelTb("De-Activated", array("color" => TbHtml::LABEL_COLOR_WARNING))', 
+                        'value'=>'$data->status==1 ? TbHtml::labelTb("Active", array("color" => TbHtml::LABEL_COLOR_SUCCESS)) : TbHtml::labelTb("Inactive", array("color" => TbHtml::LABEL_COLOR_DEFAULT))',
                     ),
                    array('class'=>'bootstrap.widgets.TbButtonColumn',
                        'template'=>'<div class="btn-group">{view}{update}{delete}{undeleted}</div>',  
@@ -80,7 +118,7 @@ $('.search-form form').submit(function(){
                                  'class'=>'btn btn-xs btn-success',
                                  'data-update-dialog-title' => Yii::t( 'app', 'View Zone' ),
                               ),
-                              'visible'=>'Yii::app()->user->checkAccess("branch.index")',   
+                              'visible'=>'$data->status=="1" && Yii::app()->user->checkAccess("branch.index")',
                            ),
                            'update' => array(
                              'icon' => 'ace-icon fa fa-edit',
@@ -90,7 +128,7 @@ $('.search-form form').submit(function(){
                                   'data-update-dialog-title' => Yii::t( 'app', 'Update Branch' ),
                                   'data-refresh-grid-id'=>'zone-grid',
                               ),
-                              'visible'=>'Yii::app()->user->checkAccess("branch.update")',  
+                              'visible'=>'$data->status=="1" && Yii::app()->user->checkAccess("branch.update")',
                            ),   
                            'delete' => array(
                               'label'=>'Delete',
@@ -100,7 +138,7 @@ $('.search-form form').submit(function(){
                               'visible'=>'$data->status=="1" && Yii::app()->user->checkAccess("branch.delete")', 
                            ),
                            'undeleted' => array(
-                            'label'=>Yii::t('app','Undo Delete Item'),
+                            'label'=>Yii::t('app','Restore Branch'),
                             'url'=>'Yii::app()->createUrl("location/UndoDelete", array("id"=>$data->id))',
                             'icon'=>'bigger-120 glyphicon-refresh',
                             'options' => array(
@@ -122,7 +160,7 @@ $('.search-form form').submit(function(){
         jQuery( function($){
             $('div#location_cart').on('click','a.btn-undodelete',function(e) {
                 e.preventDefault();
-                if (!confirm('Are you sure you want to do undo delete this Item?')) {
+                if (!confirm('Are you sure you want to do restore this Branch?')) {
                     return false;
                 }
                 var url=$(this).attr('href');

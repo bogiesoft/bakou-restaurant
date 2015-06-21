@@ -273,6 +273,18 @@ class ZoneController extends Controller
                 $model->attributes = $_GET['Zone'];
             }
 
+            if (isset($_GET['pageSize'])) {
+                Yii::app()->user->setState('zone_pageSize',(int)$_GET['pageSize']);
+                unset($_GET['pageSize']);
+            }
+
+            if (isset($_GET['ZoneArchived'])) {
+                Yii::app()->user->setState('zone_archived',$_GET['ZoneArchived']);
+                unset($_GET['ZoneArchived']);
+            }
+
+            $model->zone_archived = Yii::app()->user->getState('zone_archived', Yii::app()->params['defaultArchived'] );
+
             $this->render('admin', array(
                 'model' => $model,
             ));
@@ -308,103 +320,99 @@ class ZoneController extends Controller
 			Yii::app()->end();
 		}
 	}
-        
-        protected function gridTableColumn($data,$row)
-        {
-            $model= Desk::model()->count('zone_id=:zoneId', array(':zoneId'=>$data->id));
 
-            echo CHtml::link($model. ' Tables',
-                        array('desk/admin','zone_id'=>$data->id)). ' / ' . CHtml::link('Add new',array('desk/create','zone_id'=>$data->id), 
-                        array('class'=>'update-dialog-open-link',
-                            //'data-refresh-grid-id'=>'zone-grid',
-                            'data-update-dialog-title' => Yii::t( 'app', 'New Table' ),
-                        )
-                  );
-          
-        } 
-        
-        protected function gridPriceTierColumn($data,$row)
-        {
-            $model= PriceTierZone::model()->findByPk($data->id);
-            if ($model) {
-                $price_tier = PriceTier::model()->findByPk($model->price_tier_id);
-                $tier_name = $price_tier !==null ? $price_tier->tier_name : 'N/A';
-                echo TbHtml::encode($tier_name);
-            } else {
-                echo TbHtml::encode(Null);
-            }
-          
-        } 
-        
-        public function actionSetPrice($id)
-	{
-		//$model=$this->loadModel($id);
-                
-                $model = PriceTierZone::model()->findByPk($id);
-                
-                if (!isset($model)) {
-                    $model = new PriceTierZone; 
-                }
-                
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-                if (Yii::app()->user->checkAccess('zone.update'))
-                {
-                    if(isset($_POST['PriceTierZone']))
-                    {
-                            $model->attributes=$_POST['PriceTierZone'];
-                            if($model->validate())
-                            {
-                                $transaction=Yii::app()->db->beginTransaction();
-                                try 
-                                {
-                                    if($model->save())
-                                    { 
-                                        $transaction->commit();
+    protected function gridTableColumn($data, $row)
+    {
+        $count_table = Desk::model()->count('zone_id=:zoneId', array(':zoneId' => $data->id));
 
-                                        Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-                                        echo CJSON::encode(array(
-                                           'status'=>'success',
-                                           'div'=>"<div class=alert alert-info fade in>Successfully added ! </div>",
-                                           ));
-                                        
-                                        
-                                        Yii::app()->end();
-                                    }
-                                }catch (Exception $e)
-                                {
-                                   $transaction->rollback();
-                                } 
-                                
-                            }
+        if ( $data->status == "1" ) {
+            echo CHtml::link($count_table . ' Tables',
+                    array('desk/admin', 'zone_id' => $data->id)) . ' / ' . CHtml::link('Add new',
+                    array('desk/create', 'zone_id' => $data->id),
+                    array(
+                        'class' => 'update-dialog-open-link',
+                        //'data-refresh-grid-id'=>'zone-grid',
+                        'data-update-dialog-title' => Yii::t('app', 'New Table'),
+                    )
+                );
+        } else {
+            echo "<span class=\"text-muted\">  $count_table  Tables  <span>";
+        }
+
+    }
+
+    protected function gridPriceTierColumn($data, $row)
+    {
+        $model = PriceTierZone::model()->findByPk($data->id);
+        if ($model) {
+            $price_tier = PriceTier::model()->findByPk($model->price_tier_id);
+            $tier_name = $price_tier !== null ? $price_tier->tier_name : 'N/A';
+            echo TbHtml::encode($tier_name);
+        } else {
+            echo TbHtml::encode(null);
+        }
+
+    }
+
+    public function actionSetPrice($id)
+    {
+        //$model=$this->loadModel($id);
+
+        $model = PriceTierZone::model()->findByPk($id);
+
+        if (!isset($model)) {
+            $model = new PriceTierZone;
+        }
+
+        // Uncomment the following line if AJAX validation is needed
+        // $this->performAjaxValidation($model);
+        if (Yii::app()->user->checkAccess('zone.update')) {
+            if (isset($_POST['PriceTierZone'])) {
+                $model->attributes = $_POST['PriceTierZone'];
+                if ($model->validate()) {
+                    $transaction = Yii::app()->db->beginTransaction();
+                    try {
+                        if ($model->save()) {
+                            $transaction->commit();
+
+                            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+                            echo CJSON::encode(array(
+                                'status' => 'success',
+                                'div' => "<div class=alert alert-info fade in>Successfully added ! </div>",
+                            ));
+
+
+                            Yii::app()->end();
+                        }
+                    } catch (Exception $e) {
+                        $transaction->rollback();
                     }
-                }
-                else {
-                    throw new CHttpException(403, 'You are not authorized to perform this action');
-                }
 
-		if(Yii::app()->request->isAjaxRequest)
-                {
-                    $cs=Yii::app()->clientScript;
-                    $cs->scriptMap=array(
-                        'jquery.js'=>false,
-                        'bootstrap.js'=>false,
-                        'jquery.min.js'=>false,
-                        'bootstrap.notify.js'=>false,
-                        'bootstrap.bootbox.min.js'=>false,
-                    );
-
-                    echo CJSON::encode( array(
-                        'status' => 'render',
-                        'div' => $this->renderPartial( '_set_price', array('model' => $model),true,false),
-                    ));
-
-                    Yii::app()->end();
                 }
-                else
-                {
-                    $this->render('_set_price',array('model' => $model)); 
-                }
+            }
+        } else {
+            throw new CHttpException(403, 'You are not authorized to perform this action');
+        }
 
-	}
+        if (Yii::app()->request->isAjaxRequest) {
+            $cs = Yii::app()->clientScript;
+            $cs->scriptMap = array(
+                'jquery.js' => false,
+                'bootstrap.js' => false,
+                'jquery.min.js' => false,
+                'bootstrap.notify.js' => false,
+                'bootstrap.bootbox.min.js' => false,
+            );
+
+            echo CJSON::encode(array(
+                'status' => 'render',
+                'div' => $this->renderPartial('_set_price', array('model' => $model), true, false),
+            ));
+
+            Yii::app()->end();
+        } else {
+            $this->render('_set_price', array('model' => $model));
+        }
+
+    }
 }
