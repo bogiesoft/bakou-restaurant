@@ -22,7 +22,7 @@ class SaleItemController extends Controller
                 'users' => array('@'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('RemoveCustomer', 'SetComment', 'DeleteItem', 'AddItem', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelSale', 'CompleteSale', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectCustomer', 'AddCustomer', 'Receipt', 'UnsuspendSale', 'EditSale', 'Receipt', 'Suspend', 'ListSuspendedSale', 'SetPriceTier','SetGDiscount','DeleteSale','SetGroup','PrintKitchen','ReceiptKitchen','PrintCustomer','ReceiptCustomer','ChangeTable','SetDisGiftcard','RemoveGiftcard','MergeTable','Add','SetZone','SetTable','PrintCloseSale'),
+                'actions' => array('RemoveCustomer', 'SetComment', 'DeleteItem', 'AddItem', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelSale', 'CompleteSale', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectCustomer', 'AddCustomer', 'Receipt', 'UnsuspendSale', 'EditSale', 'Receipt', 'Suspend', 'ListSuspendedSale', 'SetPriceTier','SetGDiscount','DeleteSale','SetGroup','PrintKitchen','ReceiptKitchen','PrintCustomer','ReceiptCustomer','ChangeTable','SetDisGiftcard','RemoveGiftcard','MergeTable','Add','SetZone','SetTable','PrintCloseSale','AjaxRefresh'),
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -592,5 +592,57 @@ class SaleItemController extends Controller
      
         return $data;
     }
-    
+
+    public function actionAjaxRefresh()
+    {
+
+        $model = new SaleItem;
+
+        $data['model'] = $model;
+        $data['status'] = 'success';
+
+        $data=$this->sessionInfo($data);
+
+        $data['zones'] = Zone::model()->getAllZone(Yii::app()->getsetSession->getLocationId());
+        $data['table_info'] = Desk::model()->findByPk($data['table_id']);
+
+        if ($data['zone_id']==-1) {
+            $data['tables'] = Desk::model()->getTableAll(Yii::app()->getsetSession->getLocationId());
+        } else {
+            $data['tables'] = Desk::model()->getTablebyZone($data['zone_id'],Yii::app()->getsetSession->getLocationId());
+        }
+
+
+        $sale_order = new SaleOrder;
+        $new_orders = $sale_order->newOrdering();
+
+        $data_navbar['sale_order'] = $sale_order;
+        $data_navbar['new_orders'] = $new_orders;
+
+        $cs = Yii::app()->clientScript;
+        $cs->scriptMap = array(
+            'jquery.js' => false,
+            'bootstrap.js' => false,
+            'jquery.min.js' => false,
+            'bootstrap.notify.js' => false,
+            'bootstrap.bootbox.min.js' => false,
+            'bootstrap.min.js' => false,
+            'jquery-ui.min.js' => false,
+            'select2.js' => false,
+        );
+
+        Yii::app()->clientScript->scriptMap['*.js'] = false;
+        Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false;
+        Yii::app()->clientScript->scriptMap['box.css'] = false;
+
+        echo CJSON::encode(array(
+            'status' => 'render',
+            'div_order_navbar' => $this->renderPartial('touchscreen/_order_navbar', $data_navbar, true, true),
+            'div_order_table' => $this->renderPartial('touchscreen/_order_table', $data, true, true),
+            'div_order_menu' => $this->renderPartial('touchscreen/_order_menu', $data, true, true),
+        ));
+
+        //$this->renderPartial('touchscreen/_admin_touchscreen_ajax', $data, false, true);
+    }
+
 }

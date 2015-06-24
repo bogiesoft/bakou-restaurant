@@ -68,20 +68,12 @@
            
         </div>
        
-        <div class="widget-body">
+        <div class="widget-body" id="table_grid">
             <!-- /section:custom/widget-box.toolbox -->
             <div class="widget-main padding-12">
                 
                 <?php  foreach ($tables as $table) { ?> 
                     <?php if ($table["id"]==$table_id) { ?>
-                      <?php //echo TbHtml::imagePolaroid('holder.js/74x74/tablename/text:' . $table['name']); ?>
-                        <?php /* echo TbHtml::linkButton($table['name'],array(
-                          'color'=>TbHtml::BUTTON_COLOR_INFO,
-                          'size'=>TbHtml::BUTTON_SIZE_LARGE,
-                          'icon'=>'ace-icon fa fa-square-o bigger-110 green',
-                          'url'=>Yii::app()->createUrl('saleItem/SetTable/',array('table_id'=>$table['id'])),
-                          'class'=>'btn btn-green btn-round table-btn',
-                        )); */ ?>
                         <?php echo TbHtml::linkButton($table['name'],array(
                           'color'=>TbHtml::BUTTON_COLOR_SUCCESS,
                           'size'=>TbHtml::BUTTON_SIZE_LARGE,
@@ -260,17 +252,18 @@
             
             <br>
                
-            <div class="slim-scrol" data-height="400">
+            <div class="slim-scroll" data-height="400" id="order_menu">
 
                 <table class="table table-hover table-condensed">
                     <thead>
-                        <tr><th><?php echo Yii::t('model','Item Code'); ?></th>
-                            <th><?php echo Yii::t('model','model.saleitem.name'); ?></th>
-                            <th><?php echo Yii::t('model','model.saleitem.price'); ?></th>
-                            <th><?php echo Yii::t('model','model.saleitem.quantity'); ?></th>
+                        <tr>
+                            <th><?php echo Yii::t('app','Item Code'); ?></th>
+                            <th><?php echo Yii::t('app','Item Name'); ?></th>
+                            <th><?php echo Yii::t('app','Price'); ?></th>
+                            <th><?php echo Yii::t('app','Quantity'); ?></th>
                             <!-- <th class="<?php //echo Yii::app()->settings->get('sale','discount'); ?>"><?php //echo Yii::t('model','model.saleitem.discount_amount'); ?></th> -->
-                            <th><?php echo Yii::t('model','model.saleitem.total'); ?></th>
-                            <th><?php echo Yii::t('app',''); ?></th>
+                            <th><?php echo Yii::t('app','Total'); ?></th>
+                            <th><?php echo Yii::t('app','Action'); ?></th>
                         </tr>
                     </thead>
                     <tbody id="cart_contents">
@@ -343,6 +336,7 @@
                  } ?> 
 
             </div><!--/endslimscrool-->
+
             
             <div class="row">
                 <div class="col-sm-5 pull-right">
@@ -468,6 +462,40 @@
 <?php $this->renderPartial('touchscreen/_search_touchscreen'); ?>
 
 </div>
+<script>
+    (function worker() {
+        $.ajax({
+            url: 'AjaxRefresh',
+            dataType : 'json',
+            success: function(data) {
+                $('#navigation_bar').html(data.div_order_navbar);
+                $('#table_grid').html(data.div_order_table);
+                $('#order_menu').html(data.div_order_menu);
+            },
+            complete: function() {
+                // Schedule the next request when the current one's complete
+                setTimeout(worker, 10000);
+            }
+        });
+    })();
+</script>
+
+<!--<script>
+    (function worker1() {
+        $.ajax({
+            url: 'AjaxF5NavNewOrder',
+            success: function(data) {
+                $('#navigation_bar').html(data);
+            },
+            complete: function() {
+                // Schedule the next request when the current one's complete
+                setTimeout(worker1, 10000);
+            }
+        });
+    })();
+</script>-->
+
+
 
 <div class="waiting"><!-- Place at bottom of page --></div>
 

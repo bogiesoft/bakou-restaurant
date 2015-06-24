@@ -204,8 +204,8 @@ class SaleOrder extends CActiveRecord
                 and oc.status=:status
                 GROUP BY sale_id";
 
-        $sql = "SELECT s.id sale_id,SUM(so.quantity) quantity,SUM(so.total) sub_total,sum(total) - sum(total)*IFNULL(s.discount_amount,0)/100 total,sum(total)*IFNULL(s.discount_amount,0)/100 discount_amount
-                FROM sale_order s JOIN v_sale_order_tem_sum so ON so.sale_id = s.id
+        $sql = "SELECT s.id sale_id,SUM(so.quantity) quantity,SUM(so.total) sub_total,sum(total) - sum(total)*global_discount total,sum(total)*global_discount discount_amount
+                FROM v_sale_order s JOIN v_sale_order_tem_sum so ON so.sale_id = s.id
                 WHERE s.desk_id=:desk_id
                 AND s.group_id=:group_id
                 AND s.location_id=:location_id
@@ -430,5 +430,46 @@ class SaleOrder extends CActiveRecord
         }
 
         return $giftcard_id;
+    }
+
+    public function countNewOrder()
+    {
+        $sql = "SELECT COUNT(*) count_order
+                FROM sale_order
+                WHERE sale_time >= CURDATE()-1
+                AND `status`=:status
+                AND employee_id <> :employee_id";
+
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+            ':status' => $this->active_status,
+            ':employee_id' => Yii::app()->session['employeeid']
+        ));
+
+        if ($result) {
+            foreach ($result as $record) {
+                $count_order = $record['count_order'];
+            }
+        } else {
+            $count_order = 0;
+        }
+
+        return $count_order;
+    }
+
+    public function newOrdering()
+    {
+        $sql="SELECT so.desk_id,d.`name` desk_name, concat(hour(so.sale_time), ':',minute(so.sale_time)) sale_time
+                FROM sale_order so JOIN desk d ON d.id = so.desk_id
+                WHERE so.sale_time >= CURDATE()-1
+                AND so.`status`=:status
+                AND employee_id <> :employee_id
+                ORDER BY so.sale_time";
+
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+            ':status' => $this->active_status,
+            ':employee_id' => Yii::app()->session['employeeid']
+        ));
+
+        return $result;
     }
 }
