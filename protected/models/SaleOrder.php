@@ -436,7 +436,7 @@ class SaleOrder extends CActiveRecord
     {
         $sql = "SELECT COUNT(*) count_order
                 FROM sale_order
-                WHERE sale_time >= CURDATE()-1
+                WHERE sale_time >= CURDATE()
                 AND `status`=:status
                 AND employee_id <> :employee_id";
 
@@ -460,7 +460,7 @@ class SaleOrder extends CActiveRecord
     {
         $sql="SELECT so.desk_id,d.`name` desk_name, concat(hour(so.sale_time), ':',minute(so.sale_time)) sale_time
                 FROM sale_order so JOIN desk d ON d.id = so.desk_id
-                WHERE so.sale_time >= CURDATE()-1
+                WHERE so.sale_time >= CURDATE()
                 AND so.`status`=:status
                 AND employee_id <> :employee_id
                 ORDER BY so.sale_time";

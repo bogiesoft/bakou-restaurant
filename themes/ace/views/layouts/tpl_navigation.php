@@ -70,14 +70,6 @@ if ($location) {
                                 </a>
 
                                 <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
-                                    <!--
-                                    <li>
-                                        <a href="<?php //echo Yii::app()->urlManager->createUrl('Employee/View', array('id' => Yii::app()->session['employeeid'])); ?>">
-                                                <i class="ace-icon fa fa-user"></i>
-                                                Profile
-                                        </a>
-                                    </li>
-                                    -->
                                     <li>
                                         <a href="<?php echo Yii::app()->urlManager->createUrl('RbacUser/Update', array('id' => Yii::app()->user->id)); ?>">
                                                 <i class="ace-icon fa fa-key"></i>

@@ -462,13 +462,14 @@
 <?php $this->renderPartial('touchscreen/_search_touchscreen'); ?>
 
 </div>
+
 <script>
     (function worker() {
         $.ajax({
-            url: 'AjaxRefresh',
+            url: 'SaleItem/AjaxRefresh',
             dataType : 'json',
             success: function(data) {
-                $('#navigation_bar').html(data.div_order_navbar);
+                $('.count_new_order').text(data.count_new_order);
                 $('#table_grid').html(data.div_order_table);
                 $('#order_menu').html(data.div_order_menu);
             },
@@ -480,21 +481,20 @@
     })();
 </script>
 
-<!--<script>
-    (function worker1() {
+<script type='text/javascript'>
+    $('.nav a#order_header').on('click',function(){
         $.ajax({
-            url: 'AjaxF5NavNewOrder',
+            url: 'SaleItem/AjaxF5Navbar',
+            dataType : 'json',
+           /* beforeSend: function(data) {
+                $('#navigation_bar').html(data.div_order_navbar);
+            },*/
             success: function(data) {
-                $('#navigation_bar').html(data);
-            },
-            complete: function() {
-                // Schedule the next request when the current one's complete
-                setTimeout(worker1, 10000);
+                $('#navigation_bar').html(data.div_order_navbar);
             }
         });
-    })();
-</script>-->
-
+    });
+</script>
 
 
 <div class="waiting"><!-- Place at bottom of page --></div>

@@ -2,7 +2,6 @@
 $this->pageTitle = Yii::app()->name;
 $baseUrl = Yii::app()->theme->baseUrl;
 $sale_order = new SaleOrder;
-$new_orders = $sale_order->newOrdering();
 ?>
 <div id="navbar" class="navbar navbar-default navbar-collapse h-navbar">
     <script type="text/javascript">
@@ -33,9 +32,8 @@ $new_orders = $sale_order->newOrdering();
             </div>
 
             <!-- #section:basics/navbar.dropdown -->
-            <div class="navbar-buttons navbar-header pull-right" role="navigation">
+            <div class="navbar-buttons navbar-header pull-right" role="navigation" id="navigation_bar">
                     <ul class="nav ace-nav">
-                            
                         <!-- #section:basics/navbar.user_menu -->
                         <li class="grey">
                             <a href="<?php echo Yii::app()->createUrl('dashboard/view') ?>">
@@ -44,10 +42,14 @@ $new_orders = $sale_order->newOrdering();
                             </a>
                         </li>
 
-                        <li class="purple" id="navbar_new_order">
-                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                                <i class="ace-icon fa fa-globe"></i>
-                                <span class="badge badge-important"><?php echo $sale_order->countNewOrder(); ?></span>
+                        <li class="purple">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#" id="order_header">
+                                <?php if ($sale_order->countNewOrder() == 0 ) {  ?>
+                                    <i class="ace-icon fa fa-globe"></i>
+                                <?php } else { ?>
+                                    <i class="ace-icon fa fa-globe icon-animated-bell"></i>
+                                <?php } ?>
+                                <span class="badge badge-important count_new_order"><?php echo $sale_order->countNewOrder(); ?></span>
                             </a>
 
                             <ul class="dropdown-menu-right dropdown-navbar navbar-pink dropdown-menu dropdown-caret dropdown-close">
@@ -56,9 +58,9 @@ $new_orders = $sale_order->newOrdering();
                                     <?php echo $sale_order->countNewOrder(); ?> New Orders
                                 </li>
 
-                                <li class="dropdown-content">
-                                    <ul class="dropdown-menu dropdown-navbar navbar-pink">
-                                        <?php foreach ($new_orders as $new_order) : ?>
+                                <li class="dropdown-content new-order-menu">
+                                    <ul class="dropdown-menu dropdown-navbar navbar-pink" id="new_order_menu">
+                                        <?php foreach ($sale_order->newOrdering() as $new_order) : ?>
                                             <li>
                                                 <a href="<?php echo Yii::app()->createUrl('saleItem/SetTable/',array('table_id'=>$new_order['desk_id'])); ?>">
                                                     <div class="clearfix">
@@ -83,10 +85,9 @@ $new_orders = $sale_order->newOrdering();
                             </ul>
                         </li>
 
-
                         <li class="green">
                             <a href="#"><?php echo Yii::app()->settings->get('site', 'companyName'); ?>
-                                <i class="ace-icon fa fa-bell icon-animated-bell"></i>
+                                <i class="ace-icon fa fa-bell"></i>
                                 <span class="label label-xlg label-important"><?php echo Yii::app()->getsetSession->getLocationName(); //Yii::app()->session['location_name']; ?></span>
                             </a>
                         </li>
@@ -106,7 +107,7 @@ $new_orders = $sale_order->newOrdering();
                                     <i class="ace-icon fa fa-caret-down"></i>
                                 </a>
 
-                                <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                            <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
                                     <li>
                                         <a href="<?php echo Yii::app()->urlManager->createUrl('Employee/View', array('id' => Yii::app()->session['employeeid'])); ?>">
                                                 <i class="ace-icon fa fa-user"></i>
@@ -130,8 +131,6 @@ $new_orders = $sale_order->newOrdering();
                                     </li>
                                 </ul>
                         </li>
-
-                            <!-- /section:basics/navbar.user_menu -->
                     </ul>
             </div>
 

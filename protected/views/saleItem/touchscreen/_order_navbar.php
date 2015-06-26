@@ -1,6 +1,5 @@
 <div class="navbar-buttons navbar-header pull-right" role="navigation" id="navigation_bar">
     <ul class="nav ace-nav">
-
         <!-- #section:basics/navbar.user_menu -->
         <li class="grey">
             <a href="<?php echo Yii::app()->createUrl('dashboard/view') ?>">
@@ -9,9 +8,13 @@
             </a>
         </li>
 
-        <li class="purple" id="navbar_new_order">
-            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                <i class="ace-icon fa fa-globe"></i>
+        <li class="purple" id="order_nav">
+            <a data-toggle="dropdown" class="dropdown-toggle" href="#" id="order_header">
+                <?php if ($sale_order->countNewOrder() == 0 ) {  ?>
+                    <i class="ace-icon fa fa-globe"></i>
+                <?php } else { ?>
+                    <i class="ace-icon fa fa-globe icon-animated-bell"></i>
+                <?php } ?>
                 <span class="badge badge-important"><?php echo $sale_order->countNewOrder(); ?></span>
             </a>
 
@@ -23,7 +26,7 @@
 
                 <li class="dropdown-content">
                     <ul class="dropdown-menu dropdown-navbar navbar-pink">
-                        <?php foreach ($new_orders as $new_order) : ?>
+                        <?php foreach ($sale_order->newOrdering() as $new_order) : ?>
                             <li>
                                 <a href="<?php echo Yii::app()->createUrl('saleItem/SetTable/',array('table_id'=>$new_order['desk_id'])); ?>">
                                     <div class="clearfix">
@@ -48,10 +51,9 @@
             </ul>
         </li>
 
-
         <li class="green">
             <a href="#"><?php echo Yii::app()->settings->get('site', 'companyName'); ?>
-                <i class="ace-icon fa fa-bell icon-animated-bell"></i>
+                <i class="ace-icon fa fa-bell"></i>
                 <span class="label label-xlg label-important"><?php echo Yii::app()->getsetSession->getLocationName(); //Yii::app()->session['location_name']; ?></span>
             </a>
         </li>
@@ -95,7 +97,5 @@
                 </li>
             </ul>
         </li>
-
-        <!-- /section:basics/navbar.user_menu -->
     </ul>
 </div>
