@@ -53,7 +53,7 @@ $sale_order = new SaleOrder;
                             </a>
 
                             <ul class="dropdown-menu-right dropdown-navbar navbar-pink dropdown-menu dropdown-caret dropdown-close">
-                                <li class="dropdown-header">
+                                <li class="dropdown-header new-order-dropdown-header">
                                     <i class="ace-icon fa fa-exclamation-triangle"></i>
                                     <?php echo $sale_order->countNewOrder(); ?> New Orders
                                 </li>

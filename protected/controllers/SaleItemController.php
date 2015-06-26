@@ -637,7 +637,7 @@ class SaleItemController extends Controller
 
         echo CJSON::encode(array(
             'count_new_order' => $sale_order->countNewOrder(),
-            'div_order_navbar' => $this->renderPartial('touchscreen/_order_navbar', $data_navbar, true, true),
+            //'div_order_navbar' => $this->renderPartial('touchscreen/_order_navbar', $data_navbar, true, true), // Got stuck if refreshing this drop-down menu always close every time refresh
             'div_order_table' => $this->renderPartial('touchscreen/_order_table', $data, true, true),
             'div_order_menu' => $this->renderPartial('touchscreen/_order_menu', $data, true, true),
         ));
@@ -667,11 +667,12 @@ class SaleItemController extends Controller
         Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false;
         Yii::app()->clientScript->scriptMap['box.css'] = false;
 
+        $new_order_header = $sale_order->countNewOrder() . ' New Orders';
+
         echo CJSON::encode(array(
-            'div_order_navbar' => $this->renderPartial('touchscreen/_order_navbar', $data_navbar, true, true),
+            'new_order_header' => $new_order_header
         ));
 
-        //$this->renderPartial('touchscreen/_admin_touchscreen_ajax', $data, false, true);
     }
 
 }

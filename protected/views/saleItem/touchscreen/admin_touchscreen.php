@@ -482,15 +482,12 @@
 </script>
 
 <script type='text/javascript'>
-    $('.nav a#order_header').on('click',function(){
+    $('.nav').on('click','a#order_header',function(){
         $.ajax({
             url: 'SaleItem/AjaxF5Navbar',
             dataType : 'json',
-           /* beforeSend: function(data) {
-                $('#navigation_bar').html(data.div_order_navbar);
-            },*/
-            success: function(data) {
-                $('#navigation_bar').html(data.div_order_navbar);
+            success : function(data) {
+                $('.new-order-dropdown-header').text(data.new_order_header);
             }
         });
     });

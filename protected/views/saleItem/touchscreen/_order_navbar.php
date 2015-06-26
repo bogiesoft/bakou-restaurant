@@ -8,14 +8,14 @@
             </a>
         </li>
 
-        <li class="purple" id="order_nav">
+        <li class="purple">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#" id="order_header">
                 <?php if ($sale_order->countNewOrder() == 0 ) {  ?>
                     <i class="ace-icon fa fa-globe"></i>
                 <?php } else { ?>
                     <i class="ace-icon fa fa-globe icon-animated-bell"></i>
                 <?php } ?>
-                <span class="badge badge-important"><?php echo $sale_order->countNewOrder(); ?></span>
+                <span class="badge badge-important count_new_order"><?php echo $sale_order->countNewOrder(); ?></span>
             </a>
 
             <ul class="dropdown-menu-right dropdown-navbar navbar-pink dropdown-menu dropdown-caret dropdown-close">
@@ -24,8 +24,8 @@
                     <?php echo $sale_order->countNewOrder(); ?> New Orders
                 </li>
 
-                <li class="dropdown-content">
-                    <ul class="dropdown-menu dropdown-navbar navbar-pink">
+                <li class="dropdown-content new-order-menu">
+                    <ul class="dropdown-menu dropdown-navbar navbar-pink" id="new_order_menu">
                         <?php foreach ($sale_order->newOrdering() as $new_order) : ?>
                             <li>
                                 <a href="<?php echo Yii::app()->createUrl('saleItem/SetTable/',array('table_id'=>$new_order['desk_id'])); ?>">
