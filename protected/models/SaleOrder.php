@@ -262,15 +262,16 @@ class SaleOrder extends CActiveRecord
         );
     }
 
-    public function savePrintedToKitchen($desk_id, $group_id, $location_id, $category_id)
+    public function savePrintedToKitchen($desk_id, $group_id, $location_id, $category_id,$employee_id)
     {
-        $sql = "CALL pro_save_pkitchen(:desk_id,:group_id,:location_id,:category_id)";
+        $sql = "CALL pro_save_pkitchen(:desk_id,:group_id,:location_id,:category_id,:employee_id)";
         Yii::app()->db->createCommand($sql)->queryAll(true,
             array(
                 ':desk_id' => $desk_id,
                 ':group_id' => $group_id,
                 ':location_id' => $location_id,
-                ':category_id' => $category_id
+                ':category_id' => $category_id,
+                ':employee_id' => $employee_id
             )
         );
     }

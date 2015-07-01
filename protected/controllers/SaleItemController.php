@@ -295,7 +295,7 @@ class SaleItemController extends Controller
             $data['items'] = SaleOrder::model()->getOrderToKitchen($data['table_id'],$data['group_id'],Yii::app()->getsetSession->getLocationId(),$category_id);
             $data['sale_id'] = Yii::app()->orderingCart->getSaleId();
             //Saving printed item to another table "sale_order_item_print"
-            SaleOrder::model()->savePrintedToKitchen($data['table_id'], $data['group_id'],Yii::app()->getsetSession->getLocationId(),$category_id);
+            SaleOrder::model()->savePrintedToKitchen($data['table_id'], $data['group_id'],Yii::app()->getsetSession->getLocationId(),$category_id,Yii::app()->session['employeeid']);
 
             $data['employee_id'] = Yii::app()->session['employeeid'];
             $data['table_info'] = Desk::model()->findByPk($data['table_id']);

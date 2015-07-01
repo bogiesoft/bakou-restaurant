@@ -463,10 +463,10 @@
 
 </div>
 
-<script>
+<!--<script>
     (function worker() {
         $.ajax({
-            url: 'SaleItem/AjaxRefresh',
+            url: 'AjaxRefresh',
             dataType : 'json',
             success: function(data) {
                 $('.count_new_order').text(data.count_new_order);
@@ -479,7 +479,7 @@
             }
         });
     })();
-</script>
+</script>-->
 
 <script type='text/javascript'>
     $('.nav').on('click','a#order_header',function(){
