@@ -57,7 +57,7 @@
     <div class="row">
         <div class="col-xs-6">
             <p>
-                <?php echo Yii::t('app','Cashier') . " : ". TbHtml::encode(ucwords($employee)); ?> <br>
+                <?php echo Yii::t('app','Cashier') . " : ". TbHtml::encode(ucwords($employee_name)); ?> <br>
                 <?php echo Yii::t('app','Table') . " : ". TbHtml::b(TbHtml::encode(ucwords($table_info->name) . '-' . Common::GroupAlias($group_id))); ?> <br>
                 <?php echo TbHtml::encode(Yii::t('app','Wifi Pass')  . ' ' . Yii::app()->getsetSession->getLocationWifi()); ?> <br>
             </p>
@@ -130,15 +130,13 @@
     
 </div>
 
-<?php echo Yii::app()->getsetSession->getLocationPrinterReceipt(); ?>
-
 <script>
 $(window).bind("load", function() {
-    //setTimeout(window.location.href='index',5000);
     jsPrintSetup.setPrinter('<?php echo Yii::app()->getsetSession->getLocationPrinterReceipt(); ?>');
     console.log(jsPrintSetup.getPrinter());
     jsPrintSetup.printWindow(window);
     //window.print();
+    setTimeout(window.location.href='index',5000);
     return true;
 });    
 </script>

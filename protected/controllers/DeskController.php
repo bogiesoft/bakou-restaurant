@@ -354,8 +354,8 @@ class DeskController extends Controller
         public function actionMergeDesk()
         {
             $model = new Desk;
-            $tables = Desk::model()->getFreeDesk();
-            $table_info = Desk::model()->findByPk(Yii::app()->orderingCart->getTableId());
+            $tables = Desk::model()->getBusyDesk(Yii::app()->getsetSession->getLocationId());
+            //$table_info = Desk::model()->findByPk(Yii::app()->orderingCart->getTableId());
          
             if (Yii::app()->request->isAjaxRequest) {
                 //Yii::app()->clientScript->scriptMap['*.js'] = false;
@@ -371,12 +371,12 @@ class DeskController extends Controller
                 
                 echo CJSON::encode(array(
                     'status' => 'render',
-                    'div' => $this->renderPartial('_merge_desk', array('model' => $model,'tables' => $tables,'table_info'=>$table_info), true, true),
+                    'div' => $this->renderPartial('_merge_desk', array('model' => $model,'tables' => $tables,), true, true),
                 ));
 
                 Yii::app()->end();
             } else {
-                $this->render('_merge_desk', array('model' => $model,'tables' => $tables, 'table_info'=>$table_info));
+                $this->render('_merge_desk', array('model' => $model,'tables' => $tables));
             }
         }
 }

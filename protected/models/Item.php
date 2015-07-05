@@ -173,19 +173,22 @@ class Item extends CActiveRecord
         //$criteria->params = array(':name'=>'%' . $this->name .'%', ':item_number'=>$this->name . '%');
 
         if (Yii::app()->user->getState('archived', Yii::app()->params['defaultArchived']) == 'true') {
-            $criteria->condition = 'name LIKE :name OR item_number LIKE :name';
+            $criteria->condition = 'name LIKE :name OR item_number LIKE :item_number';
             $criteria->params = array(
                 ':name' => '%' . $this->name . '%',
                 ':item_number' => $this->name . '%'
             );
         } else {
-            $criteria->condition = 'status=:active_status AND (name LIKE :name OR item_number like :name)';
+            $criteria->condition = 'status=:active_status AND (name LIKE :name OR item_number like :item_number)';
             $criteria->params = array(
                 ':active_status' => Yii::app()->params['active_status'],
                 ':name' => '%' . $this->name . '%',
                 ':item_number' => $this->name . '%'
             );
         }
+
+        $criteria->compare('category_id',$this->category_id);
+        $criteria->compare('topping',$this->topping);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
@@ -510,4 +513,23 @@ class Item extends CActiveRecord
     {
         Item::model()->updateByPk((int)$item_id, array('status' => Yii::app()->params['active_status']));
     }
+
+    public static function itemAlias($type, $code = null)
+    {
+
+        $_items = array(
+            'item_type' => array(
+                0 => 'Main-Menu',
+                1 => 'Topping',
+            ),
+        );
+
+        if (isset($code)) {
+            return isset($_items[$type][$code]) ? $_items[$type][$code] : false;
+        } else {
+            return isset($_items[$type]) ? $_items[$type] : false;
+        }
+    }
+
+
 }

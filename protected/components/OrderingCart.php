@@ -235,7 +235,7 @@ class OrderingCart extends CApplicationComponent
     {
         $this->setSession(Yii::app()->session);
         if (!isset($this->session['zoneid'])) {
-            $this->setZoneId(null);
+            $this->setZoneId(-1);
         }
         return $this->session['zoneid'];
     }

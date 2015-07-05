@@ -37,7 +37,7 @@ $('.search-form form').submit(function(){
     <?php $this->widget('ext.modaldlg.EModalDlg'); ?>
 
     <div class="page-header">
-        <div class="nav-search" id="nav-search">
+        <div class="search-form nav-search" id="nav-search">
             <?php $this->renderPartial('_search', array(
                 'model' => $model,
             )); ?>
@@ -96,14 +96,18 @@ $('.search-form form').submit(function(){
     <?php $this->widget('\TbGridView', array(
         'id' => 'zone-grid',
         'dataProvider' => $model->search(),
+        'filter' => $model,
         'template' => "{items}\n{summary}\n{pager}",
         'summaryText' => 'Showing {start}-{end} of {count} entries ' . $pageSizeDropDown . ' rows per page',
         'htmlOptions' => array('class' => 'table-responsive panel'),
         'columns' => array(
-            'id',
+            array('name'=>'id',
+                  'filter' => '',
+            ),
             array('name' => 'zone_name',
                 'value' => '$data->status=="1" ? $data->zone_name : "<span class=\"text-muted\">  $data->zone_name <span>" ',
                 'type'  => 'raw',
+                //'filter' =>  CHtml::listData(Zone::model()->findAll(array('condition' => 'location_id=:location_id','params' => array(':location_id'=> Yii::app()->getsetSession->getLocationId() ))), 'id', 'zone_name'),
             ),
             array(//'name' =>'room',
                 'header' => 'Tables',
@@ -114,16 +118,20 @@ $('.search-form form').submit(function(){
                 'name' => 'location_id',
                 'header' => 'Branch',
                 'value' => '($data->location_id!==null)? $data->location->name : "N/A"',
+                'filter' =>  CHtml::listData(Location::model()->findAll(array('order'=>'name')), 'id', 'name'),
             ),
             array(//'name' =>'room',
                 'header' => 'Price Tier',
                 'value' => array($this, "gridPriceTierColumn"),
             ),
-            'sort_order',
+            array('name'=>'sort_order',
+                'filter' => '',
+            ),
             array(
                 'name' => 'status',
                 'type' => 'raw',
-                'value' => '$data->status==1 ? TbHtml::labelTb("Activated", array("color" => TbHtml::LABEL_COLOR_SUCCESS)) : TbHtml::labelTb("Archived", array("color" => TbHtml::LABEL_COLOR_DEFAULT))',
+                'value' => '$data->status==1 ? TbHtml::labelTb("Active", array("color" => TbHtml::LABEL_COLOR_SUCCESS)) : TbHtml::labelTb("Archived", array("color" => TbHtml::LABEL_COLOR_DEFAULT))',
+                'filter'=> CHtml::activeDropDownList($model,'status',array('1' => 'Active', '0' => 'Archived'),array('empty' => '')),
             ),
             array(
                 'class' => 'bootstrap.widgets.TbButtonColumn',

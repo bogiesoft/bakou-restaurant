@@ -290,19 +290,14 @@ class SaleItemController extends Controller
         if (count($data['items'])==0) {
             $data['warning'] = Yii::t('app','The serving table had been printed or changed.');
             $this->reload($data);
-        } else { 
+        } else {
+
+            $data['printer'] = $category_id == 9 ?  Yii::app()->getsetSession->getLocationPrinterFood() :  Yii::app()->getsetSession->getLocationPrinterBeverage() ;
         
-            $data['items'] = SaleOrder::model()->getOrderToKitchen($data['table_id'],$data['group_id'],Yii::app()->getsetSession->getLocationId(),$category_id);
+            $data['items'] = SaleOrder::model()->getOrderToKitchen($data['table_id'],$data['group_id'],$data['location_id'],$category_id);
             $data['sale_id'] = Yii::app()->orderingCart->getSaleId();
             //Saving printed item to another table "sale_order_item_print"
-            SaleOrder::model()->savePrintedToKitchen($data['table_id'], $data['group_id'],Yii::app()->getsetSession->getLocationId(),$category_id,Yii::app()->session['employeeid']);
-
-            $data['employee_id'] = Yii::app()->session['employeeid'];
-            $data['table_info'] = Desk::model()->findByPk($data['table_id']);
-            if ($data['employee_id']) {
-                $employee = Employee::model()->findByPk($data['employee_id']);
-                $data['employee'] = $employee->first_name . ' ' . $employee->last_name;
-            }
+            SaleOrder::model()->savePrintedToKitchen($data['table_id'], $data['group_id'],$data['location_id'],$category_id,$data['employee_id']);
 
             if (!empty($data['items'])) {
                 Yii::app()->session->close();
@@ -314,23 +309,16 @@ class SaleItemController extends Controller
         }     
        
     }
-     
+
+
     public function actionPrintCustomer()
     {
         $this->layout = '//layouts/column_receipt';
         
         $data=$this->sessionInfo();
-        
-        $data['employee_id'] = Yii::app()->session['employeeid'];
-        $data['table_info'] = Desk::model()->findByPk($data['table_id']);
-        $data['sale_id'] = Yii::app()->orderingCart->getSaleId();
-        //$data['discount_amount'] = Yii::app()->orderingCart->getDiscount();
 
-        if ($data['employee_id']) {
-            $employee = Employee::model()->findByPk($data['employee_id']);
-            $data['employee'] = $employee->first_name . ' ' . $employee->last_name;
-        }
-        
+        $data['sale_id'] = Yii::app()->orderingCart->getSaleId();
+
         if (count($data['items']) == 0) {
             $data['warning'] = Yii::t('app','The serving table had been printed or changed.');
             $this->reload($data);
@@ -371,17 +359,7 @@ class SaleItemController extends Controller
         $this->layout = '//layouts/column_receipt';
         
         $data=$this->sessionInfo();
-        
-        if ($data['employee_id']) {
-            $employee = Employee::model()->findByPk($data['employee_id']);
-            $data['employee'] = $employee->first_name . ' ' . $employee->last_name;
-        }
-        
-        $data['table_info'] = Desk::model()->findByPk($data['table_id']);
-        
-        // Included into getTotalAll Statement and place into sessionInfo function
-        //$data['discount_amount'] = Yii::app()->orderingCart->getDiscount();
-        
+
         $data['sale_id']= Sale::model()->saveSale($data['table_id'],$data['group_id'],Yii::app()->getsetSession->getLocationId(),$data['payment_total'],$data['employee_id']);
         
         if ($data['sale_id'] == -1) {
@@ -559,12 +537,9 @@ class SaleItemController extends Controller
         $data['payments'] = Yii::app()->orderingCart->getPayments();
         $data['payment_total'] = Yii::app()->orderingCart->getPaymentsTotal();
         $data['count_payment'] = count(Yii::app()->orderingCart->getPayments());
-        //$data['count_item'] = Yii::app()->orderingCart->getQuantityTotal();
-        //$data['sub_total'] = Yii::app()->orderingCart->getSubTotal();
-        //$data['total'] = Yii::app()->orderingCart->getTotal();
+
         
-        
-        // Chaning to retrive all sum of (Qty, Sub Total, Total, Discount Amount) at Once storing data in Session level previously gotta execute three times performance improvment
+        // Changing to get all sum of (Qty, Sub Total, Total, Discount Amount) at Once storing data in Session level previously gotta execute three times performance improvement
         $data['count_item'] = Yii::app()->orderingCart->getSaleQty();
         $data['sub_total'] = Yii::app()->orderingCart->getSaleSubTotal();
         $data['total'] = Yii::app()->orderingCart->getSaleTotal();
@@ -582,14 +557,21 @@ class SaleItemController extends Controller
         $data['transaction_date'] = date('d-M-Y');
         
         $data['amount_due'] = $data['total'] - $data['payment_total'];
-     
+
         if ( $data['giftcard_id'] > 0 ) {
-            $model = Giftcard::model()->findbyPk($data['giftcard_id']); 
+            $model = Giftcard::model()->findbyPk($data['giftcard_id']);
             //$data['giftcard_info'] = 'Card #' . $model->giftcard_number . ' - ( %' . $model->discount_amount . ' )';
             $data['giftcard_info'] = $model->discount_amount . '%';
             Yii::app()->orderingCart->setGDiscount($model->discount_amount);
         }
-     
+
+        /*** Getting Object **/
+        $employee = Employee::model()->employeeByID($data['employee_id']);
+        $data['table_info'] = Desk::model()->findByPk($data['table_id']);
+
+        $data['employee'] = $employee;
+        $data['employee_name'] = $employee->first_name . ' ' . $employee->last_name;
+
         return $data;
     }
 

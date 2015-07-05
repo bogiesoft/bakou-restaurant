@@ -95,13 +95,15 @@ class Zone extends CActiveRecord
 
         $criteria = new CDbCriteria;
 
-        $criteria->compare('zone_name', $this->zone_name, true);
-        $criteria->with = array('location');
-        $criteria->compare('location.id', $this->location_id, true);
 
         if  ( Yii::app()->user->getState('zone_archived', Yii::app()->params['defaultArchived'] ) == 'false' ) {
             $criteria->addSearchCondition('t.status', Yii::app()->params['active_status']);
         }
+
+        $criteria->compare('zone_name', $this->zone_name, true);
+        $criteria->with = array('location');
+        $criteria->compare('location.id', $this->location_id, true);
+        $criteria->compare('t.status', $this->status, true);
 
 
         return new CActiveDataProvider($this, array(

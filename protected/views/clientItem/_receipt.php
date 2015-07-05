@@ -23,7 +23,7 @@
             }
             ?>
             <div id="sale_id"><?php echo TbHtml::b(Yii::t('app','Invoice ID') . " : " . $sale_id); ?></div>
-            <div id="employee"><?php echo TbHtml::b(Yii::t('app','Seller') . " : ". $employee); ?></div>
+            <div id="employee"><?php echo TbHtml::b(Yii::t('app','Seller') . " : ". $employee_name); ?></div>
         </div>
         <div class="span8 grid-view">  
             <table class="table" id="receipt_items">
@@ -60,12 +60,12 @@
 
                     <tr>
                         <td colspan="4" style='text-align:right;'><?php echo TbHtml::b(Yii::t('app','Total')); ?></td>
-                        <td colspan="2" style='text-align:right'><?php echo TbHtml::b(Yii::app()->numberFormatter->formatCurrency(($total),Yii::app()->settings->get('site', 'currencySymbol'))); ?></td>
+                        <td colspan="2" style='text-align:right'><?php echo Yii::app()->numberFormatter->formatCurrency(($total),Yii::app()->settings->get('site', 'currencySymbol')); ?></td>
                     </tr>
                     
                      <tr>
-                        <td colspan="4" style='text-align:right;'><?php echo TbHtml::b(Yii::t('app','Total in KHR')); ?></td>
-                        <td colspan="2" style='text-align:right'><?php echo TbHtml::b(Yii::app()->numberFormatter->formatCurrency(($total_khr), 'R')); ?></td>
+                        <td colspan="4" style='text-align:right;'><?php echo Yii::t('app','Total in KHR'); ?></td>
+                        <td colspan="2" style='text-align:right'><?php echo Yii::app()->numberFormatter->formatCurrency(($total_khr), 'R'); ?></td>
                     </tr>
 
                     <?php foreach($payments as $payment_id=>$payment): ?> 

@@ -32,7 +32,7 @@
     <div class="row">
         <div class="col-xs-6">
             <p>
-                <?php echo Yii::t('app','Cashier') . " : ". TbHtml::encode(ucwords($employee)); ?> <br>
+                <?php echo Yii::t('app','Cashier') . " : ". TbHtml::encode(ucwords($employee_name)); ?> <br>
                 <?php echo Yii::t('app','Table') . " : ". TbHtml::encode(ucwords($table_info->name) . '-' . Common::GroupAlias($group_id)); ?> <br>
             </p>
         </div>
@@ -94,6 +94,17 @@
 </div>
 
 <script>
+    $(window).bind("load", function() {
+        jsPrintSetup.setPrinter('<?php echo $printer; ?>');
+        console.log(jsPrintSetup.getPrinter());
+        jsPrintSetup.printWindow(window);
+        //window.print();
+        //setTimeout(window.location.href='index',5000);
+        return true;
+    });
+</script>
+
+<!--<script>
 function printpage()
 {
     setTimeout(window.location.href='index',500);
@@ -101,4 +112,4 @@ function printpage()
     return true;
 }
 window.onload=printpage();
-</script>
+</script>-->

@@ -35,7 +35,7 @@
     <div class="row">
         <div class="col-xs-6">
             <p>
-                <?php echo TbHtml::image(Yii::app()->baseUrl . '/images/logo.jpg','Company\'s logo',array('width'=>'150')); ?> <br>
+                <?php echo TbHtml::image(Yii::app()->baseUrl . '/images/vitking_house.jpg','Company\'s logo',array('width'=>'150')); ?> <br>
                 <!--
                 <?php //echo TbHtml::encode('The Best Healthy Foods'); ?> <br>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php //echo TbHtml::encode('For Your Health'); ?><br> -->
@@ -58,7 +58,7 @@
     <div class="row">
         <div class="col-xs-6">
             <p>
-                <?php echo Yii::t('app','Cashier') . " : ". TbHtml::encode(ucwords($employee)); ?> <br>
+                <?php echo Yii::t('app','Cashier') . " : ". TbHtml::encode(ucwords($employee_name)); ?> <br>
                 <?php echo Yii::t('app','Table') . " : ". TbHtml::b(TbHtml::encode(ucwords($table_info->name) . '-' . Common::GroupAlias($group_id))); ?>  <br>
                 <?php echo TbHtml::encode(Yii::t('app','Wifi Pass')  . ' ' . Yii::app()->getsetSession->getLocationWifi()); ?> <br>
             </p>
@@ -121,7 +121,7 @@
              <tr class="gift_receipt_element">
                 <td colspan="3" class="text-right"><?php echo Yii::t('app','Total'); ?></td>
                 <td colspan="1" class="text-right">
-                    <span style="font-size:15px;font-weight:bold">
+                    <span style="font-size:15px;">
                     <?php echo Yii::app()->settings->get('site', 'currencySymbol') . number_format($total,Yii::app()->shoppingCart->getDecimalPlace(), '.', ','); ?>
                     </span>
                 </td>
@@ -130,7 +130,7 @@
             <tr>
                 <td colspan="3" style='text-align:right'><?php echo Yii::t('app','Paid Amount'); ?></td>
                 <td colspan="1" style='text-align:right'> 
-                    <span style="font-size:15px;font-weight:bold">
+                    <span style="font-size:15px">
                     <?php echo Yii::app()->settings->get('site', 'currencySymbol') . number_format($payment['payment_amount'],Yii::app()->shoppingCart->getDecimalPlace(), '.', ','); ?>
                     </span>
                  </td>
@@ -139,7 +139,7 @@
             <tr>
                 <td colspan="3" style='text-align:right'><?php echo Yii::t('app','Change Due'); ?></td>
                 <td colspan="1" style='text-align:right'> 
-                    <span style="font-size:15px;font-weight:bold">
+                    <span style="font-size:15px;">
                     <?php echo Yii::app()->settings->get('site', 'currencySymbol') . number_format($amount_due,Yii::app()->shoppingCart->getDecimalPlace(), '.', ','); ?>
                     </span>
                 </td>

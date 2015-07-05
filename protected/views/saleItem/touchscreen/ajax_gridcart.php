@@ -1,9 +1,5 @@
 <?php $this->widget( 'ext.modaldlg.EModalDlg' ); ?>
 
-<?php //echo Yii::app()->orderingCart->getTableId() .'  - Group ' .  Yii::app()->orderingCart->getGroupId(); ; ?>
-
-<?php //echo 'Price Tier ' .  Yii::app()->orderingCart->getPriceTier(); ?>
-
 <div class="grid-view" id="grid_cart">  
         <div class="widget-header widget-header-flat">
             <i class="ace-icon fa fa-shopping-cart"></i>

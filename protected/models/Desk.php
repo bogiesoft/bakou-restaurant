@@ -216,7 +216,18 @@ class Desk extends CActiveRecord
             
             return Yii::app()->db->createCommand($sql)->queryAll(true,array(':location_id' =>$location_id));
         }
-        
+
+        public function getBusyDesk($location_id) {
+            $sql="SELECT so.`desk_id`,d.`name` desk_name,so.`group_id`
+                FROM sale_order so , desk d
+                WHERE so.`desk_id`=d.`id`
+                AND so.location_id=:location_id
+                AND so.`status`=1
+                ORDER BY d.name,so.`group_id`";
+
+            return Yii::app()->db->createCommand($sql)->queryAll(true,array(':location_id' =>$location_id));
+        }
+
         protected function getTableInfo()
         {
             return $this->name;

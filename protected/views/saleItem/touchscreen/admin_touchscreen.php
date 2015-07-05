@@ -74,13 +74,18 @@
                 
                 <?php  foreach ($tables as $table) { ?> 
                     <?php if ($table["id"]==$table_id) { ?>
-                        <?php echo TbHtml::linkButton($table['name'],array(
+                        <a class="btn btn-white btn-success btn-round table-btn active btn-lg" href="<?php echo Yii::app()->createUrl('saleItem/SetTable/',array('table_id'=>$table['id'])); ?>">
+                            <i class="ace-icon fa fa-check-square-o bigger-110 green"></i>
+                            <?php echo $table['name'] ?>
+                            <span class="badge badge-info white"><?php echo Common::GroupAlias(Yii::app()->orderingCart->getGroupId()); ?></span>
+                        </a>
+                       <!-- --><?php /*echo TbHtml::linkButton($table['name'],array(
                           'color'=>TbHtml::BUTTON_COLOR_SUCCESS,
                           'size'=>TbHtml::BUTTON_SIZE_LARGE,
                           'icon'=>'ace-icon fa fa-check-square-o bigger-110 green',
                           'url'=>Yii::app()->createUrl('saleItem/SetTable/',array('table_id'=>$table['id'])),
                           'class'=>'btn btn-white btn-success btn-round table-btn active',
-                        )); ?>
+                        )); */?>
                     <?php } elseif ($table["busy_flag"]==0) { ?>
                         <?php //echo $table["busy_flag"]; ?>
                         <?php echo TbHtml::linkButton($table['name'],array(
@@ -91,6 +96,11 @@
                           'class'=>'btn btn-white btn-info btn-round table-btn',
                         )); ?>
                     <?php } else { ?>
+                       <!--<a class="btn-white btn-round table-btn active btn btn-warning btn-lg" href="<?php /*echo Yii::app()->createUrl('saleItem/SetTable/',array('table_id'=>$table['id'])); */?>">
+                            <i class="ace-icon fa fa-square-o bigger-110"></i>
+                            <?php /*echo $table['name'] */?>
+                            <span class="badge badge-pink white"><?php /*echo Common::GroupAlias(Yii::app()->orderingCart->getGroupId()); */?></span>
+                        </a>-->
                         <?php echo TbHtml::linkButton($table['name'],array(
                           'color'=>TbHtml::BUTTON_COLOR_WARNING,
                           'size'=>TbHtml::BUTTON_SIZE_LARGE,
@@ -155,14 +165,14 @@
                             <?php echo Yii::t('app','form.sale.payment_lbl_itemcart') . ' : ' .  $count_item;  ?> 
                         </div>
                     
-                        <?php /* echo TbHtml::linkButton('Merge Table',array(
+                        <?php /* echo TbHtml::linkButton('Merge Order',array(
                             'color'=>TbHtml::BUTTON_COLOR_INVERSE,
                             'size'=>TbHtml::BUTTON_SIZE_MINI,
                             'icon'=>'glyphicon-plus',
                             'url'=>$this->createUrl('Desk/MergeDesk/'),
                             'class'=>'update-dialog-open-link',
                             'data-update-dialog-title' => Yii::t('app','Merging Table'),
-                        )); */ ?>
+                        )); */?>
                     
                     
                         <?php if (isset($table_info)) { ?>
@@ -407,48 +417,58 @@
                            <?php echo $form->dropDownList($model,'payment_type',InvoiceItem::itemAlias('payment_type'),array('class'=>'span3 pull-right','id'=>'payment_type_id')); ?> 
                         </div>
                         <div class="pull-right">
-                        <?php //echo $form->textField($model,'payment_amount',array('value'=>$amount_due,'class'=>'input-small numpad','style'=>'text-align: right','maxlength'=>10,'id'=>'payment_amount_id','data-url'=>Yii::app()->createUrl('SaleItem/AddPayment/'),)); ?>
-                        <?php echo $form->textField($model,'payment_amount',array('class'=>'input-medium numpad','style'=>'text-align: right',
-                                    'maxlength'=>10,'id'=>'payment_amount_id','data-url'=>Yii::app()->createUrl('SaleItem/AddPayment/'),
-                                    'placeholder'=>Yii::t('app','Payment Amount'),
-                        )); ?>
-                        </div> 
-                        <div class="pull-right"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </div>
+                            <?php /*echo $form->textField($model,'payment_amount',array('class'=>'input-medium numpad','style'=>'text-align: right',
+                                        'maxlength'=>10,'id'=>'payment_amount_id','data-url'=>Yii::app()->createUrl('SaleItem/AddPayment/'),
+                                        'placeholder'=>Yii::t('app','Payment Amount'),
+                            )); */?>
+                            <?php echo $form->textField($model, 'payment_amount', array(
+                                //'value' => '', //$amount_change,
+                                'class' => 'input-mini text-right payment-amount-txt numpad',
+                                'id' => 'payment_amount_id',
+                                'data-url' => Yii::app()->createUrl('SaleItem/AddPayment/'),
+                                'placeholder'=>Yii::t('app','Payment Amount') . ' '  . Yii::app()->settings->get('site', 'currencySymbol'),
+                                'prepend' =>  Yii::app()->settings->get('site', 'currencySymbol'),
+                            ));
+                            ?>
+
+                        </div>
+                        <div class="pull-right"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </div>
                         <div class="pull-right">
-                            <?php  
+                            <?php
                                 if(isset($giftcard_info)) {
                                     $this->renderPartial('touchscreen/_giftcard_selected',array('model'=>$model,'giftcard_info'=>$giftcard_info,'giftcard_id'=>$giftcard_id));
                                 } else {
                                     $this->renderPartial('touchscreen/_giftcard',array('model'=>$model)); 
                                 }  
                             ?>
-                        </div>    
+                        </div>
                     </div>
                     <div class="pull-left">
-                    <?php  echo TbHtml::linkButton(Yii::t('app','Food'),array(
-                            'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
-                            'size'=>TbHtml::BUTTON_SIZE_SMALL,
-                            'icon'=>'glyphicon-print white',
-                            'url'=>Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=>9)),
-                            'class'=>'suspend-sale pull-left',
-                            'title' => Yii::t( 'app', 'Print Food to Kitchen' ),
-                    )); ?>
-                    <?php  echo TbHtml::linkButton(Yii::t('app','Beverage'),array(
-                            'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
-                            'size'=>TbHtml::BUTTON_SIZE_SMALL,
-                            'icon'=>'glyphicon-print white',
-                            'url'=>Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=>1)),
-                            'class'=>'suspend-sale pull-left',
-                            'title' => Yii::t( 'app', 'Print Bevwleragel to Kitchen' ),
-                    )); ?>    
-                    <?php  echo TbHtml::linkButton(Yii::t('app','Customer'),array(
-                            'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
-                            'size'=>TbHtml::BUTTON_SIZE_SMALL,
-                            'icon'=>'glyphicon-print white',
-                            'url'=>Yii::app()->createUrl('SaleItem/PrintCustomer/'),
-                            'class'=>'suspend-sale pull-left',
-                            'title' => Yii::t( 'app', 'Print for Customer' ),
-                    )); ?>    
+
+                        <?php  echo TbHtml::linkButton(Yii::t('app','Food'),array(
+                                'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
+                                'size'=>TbHtml::BUTTON_SIZE_SMALL,
+                                'icon'=>'glyphicon-print white',
+                                'url'=>Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=>9)),
+                                'class'=>'suspend-sale pull-left',
+                                'title' => Yii::t( 'app', 'Print Food to Kitchen' ),
+                        )); ?>
+                        <?php  echo TbHtml::linkButton(Yii::t('app','Beverage'),array(
+                                'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
+                                'size'=>TbHtml::BUTTON_SIZE_SMALL,
+                                'icon'=>'glyphicon-print white',
+                                'url'=>Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=>1)),
+                                'class'=>'suspend-sale pull-left',
+                                'title' => Yii::t( 'app', 'Print Beverage to Kitchen' ),
+                        )); ?>
+                        <?php  echo TbHtml::linkButton(Yii::t('app','Customer'),array(
+                                'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
+                                'size'=>TbHtml::BUTTON_SIZE_SMALL,
+                                'icon'=>'glyphicon-print white',
+                                'url'=>Yii::app()->createUrl('SaleItem/PrintCustomer/'),
+                                'class'=>'suspend-sale pull-left',
+                                'title' => Yii::t( 'app', 'Print for Customer' ),
+                        )); ?>
                     </div>
             </div><!--/endtoolbarfof oter-->
             <?php } ?>
@@ -484,7 +504,7 @@
 <script type='text/javascript'>
     $('.nav').on('click','a#order_header',function(){
         $.ajax({
-            url: 'SaleItem/AjaxF5Navbar',
+            url: 'AjaxF5INavbar',
             dataType : 'json',
             success : function(data) {
                 $('.new-order-dropdown-header').text(data.new_order_header);

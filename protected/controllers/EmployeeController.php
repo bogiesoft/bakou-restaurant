@@ -80,6 +80,11 @@ class EmployeeController extends Controller
              
                 $location_id = $_POST['Employee']['location_id'];
 
+                if ( $_POST['Employee']['year'] !== "" || $_POST['Employee']['month'] !== "" || $_POST['Employee']['day'] !== "" ) {
+                    $dob = $_POST['Employee']['year'] . '-' . $_POST['Employee']['month'] . '-' . $_POST['Employee']['day'];
+                    $model->dob = $dob;
+                }
+
                 // validate BOTH $a and $b
                 $valid = $model->validate();
                 $valid = $user->validate() && $valid;
@@ -116,7 +121,8 @@ class EmployeeController extends Controller
 
                                 $transaction->commit();
                                 Yii::app()->user->setFlash('success', '<strong>Well done!</strong> successfully saved.');
-                                $this->redirect(array('view', 'id' => $model->id));
+                                //$this->redirect(array('view', 'id' => $model->id));
+                                $this->redirect(array('admin'));
                             } else {
                                 Yii::app()->user->setFlash('error', '<strong>Oh snap!</strong> Change a few things up and try submitting again.');
                             }
@@ -183,10 +189,16 @@ class EmployeeController extends Controller
             if (isset($_POST['Employee'])) {
                 $model->attributes = $_POST['Employee'];
                 $location_id = $_POST['Employee']['location_id'];
-                //$user->attributes=$_POST['RbacUser'];
+                $user->attributes=$_POST['RbacUser'];
+
+                if ( $_POST['Employee']['year'] !== "" || $_POST['Employee']['month'] !== "" || $_POST['Employee']['day'] !== "" ) {
+                    $dob = $_POST['Employee']['year'] . '-' . $_POST['Employee']['month'] . '-' . $_POST['Employee']['day'];
+                    $model->dob = $dob;
+                }
+
                 // validate BOTH $a and $b
                 $valid = $model->validate();
-                //$valid=$user->validate() && $valid;
+                $valid= $user->validate() && $valid;
 
                 if ($valid) {
                     $transaction = $model->dbConnection->beginTransaction();

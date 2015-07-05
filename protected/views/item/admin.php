@@ -37,7 +37,7 @@ $('.search-form form').submit(function(){
 
     <div class="page-header">
 
-        <div class="nav-search" id="nav-search">
+        <div class="nav-search search-form" id="nav-search">
             <?php $this->renderPartial('_search', array(
                 'model' => $model,
             )); ?>
@@ -88,7 +88,7 @@ $('.search-form form').submit(function(){
     $pageSizeDropDown = CHtml::dropDownList(
         'pageSize',
         $pageSize,
-        array( 10 => 10, 25 => 25, 50 => 50, 100 => 100 ),
+        array( 10 => 10, 25 => 25, 50 => 50, 100 => 100, 150 => 150, 200 => 200 ),
         array(
             'class'  => 'change-pagesize',
             'onchange' => "$.fn.yiiGridView.update('item-grid',{data:{pageSize:$(this).val()}});",
@@ -103,12 +103,13 @@ $('.search-form form').submit(function(){
 
     <?php $this->widget('yiiwheels.widgets.grid.WhGridView', array(
         'id' => 'item-grid',
+        'dataProvider' => $model->search(),
+        'filter' => $model,
         'fixedHeader' => true,
         'type' => TbHtml::GRID_TYPE_HOVER,
         'template'=>"{items}\n{summary}\n{pager}",
         'summaryText'=>'Showing {start}-{end} of {count} entries ' . $pageSizeDropDown .  ' rows per page',
         'htmlOptions' => array('class' => 'table-responsive panel'),
-        'dataProvider' => $model->search(),
         'columns' => array(
             /*
             array('name'=>'id',
@@ -121,11 +122,13 @@ $('.search-form form').submit(function(){
                 'name' => 'item_number',
                 'value' => '$data->status=="1" ? $data->item_number : "<span class=\"text-muted\">  $data->item_number <span>" ',
                 'type'  => 'raw',
+                'filter' => '',
             ),
             array(
                 'name' => 'name',
                 'value' => '$data->status=="1" ? CHtml::link($data->name, Yii::app()->createUrl("item/UpdateImage",array("id"=>$data->primaryKey))) : "<span class=\"text-muted\">  $data->name <span>" ',
                 'type'  => 'raw',
+                'filter' => '',
             ),
             /*
             array('name'=>'description',
@@ -138,20 +141,25 @@ $('.search-form form').submit(function(){
                 'name' => 'topping',
                 'header' => 'Type',
                 'value' => '($data->topping==0)? "Main-Menu" : "Topping" ',
+                //'filter' => '',
+                'filter'=> CHtml::activeDropDownList($model,'topping',array(1 => 'Topping', 0 => 'Main-Menu'),array('empty' => '')),
             ),
             array(
                 'name' => 'category_id',
                 'value' => '$data->category_id==null? " " : $data->category->name',
+                'filter' =>  CHtml::listData(Category::model()->findAll(array('order'=>'name')), 'id', 'name')
             ),
             array(
                 'name' => 'unit_price',
                 'value' => '$data->status=="1" ? $data->unit_price : "<span class=\"text-muted\">  $data->unit_price <span>" ',
                 'type'  => 'raw',
+                'filter' => '',
             ),
             array(
                 'name' => 'status',
                 'type' => 'raw',
                 'value' => '$data->status=="1" ? TbHtml::labelTb("Active", array("color" => TbHtml::LABEL_COLOR_SUCCESS)) : TbHtml::labelTb("Archived")',
+                'filter' => '',
             ),
             array(
                 'class' => 'bootstrap.widgets.TbButtonColumn',

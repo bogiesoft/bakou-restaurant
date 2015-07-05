@@ -27,6 +27,9 @@ class Employee extends CActiveRecord
     public $image;
     public $location_id;
     public $search;
+    public $day; //Day : DD
+    public $month; // Month : MM
+    public $year; // Year - YYYY
     public $employee_archived;
 
         /**
@@ -53,10 +56,11 @@ class Employee extends CActiveRecord
 			array('country_code', 'length', 'max'=>2),
 			array('email', 'length', 'max'=>30),
 			array('status', 'length', 'max'=>1),
-			array('notes', 'safe'),
+            array('dob ', 'date', 'format'=>array('yyyy-MM-dd'), 'allowEmpty'=>true),
+            array('notes, dob, day, month, year', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, first_name, last_name, mobile_no, adddress1, address2, city_id, country_code, email, notes, status', 'safe', 'on'=>'search'),
+			array('first_name, last_name, mobile_no, adddress1, address2, city_id, country_code, email, notes, status', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -90,6 +94,7 @@ class Employee extends CActiveRecord
             'email' => Yii::t('app', 'Email'), //'Email',
             'notes' => Yii::t('app', 'Notes'), //'Notes',
             'search' => Yii::t('app', 'Search') . Yii::t('app', 'Employee'),
+            'dob' => Yii::t('app','Date of Birth'),
         );
     }
 
@@ -143,15 +148,99 @@ class Employee extends CActiveRecord
 	{
 		return parent::model($className);
 	}
-        
-        public function deleteEmployee($item_id)
-        {
-            Employee::model()->updateByPk((int)$item_id,array('status'=>$this->employee_inactive));
-        }
 
-        public function undodeleteEmployee($item_id)
-        {
-            Employee::model()->updateByPk((int)$item_id,array('status'=>$this->employee_active));
+    public function deleteEmployee($id)
+    {
+        Employee::model()->updateByPk((int)$id, array('status' => Yii::app()->params['inactive_status']));
+        $user = RbacUser::model()->find('employee_id=:employee_id' , array(':employee_id' => $id));
+        $user->status = Yii::app()->params['inactive_status'];
+        $user->save();
+    }
+
+    public function undodeleteEmployee($id)
+    {
+        Employee::model()->updateByPk((int)$id, array('status' => Yii::app()->params['active_status']));
+        $user = RbacUser::model()->find('employee_id=:employee_id' , array(':employee_id' => $id));
+        $user->status = Yii::app()->params['active_status'];
+        $user->save();
+    }
+
+    protected function afterFind()
+    {
+        $dob = strtotime($this->dob);
+
+        $this->day = date('d',$dob);
+        $this->month = date('m',$dob);
+        $this->year = date('Y',$dob);
+        return parent::afterFind();
+    }
+
+    public static function itemAlias($type, $code = null)
+    {
+
+        $_items = array(
+            'day' => array(
+                '01' => '01',
+                '02' => '02',
+                '03' => '03',
+                '04' => '04',
+                '05' => '05',
+                '06' => '06',
+                '07' => '07',
+                '08' => '08',
+                '09' => '09',
+                '10' => '10',
+                '11' => '11',
+                '12' => '12',
+                '13' => '13',
+                '14' => '14',
+                '15' => '15',
+                '16' => '16',
+                '17' => '17',
+                '18' => '18',
+                '19' => '19',
+                '20' => '20',
+                '21' => '21',
+                '22' => '22',
+                '23' => '23',
+                '24' => '24',
+                '25' => '25',
+                '26' => '26',
+                '27' => '27',
+                '28' => '28',
+                '29' => '29',
+                '30' => '30',
+                '31' => '31',
+            ),
+            'month' => array(
+                '01' => Yii::t('app','January'),
+                '02' => Yii::t('app','February'),
+                '03' => Yii::t('app','March'),
+                '04' => Yii::t('app','April'),
+                '05' => Yii::t('app','May'),
+                '06' => Yii::t('app','June'),
+                '07' => Yii::t('app','July'),
+                '08' => Yii::t('app','August'),
+                '09' => Yii::t('app','September'),
+                '10' => Yii::t('app','October'),
+                '11' => Yii::t('app','November'),
+                '12' => Yii::t('app','December'),
+            ),
+            'year' => array_combine(range(date("Y"), 1910), range(date("Y"), 1910)),  //http://stackoverflow.com/questions/2807394/php-years-array
+        );
+
+        if (isset($code)) {
+            return isset($_items[$type][$code]) ? $_items[$type][$code] : false;
+        } else {
+            return isset($_items[$type]) ? $_items[$type] : false;
         }
+    }
+
+    public static function employeeByID($id)
+    {
+        $model = Employee::model()->findByPk($id);
+
+        return isset($model) ? $model : null;
+    }
         
 }
