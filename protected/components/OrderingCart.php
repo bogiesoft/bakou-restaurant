@@ -402,12 +402,7 @@ class OrderingCart extends CApplicationComponent
      
     public function addItem($item_id,$quantity = 1, $item_parent_id = 0) 
     {
-        $table_id=$this->getTableId(); 
-        $group_id=$this->getGroupId(); 
-        $client_id=$this->getCustomer();
-        $employee_id=Yii::app()->session['employeeid'];
-        $location_id=Yii::app()->getsetSession->getLocationId();
-        SaleOrder::model()->saveOrderingItem($item_id,$table_id,$group_id,$client_id,$employee_id,$quantity,$this->getPriceTier(),$item_parent_id,$location_id);
+        return SaleOrder::model()->saveOrderingItem($item_id,$this->getTableId(),$this->getGroupId(),$this->getCustomer(),Yii::app()->session['employeeid'],$quantity,$this->getPriceTier(),$item_parent_id,Yii::app()->getsetSession->getLocationId());
     }
     
     public function f5ItemPriceTier()

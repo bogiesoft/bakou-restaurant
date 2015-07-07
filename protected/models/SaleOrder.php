@@ -244,9 +244,12 @@ class SaleOrder extends CActiveRecord
         $item_parent_id,
         $location_id
     ) {
-        $sql = "CALL proc_add_order_item(:item_id,:item_number,:desk_id,:group_id,:client_id,:employee_id,:quantity,:price_tier_id,:item_parent_id,:location_id)";
 
-        Yii::app()->db->createCommand($sql)->queryAll(true,
+        //$sql = "CALL proc_add_order_item(:item_id,:item_number,:desk_id,:group_id,:client_id,:employee_id,:quantity,:price_tier_id,:item_parent_id,:location_id)";
+
+        $sql = "SELECT func_add_order(:item_id,:item_number,:desk_id,:group_id,:client_id,:employee_id,:quantity,:price_tier_id,:item_parent_id,:location_id) item_id";
+
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true,
             array(
                 ':item_id' => $item_id,
                 ':item_number' => $item_id,
@@ -260,6 +263,12 @@ class SaleOrder extends CActiveRecord
                 ':location_id' => $location_id
             )
         );
+
+        foreach ($result as $record) {
+            $id = $record['item_id'];
+        }
+
+        return $id;
     }
 
     public function savePrintedToKitchen($desk_id, $group_id, $location_id, $category_id,$employee_id)

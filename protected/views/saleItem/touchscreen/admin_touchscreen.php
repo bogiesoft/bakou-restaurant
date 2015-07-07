@@ -16,8 +16,9 @@
 <!-- #section:second.div.layout -->
 <div class="col-xs-12 col-sm-5 widget-container-col" id="grid_zone">    
     <div class="widget-box">
-        <div class="widget-header widget-header-flat">
-            <h5 class="widget-title bigger lighter">Zone</h5>
+        <div class="widget-header widget-header-flat widget-header-small">
+            <i class="ace-icon fa fa-globe"></i>
+            <h5 class="widget-title bigger"><?= Yii::t('app','Zone'); ?></h5>
             <div class="widget-toolbar">
                 <a href="#" data-action="collapse">
                     <i class="ace-icon fa fa-chevron-up bigger-125"></i>
@@ -141,9 +142,19 @@
     </div>
     
     <?php
-        if (isset($warning)) {
+        /*if (isset($warning)) {
             echo TbHtml::alert(TbHtml::ALERT_COLOR_INFO, $warning);
-        }
+        }*/
+    ?>
+
+    <?php
+    foreach (Yii::app()->user->getFlashes() as $key => $message) {
+        echo '<div class="alert alert-' . $key . '">' . $message .
+                '<button class="close" data-dismiss="alert" type="button">
+                    <i class="ace-icon fa fa-times"></i>
+                </button>' .
+            "</div>\n";
+    }
     ?>
 
     <div class="grid-view widget-box" id="grid_cart">
@@ -445,30 +456,65 @@
                     </div>
                     <div class="pull-left">
 
-                        <?php  echo TbHtml::linkButton(Yii::t('app','Food'),array(
+                        <div class="btn-group">
+                            <button class="btn btn-primary btn-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <i class="ace-icon fa fa-print"></i>
+                                <?= Yii::t('app','Printing'); ?>
+                                <i class="ace-icon fa fa-angle-down icon-on-right"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="<?= Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=>9)) ?>"><?= Yii::t('app','Food'); ?></a>
+                                </li>
+                                <li>
+                                    <a href="<?= Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=>1)) ?>"><?= Yii::t('app','Beverage'); ?></a>
+                                </li>
+                                <li>
+                                    <a href="<?= Yii::app()->createUrl('SaleItem/PrintCustomer/') ?>"><?= Yii::t('app','Customer'); ?></a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <?php echo TbHtml::linkButton(Yii::t('app','New Order'),array(
+                                'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
+                                'size'=>TbHtml::BUTTON_SIZE_SMALL,
+                                'icon'=>' ace-icon fa fa-floppy-o white',
+                                'url'=> Yii::app()->createUrl('SaleItem/confirmOrder'),
+                                'title' => Yii::t( 'app', 'Confirm Order' ),
+                        )); ?>
+
+                       <!-- --><?php /*echo TbHtml::buttonDropdown('Action', array(
+                            array('label' => Yii::t('app','Food'), 'url' => Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=>9)) ),
+                            array('label' => Yii::t('app','Beverage'), 'url' => Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=>1)) ),
+                            array('label' => Yii::t('app','Customer'), 'url' => Yii::app()->createUrl('SaleItem/PrintCustomer/')),
+                            ),
+                            array('toggle' => TbHtml::BUTTON_TOGGLE_CHECKBOX, 'color' => TbHtml::BUTTON_COLOR_PRIMARY)
+                        ); */?>
+
+                        <?php /* echo TbHtml::linkButton(Yii::t('app','Food'),array(
                                 'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
                                 'size'=>TbHtml::BUTTON_SIZE_SMALL,
                                 'icon'=>'glyphicon-print white',
-                                'url'=>Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=>9)),
+                                'url'=> Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=>9)),
                                 'class'=>'suspend-sale pull-left',
                                 'title' => Yii::t( 'app', 'Print Food to Kitchen' ),
-                        )); ?>
-                        <?php  echo TbHtml::linkButton(Yii::t('app','Beverage'),array(
+                        )); */?><!--
+                        <?php /* echo TbHtml::linkButton(Yii::t('app','Beverage'),array(
                                 'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
                                 'size'=>TbHtml::BUTTON_SIZE_SMALL,
                                 'icon'=>'glyphicon-print white',
-                                'url'=>Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=>1)),
+                                'url'=> Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=>1)),
                                 'class'=>'suspend-sale pull-left',
                                 'title' => Yii::t( 'app', 'Print Beverage to Kitchen' ),
-                        )); ?>
-                        <?php  echo TbHtml::linkButton(Yii::t('app','Customer'),array(
+                        )); */?>
+                        --><?php /* echo TbHtml::linkButton(Yii::t('app','Customer'),array(
                                 'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
                                 'size'=>TbHtml::BUTTON_SIZE_SMALL,
                                 'icon'=>'glyphicon-print white',
-                                'url'=>Yii::app()->createUrl('SaleItem/PrintCustomer/'),
+                                'url'=> Yii::app()->createUrl('SaleItem/PrintCustomer/'),
                                 'class'=>'suspend-sale pull-left',
                                 'title' => Yii::t( 'app', 'Print for Customer' ),
-                        )); ?>
+                        )); */?>
                     </div>
             </div><!--/endtoolbarfof oter-->
             <?php } ?>

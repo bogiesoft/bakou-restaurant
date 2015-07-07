@@ -54,9 +54,13 @@ class SaleItemController extends Controller
         $item_id = $_POST['SaleItem']['item_id'];
 
         if (!Yii::app()->orderingCart->getTableId()) {
-            $data['warning'] = Yii::t('app','Plz, select at least a table');
+            //$data['warning'] = Yii::t('app','Plz, select at least a table');
+            Yii::app()->user->setFlash('info', "Plz, select at least a table");
         } else {
-            Yii::app()->orderingCart->addItem($item_id);
+            $result_id = Yii::app()->orderingCart->addItem($item_id);
+            if ($result_id == 0 )  {
+                Yii::app()->user->setFlash('warning', "Unable to add, correct item number or name and try again");
+            }
         }
         $this->reload($data);
     }
