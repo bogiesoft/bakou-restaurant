@@ -141,7 +141,7 @@ class OrderingCart extends CApplicationComponent
                 ':status' => $this->active_status
             ));
 
-        return $sale_order->id;
+        return isset($sale_order) ? $sale_order->id : null;
     }
 
     public function setSaleId($data)

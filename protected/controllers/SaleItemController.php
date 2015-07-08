@@ -22,7 +22,7 @@ class SaleItemController extends Controller
                 'users' => array('@'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('RemoveCustomer', 'SetComment', 'DeleteItem', 'AddItem', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelSale', 'CompleteSale', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectCustomer', 'AddCustomer', 'Receipt', 'UnsuspendSale', 'EditSale', 'Receipt', 'Suspend', 'ListSuspendedSale', 'SetPriceTier','SetGDiscount','DeleteSale','SetGroup','PrintKitchen','ReceiptKitchen','PrintCustomer','ReceiptCustomer','ChangeTable','SetDisGiftcard','RemoveGiftcard','MergeTable','Add','SetZone','SetTable','PrintCloseSale','AjaxRefresh','AjaxF5Navbar'),
+                'actions' => array('RemoveCustomer', 'SetComment', 'DeleteItem', 'AddItem', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelSale', 'CompleteSale', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectCustomer', 'AddCustomer', 'Receipt', 'UnsuspendSale', 'EditSale', 'Receipt', 'Suspend', 'ListSuspendedSale', 'SetPriceTier','SetGDiscount','DeleteSale','SetGroup','PrintKitchen','ReceiptKitchen','PrintCustomer','ReceiptCustomer','ChangeTable','SetDisGiftcard','RemoveGiftcard','MergeTable','Add','SetZone','SetTable','PrintCloseSale','AjaxRefresh','AjaxF5Navbar','KitchenInvoice'),
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -293,6 +293,7 @@ class SaleItemController extends Controller
         
         if (count($data['items'])==0) {
             $data['warning'] = Yii::t('app','The serving table had been printed or changed.');
+            Yii::app()->user->setFlash('warning', "The serving table had been printed or changed.");
             $this->reload($data);
         } else {
 
@@ -305,26 +306,37 @@ class SaleItemController extends Controller
 
             if (!empty($data['items'])) {
                 Yii::app()->session->close();
-                $this->render('touchscreen/_receipt_kitchen', $data);   
+                //echo CJSON::encode(array('redirect' => Yii::app()->createUrl('/saleItem/KitchenInvoice/',array('category_id'=>$category_id))));
+                $this->render('touchscreen/_receipt_kitchen', $data);
             } else {
-                $data['warning'] = Yii::t('app','All Item has been printed'); 
+                //$data['warning'] = Yii::t('app','All Item has been printed');
+                Yii::app()->user->setFlash('warning', "All Item has been printed");
                 $this->reload($data);
             }
-        }     
-       
+        }
     }
 
+    public function actionKitchenInvoice($category_id)
+    {
+        $this->layout = '//layouts/column_receipt';
+        $data=$this->sessionInfo();
+        $data['printer'] = $category_id == 9 ?  Yii::app()->getsetSession->getLocationPrinterFood() :  Yii::app()->getsetSession->getLocationPrinterBeverage();
+        $data['sale_id'] = Yii::app()->orderingCart->getSaleId();
+        $this->render('touchscreen/_receipt_kitchen', $data);
+
+    }
 
     public function actionPrintCustomer()
     {
         $this->layout = '//layouts/column_receipt';
         
         $data=$this->sessionInfo();
-
-        $data['sale_id'] = Yii::app()->orderingCart->getSaleId();
+        //$data['sale_id'] = Yii::app()->orderingCart->getSaleId();
+        SaleOrder::model()->updateSaleOrderTempStatus('1');
 
         if (count($data['items']) == 0) {
             $data['warning'] = Yii::t('app','The serving table had been printed or changed.');
+            Yii::app()->user->setFlash('warning', "The serving table had been printed or changed.");
             $this->reload($data);
         } else {
             Yii::app()->session->close();
@@ -355,6 +367,22 @@ class SaleItemController extends Controller
             Yii::app()->session->close();
             $this->render('touchscreen/_receipt_closesale', $data);
         }
+
+    }
+
+    public function actionConfirmOrder()
+    {
+
+        $data=$this->sessionInfo();
+        SaleOrder::model()->updateSaleOrderTempStatus(Yii::app()->params['str_one']);
+
+        if (count($data['items']) == 0) {
+            $data['warning'] = Yii::t('app','The serving table had been printed or changed.');
+            Yii::app()->user->setFlash('warning', "The serving table had been printed or changed.");
+            $this->reload($data);
+        }
+
+        $this->reload();
 
     }
 
@@ -548,7 +576,8 @@ class SaleItemController extends Controller
         $data['sub_total'] = Yii::app()->orderingCart->getSaleSubTotal();
         $data['total'] = Yii::app()->orderingCart->getSaleTotal();
         $data['discount_amount'] = Yii::app()->orderingCart->getSaleDiscount();
-        
+
+        //$data['sale_id'] = Yii::app()->orderingCart->getSaleId();
         $data['location_id'] = Yii::app()->getsetSession->getLocationId();
         $data['employee_id'] = Yii::app()->session['employeeid'];
         $data['zone_id'] = Yii::app()->orderingCart->getZoneId();
@@ -556,7 +585,7 @@ class SaleItemController extends Controller
         $data['giftcard_id'] = Yii::app()->orderingCart->getDisGiftcard();
         $data['price_tier_id'] = Yii::app()->orderingCart->getPriceTier();
         $data['group_id'] = Yii::app()->orderingCart->getGroupId();
-          
+
         $data['transaction_time'] = date('h:i:s a');
         $data['transaction_date'] = date('d-M-Y');
         
@@ -570,11 +599,23 @@ class SaleItemController extends Controller
         }
 
         /*** Getting Object **/
+
         $employee = Employee::model()->employeeByID($data['employee_id']);
         $data['table_info'] = Desk::model()->findByPk($data['table_id']);
+        $sale_order = SaleOrder::model()->getSaleOrderById();
 
         $data['employee'] = $employee;
+        $data['sale_order'] = $sale_order;
+        $data['sale_id'] = null;
+        $data['ordering_status'] = null ;
+        $data['ordering_msg'] = '';
         $data['employee_name'] = $employee->first_name . ' ' . $employee->last_name;
+
+        if ( $sale_order !== null ) {
+            $data['sale_id'] = $sale_order->id;
+            $data['ordering_status'] = $sale_order->temp_status;
+            $data['ordering_msg'] = $data['ordering_status'] == '2' ? 'Adding New Order' : 'Completed Order';
+        }
 
         return $data;
     }

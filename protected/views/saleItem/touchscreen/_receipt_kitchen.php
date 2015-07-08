@@ -99,7 +99,7 @@
         console.log(jsPrintSetup.getPrinter());
         jsPrintSetup.printWindow(window);
         //window.print();
-        //setTimeout(window.location.href='index',5000);
+        setTimeout(window.location.href='index',5000);
         return true;
     });
 </script>

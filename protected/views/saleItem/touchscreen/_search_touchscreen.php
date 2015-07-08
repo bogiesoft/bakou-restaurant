@@ -146,8 +146,30 @@
             });
         });
       "); 
- ?> 
- 
+ ?>
+
+<?php
+/*Yii::app()->clientScript->registerScript( 'printFood', "
+        jQuery( function($){
+            $('div.print_kitchen').on('click','a.btn-food',function(e) {
+                e.preventDefault();
+                var url=$(this).attr('href')
+                var gridCart=$('#grid_cart');
+                $.ajax({url:url,
+                        dataType : 'json',
+                        type : 'post',
+                        beforeSend: function() { $('.waiting').show(); },
+                        complete: function() { $('.waiting').hide(); },
+                        success : function(data) {
+                            window.location.href = data.redirect;
+                        }
+                    });
+                });
+        });
+      ");
+*/?>
+
+
 <script>
     
 var submitting = false;  

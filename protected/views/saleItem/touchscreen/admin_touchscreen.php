@@ -8,7 +8,7 @@
 <?php $this->widget( 'ext.modaldlg.EModalDlg' ); ?>
 
 <?php //echo 'Location Session ' .  Yii::app()->getsetSession->getLocationVat(); ?>
-<?php //echo 'Debugging ID : ' .  Yii::app()->getsetSession->getLocationId(); ?>
+<?php //echo 'Ordering Status : ' .  $ordering_status; ?>
 <?php //print_r($payments); ?>
 
 <div id="register_container">
@@ -252,11 +252,18 @@
                      <?php //} ?>
                 
                      <span class="label label-info label-xlg">
-                         <i class="fa fa-coffee"></i>
+                         <i class="fa fa-coffe"></i>
                          <?php if (isset($table_info)) { 
                              echo yii::t('app','Serving Table').   ': ' . '<b>' .  $table_info->name  .' - ' . Common::GroupAlias(Yii::app()->orderingCart->getGroupId()) . '</b>'; 
                          } ?>
                      </span>
+
+                <?php if ($ordering_status=='2') { ?>
+                    <span class="label label-warning label-xlg">
+                         <i class="fa fa-spinner fa-spin white"></i>
+                            <?= $ordering_msg; ?>
+                     </span>
+                <?php } ?>
                 
 
                     <?php /* echo TbHtml::linkButton(Yii::t('app','Closing Report'),array(
@@ -456,7 +463,7 @@
                     </div>
                     <div class="pull-left">
 
-                        <div class="btn-group">
+                        <div class="btn-group print_kitchen">
                             <button class="btn btn-primary btn-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                 <i class="ace-icon fa fa-print"></i>
                                 <?= Yii::t('app','Printing'); ?>
@@ -464,7 +471,7 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="<?= Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=>9)) ?>"><?= Yii::t('app','Food'); ?></a>
+                                    <a href="<?= Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=>9)) ?>" class="btn-food"><?= Yii::t('app','Food'); ?></a>
                                 </li>
                                 <li>
                                     <a href="<?= Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=>1)) ?>"><?= Yii::t('app','Beverage'); ?></a>
@@ -475,7 +482,7 @@
                             </ul>
                         </div>
 
-                        <?php echo TbHtml::linkButton(Yii::t('app','New Order'),array(
+                        <?php echo TbHtml::linkButton(Yii::t('app','Save Order'),array(
                                 'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
                                 'size'=>TbHtml::BUTTON_SIZE_SMALL,
                                 'icon'=>' ace-icon fa fa-floppy-o white',
