@@ -462,6 +462,7 @@ class SaleOrder extends CActiveRecord
                 FROM sale_order
                 WHERE sale_time >= CURDATE()
                 AND `status`=:status
+                AND temp_status<> '0'
                 AND employee_id <> :employee_id";
 
         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
@@ -486,8 +487,9 @@ class SaleOrder extends CActiveRecord
                 FROM sale_order so JOIN desk d ON d.id = so.desk_id
                 WHERE so.sale_time >= CURDATE()
                 AND so.`status`=:status
+                AND temp_status<> '0'
                 AND employee_id <> :employee_id
-                ORDER BY so.sale_time";
+                ORDER BY so.sale_time desc";
 
         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
             ':status' => $this->active_status,

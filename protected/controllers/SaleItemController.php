@@ -303,7 +303,7 @@ class SaleItemController extends Controller
             $data['sale_id'] = Yii::app()->orderingCart->getSaleId();
             //Saving printed item to another table "sale_order_item_print"
             SaleOrder::model()->savePrintedToKitchen($data['table_id'], $data['group_id'],$data['location_id'],$category_id,$data['employee_id']);
-            
+
             if (!empty($data['items'])) {
                 Yii::app()->session->close();
                 //echo CJSON::encode(array('redirect' => Yii::app()->createUrl('/saleItem/KitchenInvoice/',array('category_id'=>$category_id))));
@@ -556,8 +556,6 @@ class SaleItemController extends Controller
             Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false; 
             Yii::app()->clientScript->scriptMap['box.css'] = false; 
             $this->renderPartial('touchscreen/admin_touchscreen', $data, false, true);
-        } elseif (Yii::app()->settings->get('sale', 'touchScreen') == '1') {
-            $this->render('touchscreen/admin_touchscreen', $data);
         } else {
             $this->render('touchscreen/admin_touchscreen', $data);
         }
@@ -609,6 +607,8 @@ class SaleItemController extends Controller
         $data['sale_id'] = null;
         $data['ordering_status'] = null ;
         $data['ordering_msg'] = '';
+        $data['ordering_status_icon'] = '';
+        $data['ordering_status_span'] = '';
         $data['employee_name'] = $employee->first_name . ' ' . $employee->last_name;
 
         if ( $sale_order !== null ) {
@@ -704,10 +704,10 @@ class SaleItemController extends Controller
         Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false;
         Yii::app()->clientScript->scriptMap['box.css'] = false;
 
-        $new_order_header = $sale_order->countNewOrder() . ' New Orders';
+        //$new_order_header = $sale_order->countNewOrder() . ' New Orders';
 
         echo CJSON::encode(array(
-            'new_order_header' => $new_order_header
+            'div_order_navbar' => $this->renderPartial('touchscreen/_order_navbar', $data_navbar, true, true),
         ));
 
     }
