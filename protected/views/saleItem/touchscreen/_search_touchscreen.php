@@ -149,25 +149,24 @@
  ?>
 
 <?php
-/*Yii::app()->clientScript->registerScript( 'printFood', "
+Yii::app()->clientScript->registerScript( 'confirmOrder', "
         jQuery( function($){
-            $('div.print_kitchen').on('click','a.btn-food',function(e) {
+            $('div#btn_footer').on('click','a.btn-confirm-order',function(e) {
                 e.preventDefault();
                 var url=$(this).attr('href')
-                var gridCart=$('#grid_cart');
                 $.ajax({url:url,
-                        dataType : 'json',
+                        //dataType : 'json',
                         type : 'post',
                         beforeSend: function() { $('.waiting').show(); },
                         complete: function() { $('.waiting').hide(); },
                         success : function(data) {
-                            window.location.href = data.redirect;
+                             $('#register_container').html(data);
                         }
                     });
                 });
         });
       ");
-*/?>
+?>
 
 
 <script>
@@ -252,6 +251,25 @@ $(document).keydown(function(event)
     }
    
 });
+</script>
+
+<script>
+    (function worker() {
+        $.ajax({
+            url: 'AjaxRefresh',
+            dataType : 'json',
+            success: function(data) {
+                $('.count_new_order').text(data.count_new_order);
+                $('#table_grid').html(data.div_order_table);
+                $('#order_menu').html(data.div_order_menu);
+                $('#order_status').html(data.div_order_status);
+            },
+            complete: function() {
+                // Schedule the next request when the current one's complete
+                setTimeout(worker, 10000);
+            }
+        });
+    })();
 </script>
 
 <?php Yii::app()->clientScript->registerScript('setFocus', '$("#SaleItem_item_id").focus();'); ?>

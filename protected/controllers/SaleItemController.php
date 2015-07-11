@@ -22,7 +22,7 @@ class SaleItemController extends Controller
                 'users' => array('@'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('RemoveCustomer', 'SetComment', 'DeleteItem', 'AddItem', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelSale', 'CompleteSale', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectCustomer', 'AddCustomer', 'Receipt', 'UnsuspendSale', 'EditSale', 'Receipt', 'Suspend', 'ListSuspendedSale', 'SetPriceTier','SetGDiscount','DeleteSale','SetGroup','PrintKitchen','ReceiptKitchen','PrintCustomer','ReceiptCustomer','ChangeTable','SetDisGiftcard','RemoveGiftcard','MergeTable','Add','SetZone','SetTable','PrintCloseSale','AjaxRefresh','AjaxF5Navbar','KitchenInvoice'),
+                'actions' => array('RemoveCustomer', 'SetComment', 'DeleteItem', 'AddItem', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelSale', 'CompleteSale', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectCustomer', 'AddCustomer', 'Receipt', 'UnsuspendSale', 'EditSale', 'Receipt', 'Suspend', 'ListSuspendedSale', 'SetPriceTier','SetGDiscount','DeleteSale','SetGroup','PrintKitchen','ReceiptKitchen','PrintCustomer','ReceiptCustomer','ChangeTable','SetDisGiftcard','RemoveGiftcard','MergeTable','Add','SetZone','SetTable','PrintCloseSale','AjaxRefresh','AjaxF5Navbar','KitchenInvoice','ConfirmOrder'),
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -667,6 +667,7 @@ class SaleItemController extends Controller
             //'div_order_navbar' => $this->renderPartial('touchscreen/_order_navbar', $data_navbar, true, true), // Got stuck if refreshing this drop-down menu always close every time refresh
             'div_order_table' => $this->renderPartial('touchscreen/_order_table', $data, true, true),
             'div_order_menu' => $this->renderPartial('touchscreen/_order_menu', $data, true, true),
+            'div_order_status' => $this->renderPartial('touchscreen/_order_status', $data, true, true),
         ));
 
         //$this->renderPartial('touchscreen/_admin_touchscreen_ajax', $data, false, true);

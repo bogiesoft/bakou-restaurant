@@ -14,7 +14,7 @@
 <div id="register_container">
 
 <!-- #section:second.div.layout -->
-<div class="col-xs-12 col-sm-5 widget-container-col" id="grid_zone">    
+<div class="col-xs-12 col-sm-5 widget-container-col" id="grid_zone">
     <div class="widget-box">
         <div class="widget-header widget-header-flat widget-header-small">
             <i class="ace-icon fa fa-globe"></i>
@@ -219,193 +219,182 @@
     
         <div class="widget-body">
            <div class="widget-main">
-            <div id="itemlookup">   
-                <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
-                         'action'=>Yii::app()->createUrl('saleItem/add'),
-                         'method'=>'post',
-                         'layout'=>TbHtml::FORM_LAYOUT_INLINE,
-                         'id'=>'add_item_form',
-                 )); ?>     
+               <div class="row">
+                    <div class="col-xs-12 col-sm-5" id="itemlookup" >
+                        <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
+                                 'action'=>Yii::app()->createUrl('saleItem/add'),
+                                 'method'=>'post',
+                                 'layout'=>TbHtml::FORM_LAYOUT_INLINE,
+                                 'id'=>'add_item_form',
+                         )); ?>
 
-                     <?php //if (isset($table_id)) { ?>
-                         <?php 
-                         $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                                 'model'=>$model,
-                                 'attribute'=>'item_id',
-                                 'source'=>$this->createUrl('request/suggestItem'),    
-                                 'htmlOptions'=>array(
-                                     'size'=>'35'
-                                 ),
-                                 'options'=>array(
-                                     'showAnim'=>'fold',
-                                     'minLength'=>'1',
-                                     'delay' => 10,
-                                     'autoFocus'=> false,
-                                     'select'=>'js:function(event, ui) {
-                                         event.preventDefault();
-                                         $("#SaleItem_item_id").val(ui.item.id);
-                                         $("#add_item_form").ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit, success: itemScannedSuccess(ui.item.id) });
-                                     }',
-                                 ),
-                             ));
-                         ?>
-                     <?php //} ?>
-                
-                     <span class="label label-info label-xlg">
-                         <i class="fa fa-coffe"></i>
-                         <?php if (isset($table_info)) { 
-                             echo yii::t('app','Serving Table').   ': ' . '<b>' .  $table_info->name  .' - ' . Common::GroupAlias(Yii::app()->orderingCart->getGroupId()) . '</b>'; 
-                         } ?>
-                     </span>
+                             <?php //if (isset($table_id)) { ?>
+                                 <?php
+                                 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                                         'model'=>$model,
+                                         'attribute'=>'item_id',
+                                         'source'=>$this->createUrl('request/suggestItem'),
+                                         'htmlOptions'=>array(
+                                             'size'=>'30'
+                                         ),
+                                         'options'=>array(
+                                             'showAnim'=>'fold',
+                                             'minLength'=>'1',
+                                             'delay' => 10,
+                                             'autoFocus'=> false,
+                                             'select'=>'js:function(event, ui) {
+                                                 event.preventDefault();
+                                                 $("#SaleItem_item_id").val(ui.item.id);
+                                                 $("#add_item_form").ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit, success: itemScannedSuccess(ui.item.id) });
+                                             }',
+                                         ),
+                                     ));
+                                 ?>
+                             <?php //} ?>
 
-                <?php if ($ordering_status=='2') { ?>
-                    <span class="label label-warning label-xlg">
-                         <i class="fa fa-spinner fa-spin white"></i>
-                            <?= $ordering_msg; ?>
-                     </span>
-                <?php } ?>
-                
+                        <?php $this->endWidget(); ?> <!--/endformWidget-->
+                    </div
+                         >
+                    <div class="col-xs-12 col-sm-7" id="order_status">
+                        <span class="label label-info label-xlg">
+                            <i class="fa fa-coffe"></i>
+                            <?php if (isset($table_info)) {
+                                echo yii::t('app','Serving Table').   ': ' . '<b>' .  $table_info->name  .' - ' . Common::GroupAlias(Yii::app()->orderingCart->getGroupId()) . '</b>';
+                            } ?>
+                        </span>
+                        <?php if ($ordering_status=='2') { ?>
+                            <span class="label label-warning label-xlg">
+                                <i class="fa fa-spinner fa-spin white"></i>
+                                <?= $ordering_msg; ?>
+                            </span>
+                        <?php } ?>
+                    </div>
+               </div>
 
-                    <?php /* echo TbHtml::linkButton(Yii::t('app','Closing Report'),array(
-                            'color'=>TbHtml::BUTTON_COLOR_SUCCESS,
-                            'size'=>TbHtml::BUTTON_SIZE_MINI,
-                            'icon'=>'glyphicon-print white',
-                            'url'=>Yii::app()->createUrl('SaleItem/PrintCloseSale'),
-                            'class'=>'suspend-sale pull-right',
-                            'title' => Yii::t( 'app', 'Print Report for Closing Sale' ),
-                    )); */ ?> 
-                
-                <?php $this->endWidget(); ?> <!--/endformWidget--> 
-            </div>
-            
-            <br>
-               
-            <div class="slim-scroll" data-height="400" id="order_menu">
+               <br>
 
-                <table class="table table-hover table-condensed">
-                    <thead>
-                        <tr>
-                            <th><?php echo Yii::t('app','Item Code'); ?></th>
-                            <th><?php echo Yii::t('app','Item Name'); ?></th>
-                            <th><?php echo Yii::t('app','Price'); ?></th>
-                            <th><?php echo Yii::t('app','Quantity'); ?></th>
-                            <!-- <th class="<?php //echo Yii::app()->settings->get('sale','discount'); ?>"><?php //echo Yii::t('model','model.saleitem.discount_amount'); ?></th> -->
-                            <th><?php echo Yii::t('app','Total'); ?></th>
-                            <th><?php echo Yii::t('app','Action'); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody id="cart_contents">
-                        <?php foreach($items as $id=>$item): ?>
-                            <?php 
-                                $total_item=number_format($item['total'],Yii::app()->orderingCart->getDecimalPlace());
-                                $item_id=$item['item_id'];
-                                $item_parent_id=$item['item_parent_id'];
-                                $unit_name=''; 
-                            ?>
+               <div class="row">
+                    <div class="col-xs-12 col-sm-12" data-height="400" id="order_menu">
+                        <table class="table table-hover table-condensed">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <?php echo TbHtml::linkButton('',array(
-                                               'color'=>TbHtml::BUTTON_COLOR_SUCCESS,
-                                               'size'=>TbHtml::BUTTON_SIZE_MINI,
-                                               'icon'=>'glyphicon-hand-up white',
-                                               'url'=>$this->createUrl('Item/SelectItem/',array('item_parent_id'=>$item_id,'category_id'=>$item['category_id'])),
-                                               'class'=>'update-dialog-open-link',
-                                               'data-update-dialog-title' => Yii::t('app','Select Topping'),
-                                           )); ?>
-                                        <?php echo $item['item_number']; ?>
-                                   </td>
-                                    <?php if ($item['topping']==0) { ?>
-                                        <td> 
-                                           <span class="text-info">
-                                            <?php echo $item['name']; ?>
-                                           </span>
-                                        </td>
-                                    <?php } else { ?>
-                                        <td align="right"><span class="text-info orange"><?php echo $item['name']; ?></span></td>
-                                    <?php } ?>
-                                    <td>
-                                        <?php echo $form->textField($model,"[$item_id]price",array('value'=>number_format($item['price'],Yii::app()->shoppingCart->getDecimalPlace()),'disabled' => true,'class'=>'input-small alignRight readonly','id'=>"price_$item_id",'placeholder'=>'Price','data-id'=>"$item_id",'maxlength'=>50,'onkeypress'=>'return isNumberKey(event)')); ?>
-                                    </td>                               
-                                    <td> 
-                                        
-                                       <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
-                                                'method'=>'post',
-                                                'action' => Yii::app()->createUrl('saleItem/editItem/',array('item_id'=>$item['item_id'],'item_parent_id'=>$item_parent_id)),
-                                                'htmlOptions'=>array('class'=>'line_item_form'),
-                                            ));
-                                        ?>
-                                        
-                                        <?php echo $form->textField($model,"quantity",array('value'=>$item['quantity'],'class'=>'input-small input-grid alignRight','id'=>"quantity_$item_id",'placeholder'=>'Quantity','data-id'=>"$item_id",'data-parentid'=>"$item_parent_id",'maxlength'=>10)); ?>
-                                    
-                                        <?php $this->endWidget(); ?>  
-                                    </td>
-                                    <td>
-                                        <?php echo $form->textField($model,"[$item_id]total",array('value'=>$total_item,'disabled' => true,'class'=>'input-small alignRight readonly')); ?></td>
-                                        <?php //echo $total_item; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo TbHtml::linkButton('',array(
-                                            'color'=>TbHtml::BUTTON_COLOR_DANGER,
-                                            'size'=>TbHtml::BUTTON_SIZE_MINI,
-                                            'icon'=>'glyphicon-trash',
-                                            'url'=>array('DeleteItem','item_id'=>$item_id, 'item_parent_id' => $item['item_parent_id']),
-                                            'class'=>'delete-item',
-                                            //3'title' => Yii::t( 'app', 'Remove' ),
-                                        )); ?>
-                                    </td>    
+                                    <th><?php echo Yii::t('app','Item Code'); ?></th>
+                                    <th><?php echo Yii::t('app','Item Name'); ?></th>
+                                    <th><?php echo Yii::t('app','Price'); ?></th>
+                                    <th><?php echo Yii::t('app','Quantity'); ?></th>
+                                    <!-- <th class="<?php //echo Yii::app()->settings->get('sale','discount'); ?>"><?php //echo Yii::t('model','model.saleitem.discount_amount'); ?></th> -->
+                                    <th><?php echo Yii::t('app','Total'); ?></th>
+                                    <th><?php echo Yii::t('app','Action'); ?></th>
                                 </tr>
-                            <?php //$this->endWidget(); ?>  <!--/endformWidget-->     
-                        <?php endforeach; ?> <!--/endforeach-->
-                    </tbody>
-                </table>
-   
-                 <?php if (empty($items)) {
-                       echo Yii::t('app','There are no items in the cart');
-                 } ?> 
+                            </thead>
+                            <tbody id="cart_contents">
+                                <?php foreach($items as $id=>$item): ?>
+                                    <?php
+                                        $total_item=number_format($item['total'],Yii::app()->orderingCart->getDecimalPlace());
+                                        $item_id=$item['item_id'];
+                                        $item_parent_id=$item['item_parent_id'];
+                                        $unit_name='';
+                                    ?>
+                                        <tr>
+                                            <td>
+                                                <?php echo TbHtml::linkButton('',array(
+                                                       'color'=>TbHtml::BUTTON_COLOR_SUCCESS,
+                                                       'size'=>TbHtml::BUTTON_SIZE_MINI,
+                                                       'icon'=>'glyphicon-hand-up white',
+                                                       'url'=>$this->createUrl('Item/SelectItem/',array('item_parent_id'=>$item_id,'category_id'=>$item['category_id'])),
+                                                       'class'=>'update-dialog-open-link',
+                                                       'data-update-dialog-title' => Yii::t('app','Select Topping'),
+                                                   )); ?>
+                                                <?php echo $item['item_number']; ?>
+                                           </td>
+                                            <?php if ($item['topping']==0) { ?>
+                                                <td>
+                                                   <span class="text-info">
+                                                    <?php echo $item['name']; ?>
+                                                   </span>
+                                                </td>
+                                            <?php } else { ?>
+                                                <td align="right"><span class="text-info orange"><?php echo $item['name']; ?></span></td>
+                                            <?php } ?>
+                                            <td>
+                                                <?php echo $form->textField($model,"[$item_id]price",array('value'=>number_format($item['price'],Yii::app()->shoppingCart->getDecimalPlace()),'disabled' => true,'class'=>'input-small alignRight readonly','id'=>"price_$item_id",'placeholder'=>'Price','data-id'=>"$item_id",'maxlength'=>50,'onkeypress'=>'return isNumberKey(event)')); ?>
+                                            </td>
+                                            <td>
 
-            </div><!--/endslimscrool-->
+                                               <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
+                                                        'method'=>'post',
+                                                        'action' => Yii::app()->createUrl('saleItem/editItem/',array('item_id'=>$item['item_id'],'item_parent_id'=>$item_parent_id)),
+                                                        'htmlOptions'=>array('class'=>'line_item_form'),
+                                                    ));
+                                                ?>
 
-            
-            <div class="row">
-                <div class="col-sm-5 pull-right">
-                    <h4 class="pull-right">
-                        <?php echo Yii::t('app','form.sale.payment_lbl_total'); ?>
-                        <span class="label label-xlg label-primary"><?php echo Yii::app()->settings->get('site', 'currencySymbol') .number_format($sub_total,Yii::app()->shoppingCart->getDecimalPlace(), '.', ','); ?></span>
-                    </h4>
+                                                <?php echo $form->textField($model,"quantity",array('value'=>$item['quantity'],'class'=>'input-small input-grid alignRight','id'=>"quantity_$item_id",'placeholder'=>'Quantity','data-id'=>"$item_id",'data-parentid'=>"$item_parent_id",'maxlength'=>10)); ?>
+
+                                                <?php $this->endWidget(); ?>
+                                            </td>
+                                            <td>
+                                                <?php echo $form->textField($model,"[$item_id]total",array('value'=>$total_item,'disabled' => true,'class'=>'input-small alignRight readonly')); ?></td>
+                                                <?php //echo $total_item; ?>
+                                            </td>
+                                            <td>
+                                                <?php echo TbHtml::linkButton('',array(
+                                                    'color'=>TbHtml::BUTTON_COLOR_DANGER,
+                                                    'size'=>TbHtml::BUTTON_SIZE_MINI,
+                                                    'icon'=>'glyphicon-trash',
+                                                    'url'=>array('DeleteItem','item_id'=>$item_id, 'item_parent_id' => $item['item_parent_id']),
+                                                    'class'=>'delete-item',
+                                                    //3'title' => Yii::t( 'app', 'Remove' ),
+                                                )); ?>
+                                            </td>
+                                        </tr>
+                                    <?php //$this->endWidget(); ?>  <!--/endformWidget-->
+                                <?php endforeach; ?> <!--/endforeach-->
+                            </tbody>
+                        </table>
+
+                         <?php if (empty($items)) {
+                               echo Yii::t('app','There are no items in the cart');
+                         } ?> 
+
+                    </div>
+               </div>
+
+                <div class="row">
+                    <div class="col-sm-5 pull-right">
+                        <h4 class="pull-right">
+                            <?php echo Yii::t('app','form.sale.payment_lbl_total'); ?>
+                            <span class="label label-xlg label-primary"><?php echo Yii::app()->settings->get('site', 'currencySymbol') .number_format($sub_total,Yii::app()->shoppingCart->getDecimalPlace(), '.', ','); ?></span>
+                        </h4>
+                    </div>
+                    <div class="col-sm-6 pull-right">
+                         <h4 class="pull-right">
+                            <?php echo Yii::t('app','Amount to Pay'); ?>
+                            <span class="label label-xlg label-important"><?php echo Yii::app()->settings->get('site', 'currencySymbol') .number_format($amount_due,Yii::app()->shoppingCart->getDecimalPlace(), '.', ',');  ?></span>
+                        </h4>
+                    </div>
                 </div>
-                <div class="col-sm-6 pull-right">
-                     <h4 class="pull-right">
-                        <?php echo Yii::t('app','Amount to Pay'); ?>
-                        <span class="label label-xlg label-important"><?php echo Yii::app()->settings->get('site', 'currencySymbol') .number_format($amount_due,Yii::app()->shoppingCart->getDecimalPlace(), '.', ',');  ?></span>
-                    </h4>
-                </div>    
-            </div>
    
-            <?php 
-                // Only show this part if there is at least one payment entered.
-                if($count_payment > 0)
-                {
-            ?>
-            <table class="table">
-               <tbody id="payment_content">
-                   <?php foreach($payments as $id=>$payment):  ?>
-                   <tr>
-                       <td><?php echo $payment['payment_type']; ?></td>
-                       <td><?php echo Yii::app()->settings->get('site', 'currencySymbol') . number_format($payment['payment_amount'],Yii::app()->shoppingCart->getDecimalPlace()); ?></td>
-                       <td>
-                        <?php echo TbHtml::linkButton('',array(
-                                'color'=>TbHtml::BUTTON_COLOR_DANGER,
-                                'size'=>TbHtml::BUTTON_SIZE_MINI,
-                                'icon'=>'glyphicon-remove',
-                                'url'=>Yii::app()->createUrl('SaleItem/DeletePayment',array('payment_id'=>$payment['payment_type'])),
-                                'class'=>'delete-payment',
-                                'title' => Yii::t( 'app', 'Delete Payment' ),
-                        )); ?>     
-                       </td>
-                   </tr>
-                   <?php endforeach; ?>
-               </tbody>
-            </table>
+            <?php if($count_payment > 0) { ?>
+                <table class="table">
+                    <tbody id="payment_content">
+                       <?php foreach($payments as $id=>$payment):  ?>
+                       <tr>
+                           <td><?php echo $payment['payment_type']; ?></td>
+                           <td><?php echo Yii::app()->settings->get('site', 'currencySymbol') . number_format($payment['payment_amount'],Yii::app()->shoppingCart->getDecimalPlace()); ?></td>
+                           <td>
+                            <?php echo TbHtml::linkButton('',array(
+                                    'color'=>TbHtml::BUTTON_COLOR_DANGER,
+                                    'size'=>TbHtml::BUTTON_SIZE_MINI,
+                                    'icon'=>'glyphicon-remove',
+                                    'url'=>Yii::app()->createUrl('SaleItem/DeletePayment',array('payment_id'=>$payment['payment_type'])),
+                                    'class'=>'delete-payment',
+                                    'title' => Yii::t( 'app', 'Delete Payment' ),
+                            )); ?>
+                           </td>
+                       </tr>
+                       <?php endforeach; ?>
+                   </tbody>
+                </table>
             <?php } ?>
 
             <?php if ( $count_item<>0 ) { ?> 
@@ -441,11 +430,11 @@
                             )); */?>
                             <?php echo $form->textField($model, 'payment_amount', array(
                                 //'value' => '', //$amount_change,
-                                'class' => 'input-mini text-right payment-amount-txt numpad',
+                                'class' => 'input-medium text-right payment-amount-txt numpad',
                                 'id' => 'payment_amount_id',
                                 'data-url' => Yii::app()->createUrl('SaleItem/AddPayment/'),
                                 'placeholder'=>Yii::t('app','Payment Amount') . ' '  . Yii::app()->settings->get('site', 'currencySymbol'),
-                                'prepend' =>  Yii::app()->settings->get('site', 'currencySymbol'),
+                                //'prepend' =>  Yii::app()->settings->get('site', 'currencySymbol'),
                             ));
                             ?>
 
@@ -461,7 +450,7 @@
                             ?>
                         </div>
                     </div>
-                    <div class="pull-left">
+                    <div class="pull-left" id="btn_footer">
 
                         <div class="btn-group print_kitchen">
                             <button class="btn btn-primary btn-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -486,6 +475,7 @@
                                 'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
                                 'size'=>TbHtml::BUTTON_SIZE_SMALL,
                                 'icon'=>' ace-icon fa fa-floppy-o white',
+                                'class' => 'btn-confirm-order',
                                 'url'=> Yii::app()->createUrl('SaleItem/confirmOrder'),
                                 'title' => Yii::t( 'app', 'Confirm Order' ),
                         )); ?>
@@ -523,7 +513,7 @@
                                 'title' => Yii::t( 'app', 'Print for Customer' ),
                         )); */?>
                     </div>
-            </div><!--/endtoolbarfof oter-->
+            </div><!--/endtoolbarfooter-->
             <?php } ?>
          </div> <!--/endwiget-main-->
       </div><!--/endwiget-body-->
@@ -536,23 +526,6 @@
 
 </div>
 
-<!--<script>
-    (function worker() {
-        $.ajax({
-            url: 'AjaxRefresh',
-            dataType : 'json',
-            success: function(data) {
-                $('.count_new_order').text(data.count_new_order);
-                $('#table_grid').html(data.div_order_table);
-                $('#order_menu').html(data.div_order_menu);
-            },
-            complete: function() {
-                // Schedule the next request when the current one's complete
-                setTimeout(worker, 10000);
-            }
-        });
-    })();
-</script>-->
 
 <script type='text/javascript'>
     $('.nav').on('click','a#order_header',function(){

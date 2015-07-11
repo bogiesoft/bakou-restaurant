@@ -293,8 +293,10 @@ class SaleOrder extends CActiveRecord
 
     public function delOrderItem($item_id, $item_parent_id, $desk_id, $group_id, $location_id)
     {
-        $sql = "CALL proc_del_item_cart(:item_id,:item_parent_id,:desk_id,:group_id,:location_id)";
-        Yii::app()->db->createCommand($sql)->queryAll(true,
+        //$sql = "CALL proc_del_item_cart(:item_id,:item_parent_id,:desk_id,:group_id,:location_id)";
+        $sql = "SELECT func_del_order(:item_id,:item_parent_id,:desk_id,:group_id,:location_id) result_id";
+
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true,
             array(
                 ':item_id' => $item_id,
                 ':item_parent_id' => $item_parent_id,
@@ -303,6 +305,12 @@ class SaleOrder extends CActiveRecord
                 ':location_id' => $location_id
             )
         );
+
+        foreach ($result as $record) {
+            $result_id = $record['result_id'];
+        }
+
+        return $result_id;
     }
 
     //$item_id,$quantity,$price,$discount,Yii::app()->shoppingCart->getTableId(),1)
