@@ -28,18 +28,13 @@ class OrderingCart extends CApplicationComponent
         return Yii::app()->settings->get('system', 'decimalPlace') == '' ? 2 : Yii::app()->settings->get('system', 'decimalPlace');
     }
 
-    public function getSaleCookie()
-    {
-        return Yii::app()->settings->get('system', 'saleCookie') == '' ? "0" : Yii::app()->settings->get('system', 'saleCookie');
-    }
-
     public function getCart()
     {
-        $cart=array();
-        $cart=SaleOrder::model()->getOrderCart($this->getTableId(), $this->getGroupId(),Yii::app()->getsetSession->getLocationId());
-        
+        //$cart=array();
+        $cart = SaleOrder::model()->getOrderCart($this->getSaleId(), Yii::app()->getsetSession->getLocationId());
+
         $this->settingSaleSum();
-        
+
         return $cart;
     }
 
@@ -131,30 +126,6 @@ class OrderingCart extends CApplicationComponent
         unset($this->session['saletime']);
     }
 
-    public function getSaleId()
-    {
-        $sale_order = SaleOrder::model()->find('desk_id=:desk_id and group_id=:group_id and location_id=:location_id and status=:status',
-            array(
-                ':desk_id' => $this->getTableId(),
-                ':group_id' => $this->getGroupId(),
-                ':location_id' => Yii::app()->getsetSession->getLocationId(),
-                ':status' => $this->active_status
-            ));
-
-        return isset($sale_order) ? $sale_order->id : null;
-    }
-
-    public function setSaleId($data)
-    {
-        $this->setSession(Yii::app()->session);
-        $this->session['saleid'] = $data;
-    }
-
-    public function clearSaleId()
-    {
-        $this->setSession(Yii::app()->session);
-        unset($this->session['saleid']);
-    }
     
     public function getPriceTier()
     {
@@ -301,6 +272,31 @@ class OrderingCart extends CApplicationComponent
         $this->setSession(Yii::app()->session);
         unset($this->session['tableid']);
     }
+
+    public function getSaleId()
+    {
+        $sale_order = SaleOrder::model()->find('desk_id=:desk_id and group_id=:group_id and location_id=:location_id and status=:status',
+            array(
+                ':desk_id' => $this->getTableId(),
+                ':group_id' => $this->getGroupId(),
+                ':location_id' => Yii::app()->getsetSession->getLocationId(),
+                ':status' => $this->active_status
+            ));
+
+        return isset($sale_order) ? $sale_order->id : null;
+    }
+
+    public function setSaleId($data)
+    {
+        $this->setSession(Yii::app()->session);
+        $this->session['saleid'] = $data;
+    }
+
+    public function clearSaleId()
+    {
+        $this->setSession(Yii::app()->session);
+        unset($this->session['saleid']);
+    }
     
     public function getSaleQty()
     {
@@ -392,7 +388,7 @@ class OrderingCart extends CApplicationComponent
     
     public function settingSaleSum()
     {
-        $all_total = SaleOrder::model()->getAllTotal($this->getTableId(), $this->getGroupId(),Yii::app()->getsetSession->getLocationId());
+        $all_total = SaleOrder::model()->getAllTotal($this->getSaleId(),Yii::app()->getsetSession->getLocationId());
         
         $this->setSaleQty($all_total[0]);
         $this->setSaleSubTotal($all_total[1]);
@@ -426,12 +422,12 @@ class OrderingCart extends CApplicationComponent
 
     public function editItem($item_id, $quantity, $discount, $price, $item_parent_id,$location_id)
     {
-        SaleOrder::model()->editOrderMenu($this->getTableId(), $this->getGroupId(),$item_id, $quantity, $price, $discount, $item_parent_id,Yii::app()->getsetSession->getLocationId());
+        SaleOrder::model()->editOrderMenu($this->getSaleId(),$item_id, $quantity, $price, $discount, $item_parent_id,Yii::app()->getsetSession->getLocationId());
     }
 
     public function deleteItem($item_id,$item_parent_id)
     {
-        SaleOrder::model()->delOrderItem($item_id,$item_parent_id,$this->getTableId(), $this->getGroupId(),Yii::app()->getsetSession->getLocationId());
+        SaleOrder::model()->delOrderItem($item_id,$item_parent_id,$this->getSaleId(),Yii::app()->getsetSession->getLocationId());
     }
 
     public function outofStock($item_id)

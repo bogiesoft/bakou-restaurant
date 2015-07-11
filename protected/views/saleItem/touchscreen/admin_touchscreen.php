@@ -8,13 +8,11 @@
 <?php $this->widget( 'ext.modaldlg.EModalDlg' ); ?>
 
 <?php //echo 'Location Session ' .  Yii::app()->getsetSession->getLocationVat(); ?>
-<?php //echo 'Ordering Status : ' .  $ordering_status; ?>
-<?php //print_r($payments); ?>
 
 <div id="register_container">
 
-<!-- #section:second.div.layout -->
-<div class="col-xs-12 col-sm-5 widget-container-col" id="grid_zone">
+    <!-- #section:first.div.layout -->
+    <div class="col-xs-12 col-sm-5 widget-container-col" id="grid_zone">
     <div class="widget-box">
         <div class="widget-header widget-header-flat widget-header-small">
             <i class="ace-icon fa fa-globe"></i>
@@ -80,19 +78,11 @@
                             <?php echo $table['name'] ?>
                             <span class="badge badge-info white"><?php echo Common::GroupAlias(Yii::app()->orderingCart->getGroupId()); ?></span>
                         </a>
-                       <!-- --><?php /*echo TbHtml::linkButton($table['name'],array(
-                          'color'=>TbHtml::BUTTON_COLOR_SUCCESS,
-                          'size'=>TbHtml::BUTTON_SIZE_LARGE,
-                          'icon'=>'ace-icon fa fa-check-square-o bigger-110 green',
-                          'url'=>Yii::app()->createUrl('saleItem/SetTable/',array('table_id'=>$table['id'])),
-                          'class'=>'btn btn-white btn-success btn-round table-btn active',
-                        )); */?>
                     <?php } elseif ($table["busy_flag"]==0) { ?>
-                        <?php //echo $table["busy_flag"]; ?>
                         <?php echo TbHtml::linkButton($table['name'],array(
                           'color'=>TbHtml::BUTTON_COLOR_INFO,
                           'size'=>TbHtml::BUTTON_SIZE_LARGE,
-                          'icon'=>'ace-icon fa fa-square-o bigger-110',
+                          'icon'=> 'ace-icon fa fa-square-o bigger-110',
                           'url'=>Yii::app()->createUrl('saleItem/SetTable/',array('table_id'=>$table['id'])),
                           'class'=>'btn btn-white btn-info btn-round table-btn',
                         )); ?>
@@ -105,7 +95,7 @@
                         <?php echo TbHtml::linkButton($table['name'],array(
                           'color'=>TbHtml::BUTTON_COLOR_WARNING,
                           'size'=>TbHtml::BUTTON_SIZE_LARGE,
-                          'icon'=>'ace-icon fa fa-ban bigger-110',
+                          'icon'=> 'ace-icon fa fa-ban bigger-110',
                           'url'=>Yii::app()->createUrl('saleItem/SetTable/',array('table_id'=>$table['id'])),
                           'class'=>'btn-white btn-round table-btn active',
                         )); ?>
@@ -134,18 +124,13 @@
              [F1] => Set the focus to "Payment Amount" [Enter] to make payment, Press another [Enter] to Complete Sale',
              array('data-html' => 'true','placement' => TbHtml::TOOLTIP_PLACEMENT_TOP,)
     ); ?>  
-</div> <!--/end2nddiv-->  
+</div> <!--/end1stdiv-->
 
-<div class="col-xs-12 col-sm-7 widget-container-col">
+    <!-- #section:second.div.layout -->
+    <div class="col-xs-12 col-sm-7 widget-container-col">
     <div class="message" style="display:none">
-            <div class="alert in alert-block fade alert-success">Transaction Failed !</div>
+        <div class="alert in alert-block fade alert-success">Transaction Failed !</div>
     </div>
-    
-    <?php
-        /*if (isset($warning)) {
-            echo TbHtml::alert(TbHtml::ALERT_COLOR_INFO, $warning);
-        }*/
-    ?>
 
     <?php
     foreach (Yii::app()->user->getFlashes() as $key => $message) {
@@ -253,18 +238,22 @@
                              <?php //} ?>
 
                         <?php $this->endWidget(); ?> <!--/endformWidget-->
-                    </div
-                         >
+                    </div>
+
                     <div class="col-xs-12 col-sm-8" id="order_status">
-                        <span class="label label-info label-xlg">
-                            <i class="ace-icon fa fa-coffee"></i>
-                            <?php if (isset($table_info)) {
-                                echo yii::t('app','Serving Table').   ': ' . '<b>' .  $table_info->name  .' - ' . Common::GroupAlias(Yii::app()->orderingCart->getGroupId()) . '</b>';
-                            } ?>
-                        </span>
-                        <?php if (isset($order_status)) { ?>
-                            <span class="label label-warning label-xlg">
-                                <i class="fa fa-spinner fa-spin white"></i>
+                        <?php if (isset($table_info)) { ?>
+                            <span class="label label-info label-xlg">
+                                <i class="ace-icon fa fa-coffee"></i>
+                                <?php echo yii::t('app','Serving').   ': ' .  '<b>' .  $table_info->name  .' - ' . Common::GroupAlias(Yii::app()->orderingCart->getGroupId()) . '</b>'; ?>
+                            </span>
+                            <span class="label label-info label-xlg">
+                                <i class="ace-icon fa fa-clock-o"></i>
+                                <?= $time_go; ?>
+                            </span>
+                        <?php } ?>
+                        <?php if (isset($ordering_status)) { ?>
+                            <span class="<?php echo $ordering_status_span; ?>">
+                                <i class="<?php echo $ordering_status_icon; ?>"></i>
                                 <?= $ordering_msg; ?>
                             </span>
                         <?php } ?>
@@ -459,12 +448,17 @@
                                 <i class="ace-icon fa fa-angle-down icon-on-right"></i>
                             </button>
                             <ul class="dropdown-menu">
-                                <li>
-                                    <a href="<?= Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=>9)) ?>" class="btn-food"><?= Yii::t('app','Food'); ?></a>
+                                <!--<li>
+                                    <a href="<?/*= Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=>9)) */?>" class="btn-food"><?/*= Yii::t('app','Food'); */?></a>
                                 </li>
                                 <li>
-                                    <a href="<?= Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=>1)) ?>"><?= Yii::t('app','Beverage'); ?></a>
-                                </li>
+                                    <a href="<?/*= Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=>1)) */?>"><?/*= Yii::t('app','Beverage'); */?></a>
+                                </li>-->
+                                <?php foreach ($print_categories as $print_category): ?>
+                                    <li>
+                                        <a href="<?= Yii::app()->createUrl('SaleItem/PrintKitchen/',array('category_id'=> $print_category['id'])) ?>"><?= Yii::t('app',$print_category['name']); ?></a>
+                                    </li>
+                                <?php endforeach; ?>
                                 <li>
                                     <a href="<?= Yii::app()->createUrl('SaleItem/PrintCustomer/') ?>"><?= Yii::t('app','Customer'); ?></a>
                                 </li>
@@ -520,24 +514,11 @@
       
     </div> <!--/endgridcartdiv-->
     
-</div>  <!-- #section:first.div.layout -->
-
-<?php $this->renderPartial('touchscreen/_search_touchscreen'); ?>
+</div>  <!--/end2nddiv-->
 
 </div>
 
-<!--
-<script type='text/javascript'>
-    $('.nav').on('click','a#order_header',function(){
-        $.ajax({
-            url: 'AjaxF5INavbar',
-            dataType : 'json',
-            success : function(data) {
-                $('.new-order-dropdown-header').text(data.new_order_header);
-            }
-        });
-    });
-</script>-->
+<?php $this->renderPartial('touchscreen/_search_touchscreen'); ?>
 
 
 <div class="waiting"><!-- Place at bottom of page --></div>

@@ -117,4 +117,15 @@ class Category extends CActiveRecord
 
         return $list;
     }
+
+    public function getPrintCatogory()
+    {
+        $sql = "SELECT id,name
+                FROM category
+                WHERE name <> 'Decoration'
+                ORDER BY sort_order";
+
+        return Yii::app()->db->createCommand($sql)->queryAll(true);
+
+    }
 }

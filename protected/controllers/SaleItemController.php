@@ -22,7 +22,7 @@ class SaleItemController extends Controller
                 'users' => array('@'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('RemoveCustomer', 'SetComment', 'DeleteItem', 'AddItem', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelSale', 'CompleteSale', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectCustomer', 'AddCustomer', 'Receipt', 'UnsuspendSale', 'EditSale', 'Receipt', 'Suspend', 'ListSuspendedSale', 'SetPriceTier','SetGDiscount','DeleteSale','SetGroup','PrintKitchen','ReceiptKitchen','PrintCustomer','ReceiptCustomer','ChangeTable','SetDisGiftcard','RemoveGiftcard','MergeTable','Add','SetZone','SetTable','PrintCloseSale','AjaxRefresh','AjaxF5Navbar','KitchenInvoice','ConfirmOrder'),
+                'actions' => array('RemoveCustomer', 'SetComment', 'DeleteItem', 'AddItem', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelSale', 'CompleteSale', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectCustomer', 'AddCustomer', 'Receipt', 'UnsuspendSale', 'EditSale', 'Receipt', 'Suspend', 'ListSuspendedSale', 'SetPriceTier','SetGDiscount','DeleteSale','SetGroup','PrintKitchen','ReceiptKitchen','PrintCustomer','ReceiptCustomer','ChangeTable','SetDisGiftcard','RemoveGiftcard','MergeTable','Add','SetZone','SetTable','PrintCloseSale','AjaxRefresh','AjaxF5Dropdown','KitchenInvoice','ConfirmOrder'),
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -85,32 +85,6 @@ class SaleItemController extends Controller
             throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
         }
     }
-
-    /*
-    public function actionIndex($category_id = 0, $zone_id = 0, $table_id=0)
-    {
-        if (Yii::app()->user->checkAccess('sale.edit')) {
-            $item_id = 0;
-           
-            if ($zone_id!==0 && $zone_id<>Yii::app()->orderingCart->getZoneId()) {
-                Yii::app()->orderingCart->clearTableId(); //Clear previous table ID during moving around zone
-                Yii::app()->orderingCart->setZoneId($zone_id); 
-            }    
-            if ($table_id!==0 & $table_id<>Yii::app()->orderingCart->getTableId()) {
-                Yii::app()->orderingCart->setTableId($table_id);
-            }
-            
-            if (isset($_POST['item_id'])) {
-                $item_id = $_POST['item_id'];
-                Yii::app()->orderingCart->addItem($item_id);
-            }
-            $this->reload($item_id);
-        } else {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
-        }    
-    }
-     * 
-    */
 
     public function actionIndexPara($item_id,$item_parent_id)
     {
@@ -298,18 +272,17 @@ class SaleItemController extends Controller
         } else {
 
             $data['printer'] = $category_id == 9 ?  Yii::app()->getsetSession->getLocationPrinterFood() :  Yii::app()->getsetSession->getLocationPrinterBeverage() ;
-        
-            $data['items'] = SaleOrder::model()->getOrderToKitchen($data['table_id'],$data['group_id'],$data['location_id'],$category_id);
-            $data['sale_id'] = Yii::app()->orderingCart->getSaleId();
+
+            //$data['sale_id'] = Yii::app()->orderingCart->getSaleId();
+            $data['items'] = SaleOrder::model()->getOrderToKitchen($data['sale_id'],$data['location_id'],$category_id);
             //Saving printed item to another table "sale_order_item_print"
-            SaleOrder::model()->savePrintedToKitchen($data['table_id'], $data['group_id'],$data['location_id'],$category_id,$data['employee_id']);
+            SaleOrder::model()->savePrintedToKitchen($data['sale_id'],$data['location_id'],$category_id,$data['employee_id']);
 
             if (!empty($data['items'])) {
                 Yii::app()->session->close();
                 //echo CJSON::encode(array('redirect' => Yii::app()->createUrl('/saleItem/KitchenInvoice/',array('category_id'=>$category_id))));
                 $this->render('touchscreen/_receipt_kitchen', $data);
             } else {
-                //$data['warning'] = Yii::t('app','All Item has been printed');
                 Yii::app()->user->setFlash('warning', "All Item has been printed");
                 $this->reload($data);
             }
@@ -560,75 +533,6 @@ class SaleItemController extends Controller
             $this->render('touchscreen/admin_touchscreen', $data);
         }
     }
-    
-    protected function sessionInfo($data=array()) 
-    {
-        $data['items'] = Yii::app()->orderingCart->getCart();
-        $data['payments'] = Yii::app()->orderingCart->getPayments();
-        $data['payment_total'] = Yii::app()->orderingCart->getPaymentsTotal();
-        $data['count_payment'] = count(Yii::app()->orderingCart->getPayments());
-
-        
-        // Changing to get all sum of (Qty, Sub Total, Total, Discount Amount) at Once storing data in Session level previously gotta execute three times performance improvement
-        $data['count_item'] = Yii::app()->orderingCart->getSaleQty();
-        $data['sub_total'] = Yii::app()->orderingCart->getSaleSubTotal();
-        $data['total'] = Yii::app()->orderingCart->getSaleTotal();
-        $data['discount_amount'] = Yii::app()->orderingCart->getSaleDiscount();
-
-        //$data['sale_id'] = Yii::app()->orderingCart->getSaleId();
-        $data['location_id'] = Yii::app()->getsetSession->getLocationId();
-        $data['employee_id'] = Yii::app()->session['employeeid'];
-        $data['zone_id'] = Yii::app()->orderingCart->getZoneId();
-        $data['table_id'] = Yii::app()->orderingCart->getTableId();
-        $data['giftcard_id'] = Yii::app()->orderingCart->getDisGiftcard();
-        $data['price_tier_id'] = Yii::app()->orderingCart->getPriceTier();
-        $data['group_id'] = Yii::app()->orderingCart->getGroupId();
-
-        $data['transaction_time'] = date('h:i:s a');
-        $data['transaction_date'] = date('d-M-Y');
-        
-        $data['amount_due'] = $data['total'] - $data['payment_total'];
-
-        if ( $data['giftcard_id'] > 0 ) {
-            $model = Giftcard::model()->findbyPk($data['giftcard_id']);
-            //$data['giftcard_info'] = 'Card #' . $model->giftcard_number . ' - ( %' . $model->discount_amount . ' )';
-            $data['giftcard_info'] = $model->discount_amount . '%';
-            Yii::app()->orderingCart->setGDiscount($model->discount_amount);
-        }
-
-        /*** Getting Object **/
-
-        $employee = Employee::model()->employeeByID($data['employee_id']);
-        $data['table_info'] = Desk::model()->findByPk($data['table_id']);
-        $sale_order = SaleOrder::model()->getSaleOrderById();
-
-        $data['employee'] = $employee;
-        $data['sale_order'] = $sale_order;
-        $data['sale_id'] = null;
-        $data['ordering_status'] = null ;
-        $data['ordering_msg'] = '';
-        $data['ordering_status_icon'] = '';
-        $data['ordering_status_span'] = '';
-        $data['employee_name'] = $employee->first_name . ' ' . $employee->last_name;
-
-        if ( $sale_order !== null ) {
-            $data['sale_id'] = $sale_order->id;
-            $data['time_go'] = Common::timeAgo($sale_order->sale_time);
-            $data['ordering_status'] = $sale_order->temp_status;
-            //$data['ordering_msg'] = $data['ordering_status'] == '2' ? 'Adding Order' : 'Completed Order';
-            if ($data['ordering_status'] == '1') {
-                $data['ordering_msg'] = Yii::t('app','To Print To Kitchen');
-                $data['ordering_status_icon'] = 'fa fa-print icon-animated-bell white';
-                $data['ordering_status_span'] = 'label label-success label-xlg';
-            }elseif ($data['ordering_status'] == '2') {
-                $data['ordering_msg'] = Yii::t('app','Adding Order');
-                $data['ordering_status_icon'] = 'fa fa-spinner fa-spin white';
-                $data['ordering_status_span'] = 'label label-warning label-xlg';
-            }
-        }
-
-        return $data;
-    }
 
     public function actionAjaxRefresh()
     {
@@ -683,7 +587,7 @@ class SaleItemController extends Controller
         //$this->renderPartial('touchscreen/_admin_touchscreen_ajax', $data, false, true);
     }
 
-    public function actionAjaxF5Navbar()
+    public function actionAjaxF5Dropdown()
     {
 
         $sale_order = new SaleOrder;
@@ -711,6 +615,93 @@ class SaleItemController extends Controller
             'div_order_navbar' => $this->renderPartial('touchscreen/_order_navbar', $data_navbar, true, true),
         ));
 
+    }
+
+    protected function sessionInfo($data=array())
+    {
+        /* Define Default Variables Value */
+        $data['sale_id'] = null;
+        $data['ordering_status'] = null ;
+        $data['ordering_msg'] = '';
+        $data['ordering_status_icon'] = '';
+        $data['ordering_status_span'] = '';
+        $data['time_go'] = '';
+        $data['count_item'] = 0;
+        $data['sub_total'] = 0;
+        $data['amount_due'] = 0;
+        $data['count_payment'] = 0;
+        $data['items'] = array();
+
+        $data['location_id'] = Yii::app()->getsetSession->getLocationId();
+        $data['zone_id'] = Yii::app()->orderingCart->getZoneId();
+        $data['table_id'] = Yii::app()->orderingCart->getTableId();
+        $data['group_id'] = Yii::app()->orderingCart->getGroupId();
+        $data['employee_id'] = Yii::app()->session['employeeid'];
+
+
+        if ( isset($data['table_id']) && isset($data['location_id']) ) {
+
+            $data['sale_id'] = Yii::app()->orderingCart->getSaleId();
+
+            $data['items'] = Yii::app()->orderingCart->getCart();
+            $data['payments'] = Yii::app()->orderingCart->getPayments();
+            $data['payment_total'] = Yii::app()->orderingCart->getPaymentsTotal();
+            $data['count_payment'] = count(Yii::app()->orderingCart->getPayments());
+
+
+            // Changing to get all sum of (Qty, Sub Total, Total, Discount Amount) at Once storing data in Session level previously gotta execute three times performance improvement
+            $data['count_item'] = Yii::app()->orderingCart->getSaleQty();
+            $data['sub_total'] = Yii::app()->orderingCart->getSaleSubTotal();
+            $data['total'] = Yii::app()->orderingCart->getSaleTotal();
+            $data['discount_amount'] = Yii::app()->orderingCart->getSaleDiscount();
+
+            //$data['sale_id'] = Yii::app()->orderingCart->getSaleId();
+            //$data['location_id'] = Yii::app()->getsetSession->getLocationId();
+            //$data['group_id'] = Yii::app()->orderingCart->getGroupId();
+
+            $data['giftcard_id'] = Yii::app()->orderingCart->getDisGiftcard();
+            $data['price_tier_id'] = Yii::app()->orderingCart->getPriceTier();
+
+            $data['transaction_time'] = date('h:i:s a');
+            $data['transaction_date'] = date('d-M-Y');
+
+            $data['amount_due'] = $data['total'] - $data['payment_total'];
+
+            if ($data['giftcard_id'] > 0) {
+                $model = Giftcard::model()->findbyPk($data['giftcard_id']);
+                $data['giftcard_info'] = $model->discount_amount . '%';
+                Yii::app()->orderingCart->setGDiscount($model->discount_amount);
+            }
+
+            /*** Getting Object **/
+            $employee = Employee::model()->employeeByID($data['employee_id']);
+            $data['table_info'] = Desk::model()->findByPk($data['table_id']);
+            $sale_order = SaleOrder::model()->getSaleOrderById($data['sale_id'],$data['location_id']);
+            $data['print_categories'] = Category::model()->getPrintCatogory();
+
+            $data['employee'] = $employee;
+            $data['sale_order'] = $sale_order;
+            $data['employee_name'] = $employee->first_name . ' ' . $employee->last_name;
+
+            if ($sale_order !== null) {
+                $data['sale_id'] = $sale_order->id;
+                $data['time_go'] = Common::timeAgo($sale_order->sale_time);
+                $data['ordering_status'] = $sale_order->temp_status;
+                if ($data['ordering_status'] == '1') {
+                    $data['ordering_msg'] = Yii::t('app', 'To Print To Kitchen');
+                    $data['ordering_status_icon'] = 'fa fa-print icon-animated-bell white';
+                    $data['ordering_status_span'] = 'label label-success label-xlg';
+                    //$data['desk_icon'] = 'fa fa-print icon-animated-bell bigger-110'; //ace-icon fa fa-ban bigger-110
+                } elseif ($data['ordering_status'] == '2') {
+                    $data['ordering_msg'] = Yii::t('app', 'Adding Order');
+                    $data['ordering_status_icon'] = 'fa fa-spinner fa-spin white';
+                    $data['ordering_status_span'] = 'label label-warning label-xlg';
+                    //$data['desk_icon'] = 'fa fa-print icon-animated-bell bigger-110';
+                }
+            }
+        }
+
+        return $data;
     }
 
 }

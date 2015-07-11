@@ -272,40 +272,6 @@ $(document).keydown(function(event)
 });
 </script>
 
-<script>
-    (function worker() {
-        $.ajax({
-            url: 'AjaxRefresh',
-            dataType : 'json',
-            success: function(data) {
-                $('.count_new_order').text(data.count_new_order);
-                $('#table_grid').html(data.div_order_table);
-                $('#order_menu').html(data.div_order_menu);
-                $('#order_status').html(data.div_order_status);
-            },
-            complete: function() {
-                // Schedule the next request when the current one's complete
-                setTimeout(worker, 10000);
-            }
-        });
-    })();
-</script>
-
-<script type='text/javascript'>
-    $('#navigation_bar').on('click','a.new-order-header',function(e){
-        e.preventDefault();
-        var url=$(this).attr('href')
-        $.ajax({
-            url: url,
-            type : 'post',
-            beforeSend: function() { $('.waiting').show(); },
-            complete: function() { $('.waiting').hide(); },
-            success : function(data) {
-                $('#register_container').html(data);
-            }
-        });
-    });
-</script>
 
 <!--<script type='text/javascript'>
     $('#dropdown_all_order').on('click','a',function(e){
@@ -323,19 +289,6 @@ $(document).keydown(function(event)
     });
 </script>
 -->
-
-<script type='text/javascript'>
-    $('#navigation_bar').on('click','a#order_header',function(e){
-        e.preventDefault();
-        $.ajax({
-            url: 'AjaxF5Navbar',
-            dataType : 'json',
-            success : function(data) {
-                $('#dropdown_new_order').html(data.div_order_navbar);
-            }
-        });
-    });
-</script>
 
 
 
