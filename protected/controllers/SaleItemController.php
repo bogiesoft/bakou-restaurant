@@ -303,7 +303,7 @@ class SaleItemController extends Controller
             $data['sale_id'] = Yii::app()->orderingCart->getSaleId();
             //Saving printed item to another table "sale_order_item_print"
             SaleOrder::model()->savePrintedToKitchen($data['table_id'], $data['group_id'],$data['location_id'],$category_id,$data['employee_id']);
-
+            
             if (!empty($data['items'])) {
                 Yii::app()->session->close();
                 //echo CJSON::encode(array('redirect' => Yii::app()->createUrl('/saleItem/KitchenInvoice/',array('category_id'=>$category_id))));
@@ -332,7 +332,7 @@ class SaleItemController extends Controller
         
         $data=$this->sessionInfo();
         //$data['sale_id'] = Yii::app()->orderingCart->getSaleId();
-        SaleOrder::model()->updateSaleOrderTempStatus('1');
+        SaleOrder::model()->updateSaleOrderTempStatus('0');
 
         if (count($data['items']) == 0) {
             $data['warning'] = Yii::t('app','The serving table had been printed or changed.');
@@ -614,7 +614,16 @@ class SaleItemController extends Controller
         if ( $sale_order !== null ) {
             $data['sale_id'] = $sale_order->id;
             $data['ordering_status'] = $sale_order->temp_status;
-            $data['ordering_msg'] = $data['ordering_status'] == '2' ? 'Adding New Order' : 'Completed Order';
+            //$data['ordering_msg'] = $data['ordering_status'] == '2' ? 'Adding Order' : 'Completed Order';
+            if ($data['ordering_status'] == '1') {
+                $data['ordering_msg'] = Yii::t('app','To Print To Kitchen');
+                $data['ordering_status_icon'] = 'fa fa-print icon-animated-bell white';
+                $data['ordering_status_span'] = 'label label-success label-xlg';
+            }elseif ($data['ordering_status'] == '2') {
+                $data['ordering_msg'] = Yii::t('app','Adding Order');
+                $data['ordering_status_icon'] = 'fa fa-spinner fa-spin white';
+                $data['ordering_status_span'] = 'label label-warning label-xlg';
+            }
         }
 
         return $data;

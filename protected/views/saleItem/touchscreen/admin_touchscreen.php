@@ -262,7 +262,7 @@
                                 echo yii::t('app','Serving Table').   ': ' . '<b>' .  $table_info->name  .' - ' . Common::GroupAlias(Yii::app()->orderingCart->getGroupId()) . '</b>';
                             } ?>
                         </span>
-                        <?php if ($ordering_status=='2') { ?>
+                        <?php if (isset($order_status)) { ?>
                             <span class="label label-warning label-xlg">
                                 <i class="fa fa-spinner fa-spin white"></i>
                                 <?= $ordering_msg; ?>
@@ -526,7 +526,7 @@
 
 </div>
 
-
+<!--
 <script type='text/javascript'>
     $('.nav').on('click','a#order_header',function(){
         $.ajax({
@@ -537,7 +537,7 @@
             }
         });
     });
-</script>
+</script>-->
 
 
 <div class="waiting"><!-- Place at bottom of page --></div>
