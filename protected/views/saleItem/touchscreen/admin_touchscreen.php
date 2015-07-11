@@ -220,7 +220,7 @@
         <div class="widget-body">
            <div class="widget-main">
                <div class="row">
-                    <div class="col-xs-12 col-sm-5" id="itemlookup" >
+                    <div class="col-xs-12 col-sm-4" id="itemlookup" >
                         <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
                                  'action'=>Yii::app()->createUrl('saleItem/add'),
                                  'method'=>'post',
@@ -255,9 +255,9 @@
                         <?php $this->endWidget(); ?> <!--/endformWidget-->
                     </div
                          >
-                    <div class="col-xs-12 col-sm-7" id="order_status">
+                    <div class="col-xs-12 col-sm-8" id="order_status">
                         <span class="label label-info label-xlg">
-                            <i class="fa fa-coffe"></i>
+                            <i class="ace-icon fa fa-coffee"></i>
                             <?php if (isset($table_info)) {
                                 echo yii::t('app','Serving Table').   ': ' . '<b>' .  $table_info->name  .' - ' . Common::GroupAlias(Yii::app()->orderingCart->getGroupId()) . '</b>';
                             } ?>

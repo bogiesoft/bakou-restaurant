@@ -613,6 +613,7 @@ class SaleItemController extends Controller
 
         if ( $sale_order !== null ) {
             $data['sale_id'] = $sale_order->id;
+            $data['time_go'] = Common::timeAgo($sale_order->sale_time);
             $data['ordering_status'] = $sale_order->temp_status;
             //$data['ordering_msg'] = $data['ordering_status'] == '2' ? 'Adding Order' : 'Completed Order';
             if ($data['ordering_status'] == '1') {
