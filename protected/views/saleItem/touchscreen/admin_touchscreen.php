@@ -7,10 +7,9 @@
 
 <?php $this->widget( 'ext.modaldlg.EModalDlg' ); ?>
 
-<?php //echo 'Location Session ' .  Yii::app()->getsetSession->getLocationVat(); ?>
-
 <div id="register_container">
 
+    <?php echo 'Sale ID ' .  $sale_id; ?>
     <!-- #section:first.div.layout -->
     <div class="col-xs-12 col-sm-5 widget-container-col" id="grid_zone">
     <div class="widget-box">
@@ -516,9 +515,9 @@
     
 </div>  <!--/end2nddiv-->
 
-</div>
+    <?php $this->renderPartial('touchscreen/_search_touchscreen'); ?>
 
-<?php $this->renderPartial('touchscreen/_search_touchscreen'); ?>
+</div>
 
 
 <div class="waiting"><!-- Place at bottom of page --></div>

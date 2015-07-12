@@ -4,24 +4,16 @@
 
         <?php  foreach ($tables as $table) { ?>
             <?php if ($table["id"]==$table_id) { ?>
-                <a class="btn btn-white btn-success btn-round table-btn active btn-lg" href="<?php echo Yii::app()->createUrl('saleItem/SetTable/',array('table_id'=>$table['id'])); ?>">
+                 <a class="btn btn-white btn-success btn-round table-btn active btn-lg" href="<?php echo Yii::app()->createUrl('saleItem/SetTable/',array('table_id'=>$table['id'])); ?>">
                     <i class="ace-icon fa fa-check-square-o bigger-110 green"></i>
                     <?php echo $table['name'] ?>
                     <span class="badge badge-info white"><?php echo Common::GroupAlias(Yii::app()->orderingCart->getGroupId()); ?></span>
                 </a>
-                <!-- --><?php /*echo TbHtml::linkButton($table['name'],array(
-                          'color'=>TbHtml::BUTTON_COLOR_SUCCESS,
-                          'size'=>TbHtml::BUTTON_SIZE_LARGE,
-                          'icon'=>'ace-icon fa fa-check-square-o bigger-110 green',
-                          'url'=>Yii::app()->createUrl('saleItem/SetTable/',array('table_id'=>$table['id'])),
-                          'class'=>'btn btn-white btn-success btn-round table-btn active',
-                        )); */?>
             <?php } elseif ($table["busy_flag"]==0) { ?>
-                <?php //echo $table["busy_flag"]; ?>
                 <?php echo TbHtml::linkButton($table['name'],array(
                     'color'=>TbHtml::BUTTON_COLOR_INFO,
                     'size'=>TbHtml::BUTTON_SIZE_LARGE,
-                    'icon'=>'ace-icon fa fa-square-o bigger-110',
+                    'icon'=> 'ace-icon fa fa-square-o bigger-110',
                     'url'=>Yii::app()->createUrl('saleItem/SetTable/',array('table_id'=>$table['id'])),
                     'class'=>'btn btn-white btn-info btn-round table-btn',
                 )); ?>
@@ -34,7 +26,7 @@
                 <?php echo TbHtml::linkButton($table['name'],array(
                     'color'=>TbHtml::BUTTON_COLOR_WARNING,
                     'size'=>TbHtml::BUTTON_SIZE_LARGE,
-                    'icon'=>'ace-icon fa fa-ban bigger-110',
+                    'icon'=> 'ace-icon fa fa-ban bigger-110',
                     'url'=>Yii::app()->createUrl('saleItem/SetTable/',array('table_id'=>$table['id'])),
                     'class'=>'btn-white btn-round table-btn active',
                 )); ?>

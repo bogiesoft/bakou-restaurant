@@ -126,6 +126,7 @@ class SaleItemController extends Controller
                 $error=CActiveForm::validate($model);
                 $errors = explode(":", $error);
                 $data['warning']=  str_replace("}","",$errors[1]);
+                Yii::app()->user->setFlash('warning',  str_replace("}","",$errors[1]));
             }
             $this->reload($data);
         } else {
@@ -196,9 +197,13 @@ class SaleItemController extends Controller
     
     public function actionSetGDiscount()
     {
+        /*if (!Yii::app()->user->checkAccess('sale.discount')) {
+            Yii::app()->user->setFlash('danger', Yii::t('app','You are not authorized to perform this action'));
+        }*/
+
         if (Yii::app()->request->isPostRequest && Yii::app()->request->isAjaxRequest) {
             $giftcard_id = $_POST['SaleItem']['giftcard_id'];
-            $model=Giftcard::model()->findByPk($giftcard_id);
+            $model = Giftcard::model()->findByPk($giftcard_id);
             Yii::app()->orderingCart->setGDiscount($model->discount_amount);
             $this->reload();
         }
@@ -214,10 +219,11 @@ class SaleItemController extends Controller
             $data['items'] = Yii::app()->orderingCart->getCart();
             if (count($data['items']) == 0) {
                 $data['warning'] = Yii::t('app','The serving table had been printed or changed.');
+                Yii::app()->user->setFlash('info', Yii::t('app','The serving table had been printed or changed.'));
             } 
             
-            if(!Yii::app()->orderingCart->SetDisGiftcard($giftcard_id)) {
-                $data['warning'] = Yii::t('app','Unable to add Gift Card');
+            if(Yii::app()->orderingCart->SetDisGiftcard($giftcard_id)==0) {
+                Yii::app()->user->setFlash('info', Yii::t('app','Unable to add Gift Card'));
             }
             
             $this->reload($data);
@@ -227,6 +233,10 @@ class SaleItemController extends Controller
     public function actionRemoveGiftcard()
     {
         if (Yii::app()->request->isPostRequest && Yii::app()->request->isAjaxRequest) {
+            $data['items'] = Yii::app()->orderingCart->getCart();
+            if (count($data['items']) == 0) {
+                Yii::app()->user->setFlash('info', Yii::t('app','The serving table had been printed or changed.'));
+            }
             Yii::app()->orderingCart->clearDisGiftcard();
             $this->reload();
         }
@@ -525,7 +535,7 @@ class SaleItemController extends Controller
                 'select2.js' => false,  
             );
             
-            Yii::app()->clientScript->scriptMap['*.js'] = false; 
+            //Yii::app()->clientScript->scriptMap['*.js'] = false;
             Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false; 
             Yii::app()->clientScript->scriptMap['box.css'] = false; 
             $this->renderPartial('touchscreen/admin_touchscreen', $data, false, true);
@@ -562,9 +572,9 @@ class SaleItemController extends Controller
 
         $cs = Yii::app()->clientScript;
         $cs->scriptMap = array(
-            'jquery.js' => false,
+            //'jquery.js' => false,
             'bootstrap.js' => false,
-            'jquery.min.js' => false,
+            //'jquery.min.js' => false,
             'bootstrap.notify.js' => false,
             'bootstrap.bootbox.min.js' => false,
             'bootstrap.min.js' => false,
@@ -572,7 +582,7 @@ class SaleItemController extends Controller
             'select2.js' => false,
         );
 
-        Yii::app()->clientScript->scriptMap['*.js'] = false;
+        //Yii::app()->clientScript->scriptMap['*.js'] = false;
         Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false;
         Yii::app()->clientScript->scriptMap['box.css'] = false;
 

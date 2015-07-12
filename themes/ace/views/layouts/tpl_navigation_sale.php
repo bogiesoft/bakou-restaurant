@@ -138,7 +138,7 @@ $sale_order = new SaleOrder;
     </div><!-- /.navbar-container -->
 </div>
 
-<!--<script>
+<script>
     (function worker() {
         $.ajax({
             url: 'AjaxRefresh',
@@ -146,16 +146,16 @@ $sale_order = new SaleOrder;
             success: function(data) {
                 $('.count_new_order').text(data.count_new_order);
                 $('#table_grid').html(data.div_order_table);
-                $('#order_menu').html(data.div_order_menu);
+                //$('#order_menu').html(data.div_order_menu);
                 $('#order_status').html(data.div_order_status);
             },
             complete: function() {
                 // Schedule the next request when the current one's complete
-                setTimeout(worker, 10000);
+                setTimeout(worker, 100000);
             }
         });
     })();
-</script>-->
+</script>
 
 <script type='text/javascript'>
     $('#navigation_bar').on('click','a.dropdown-new-order',function(e){

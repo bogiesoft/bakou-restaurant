@@ -125,7 +125,7 @@ class SaleOrder extends CActiveRecord
                 ':desk_id' => $desk_id,
                 ':group_id' => $group_id,
                 ':location_id' => $location_id,
-                ':status' => $this->active_status
+                ':status' => Yii::app()->params['num_one']
             )
         ); */
 
@@ -140,7 +140,7 @@ class SaleOrder extends CActiveRecord
         return Yii::app()->db->createCommand($sql)->queryAll(true, array(
                 ':sale_id' => $sale_id,
                 ':location_id' => $location_id,
-                ':status' => $this->active_status
+                ':status' => Yii::app()->params['num_one']
             )
         );
     }
@@ -160,7 +160,7 @@ class SaleOrder extends CActiveRecord
                     AND t2.item_parent_id=t1.item_parent_id
                 WHERE t1.sale_id=:sale_id and t1.location_id=:location_id
                 AND t1.status=:status
-                AND (t1.quantity-IFNULL(t2.quantity,0))>0
+                AND (t1.quantity-IFNULL(t2.quantity,0)) > 0
                 AND t1.category_id=:category_id
                 ORDER BY t1.path,t1.modified_date";
 
@@ -168,7 +168,7 @@ class SaleOrder extends CActiveRecord
                 ':sale_id' => $sale_id,
                 ':location_id' => $location_id,
                 ':category_id' => $category_id,
-                ':status' => $this->active_status
+                ':status' => Yii::app()->params['num_one']
             )
         );
     }
@@ -188,7 +188,7 @@ class SaleOrder extends CActiveRecord
             ':desk_id' => (int)$desk_id,
             ':group_id' => $group_id,
             ':location_id' => $location_id,
-            ':status' => $this->active_status
+            ':status' => Yii::app()->params['num_one']
         ));
     }
 
@@ -212,7 +212,7 @@ class SaleOrder extends CActiveRecord
             ':desk_id' => $desk_id,
             ':group_id' => $group_id,
             ':location_id' => $location_id,
-            ':status' => $this->active_status
+            ':status' => Yii::app()->params['num_one']
         ));*/
 
         /* Get Sale ID by Desk ID every time we focus on that table */
@@ -227,7 +227,7 @@ class SaleOrder extends CActiveRecord
         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
             ':sale_id' => $sale_id,
             ':location_id' => $location_id,
-            ':status' => $this->active_status
+            ':status' => Yii::app()->params['num_one']
         ));
         if ($result) {
             foreach ($result as $record) {
@@ -241,22 +241,8 @@ class SaleOrder extends CActiveRecord
         return array($quantity, $sub_total, $total, $discount_amount);
     }
 
-    /*
-     * To save ordering item replacing saveItem using PHP session
-     */
-    public function saveOrderingItem(
-        $item_id,
-        $table_id,
-        $group_id,
-        $client_id,
-        $employee_id,
-        $quantity,
-        $price_tier_id,
-        $item_parent_id,
-        $location_id
-    ) {
-
-        //$sql = "CALL proc_add_order_item(:item_id,:item_number,:desk_id,:group_id,:client_id,:employee_id,:quantity,:price_tier_id,:item_parent_id,:location_id)";
+    public function saveOrderingItem($item_id, $table_id, $group_id, $client_id, $employee_id, $quantity, $price_tier_id, $item_parent_id, $location_id)
+    {
 
         $sql = "SELECT func_add_order(:item_id,:item_number,:desk_id,:group_id,:client_id,:employee_id,:quantity,:price_tier_id,:item_parent_id,:location_id) item_id";
 
@@ -388,8 +374,10 @@ class SaleOrder extends CActiveRecord
         );
     }
 
-    public function setDisGiftcard($desk_id, $group_id, $giftcard_id, $location_id)
+    public function setDisGiftcard($sale_id, $location_id,$giftcard_id)
     {
+
+        /*
         $model = Giftcard::model()->findByPk($giftcard_id);
 
         if (!$model) {
@@ -405,9 +393,9 @@ class SaleOrder extends CActiveRecord
         $giftcard_id = $model->id;
 
         $sql = "update sale_order
-                  set giftcard_id=:giftcard_id,discount_amount=:discount_amount
-                  where desk_id=:desk_id and group_id=:group_id and location_id=:location_id
-                  and status=:status";
+                set giftcard_id=:giftcard_id,discount_amount=:discount_amount
+                where desk_id=:desk_id and group_id=:group_id and location_id=:location_id
+                and status=:status";
 
         $command = Yii::app()->db->createCommand($sql);
         $command->bindParam(":desk_id", $desk_id, PDO::PARAM_INT);
@@ -415,17 +403,34 @@ class SaleOrder extends CActiveRecord
         $command->bindParam(":location_id", $location_id, PDO::PARAM_INT);
         $command->bindParam(":giftcard_id", $giftcard_id, PDO::PARAM_INT);
         $command->bindParam(":discount_amount", $discount_amount);
-        $command->bindParam(":status", $this->active_status);
+        $command->bindParam(":status", Yii::app()->params['num_one']);
         $command->execute();
 
         return true;
+        */
+
+        $sql = "SELECT func_set_giftcard(:sale_id,:location_id,:giftcard_id) result_id";
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true,
+            array(
+                ':sale_id' => $sale_id,
+                ':location_id' => $location_id,
+                ':giftcard_id' => $giftcard_id
+            )
+        );
+
+        foreach ($result as $record) {
+            $result_id = $record['result_id'];
+        }
+
+        return $result_id;
+
     }
 
-    public function clearDisGiftcard($desk_id, $group_id, $location_id)
+    public function clearDisGiftcard($sale_id, $location_id)
     {
-        $sql = "update sale_order
-                  set giftcard_id=null,discount_amount=null
-                  where desk_id=:desk_id and group_id=:group_id 
+        /*$sql = "update sale_order
+                set giftcard_id=null,discount_amount=null
+                  where desk_id=:desk_id and group_id=:group_id
                   and location_id=:location_id
                   and status=:status";
 
@@ -433,23 +438,37 @@ class SaleOrder extends CActiveRecord
         $command->bindParam(":desk_id", $desk_id, PDO::PARAM_INT);
         $command->bindParam(":group_id", $group_id, PDO::PARAM_INT);
         $command->bindParam(":location_id", $location_id, PDO::PARAM_INT);
-        $command->bindParam(":status", $this->active_status);
-        $command->execute();
+        $command->bindParam(":status", Yii::app()->params['num_one']);
+        $command->execute();*/
+
+        $sql = "SELECT func_clear_giftcard(:sale_id,:location_id) result_id";
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true,
+            array(
+                ':sale_id' => $sale_id,
+                ':location_id' => $location_id,
+            )
+        );
+
+        foreach ($result as $record) {
+            $result_id = $record['result_id'];
+        }
+
+        return $result_id;
     }
 
     public function getDisGiftcard($desk_id, $group_id, $location_id)
     {
         $sql = "SELECT giftcard_id
-                  FROM sale_order
-                  WHERE desk_id=:desk_id AND group_id=:group_id 
-                  AND location_id=:location_id
-                  and status=:status";
+                FROM sale_order
+                WHERE desk_id=:desk_id AND group_id=:group_id
+                AND location_id=:location_id
+                and status=:status";
 
         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
             ':desk_id' => $desk_id,
             ':group_id' => $group_id,
             ':location_id' => $location_id,
-            ':status' => $this->active_status
+            ':status' => Yii::app()->params['num_one']
         ));
 
         if ($result) {
@@ -467,13 +486,16 @@ class SaleOrder extends CActiveRecord
     {
         $sql = "SELECT COUNT(*) count_order
                 FROM sale_order
-                WHERE sale_time >= CURDATE()
+                WHERE location_id = :location_id
+                and sale_time >= CURDATE()
                 AND `status`=:status
-                AND temp_status<> '0'
+                AND temp_status <> :str_zero
                 AND employee_id <> :employee_id";
 
         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
-            ':status' => $this->active_status,
+            ':location_id' => Yii::app()->getsetSession->getLocationId(),
+            ':status' => Yii::app()->params['num_one'],
+            ':str_zero' => Yii::app()->params['str_zero'],
             ':employee_id' => Yii::app()->session['employeeid']
         ));
 
@@ -492,14 +514,17 @@ class SaleOrder extends CActiveRecord
     {
         $sql="SELECT so.desk_id,d.`name` desk_name, concat(hour(so.sale_time), ':',minute(so.sale_time)) sale_time
                 FROM sale_order so JOIN desk d ON d.id = so.desk_id
-                WHERE so.sale_time >= CURDATE()
+                WHERE so.location_id = :location_id
+                AND so.sale_time >= CURDATE()
                 AND so.`status`=:status
-                AND temp_status<> '0'
+                AND temp_status <> :str_zero
                 AND employee_id <> :employee_id
                 ORDER BY so.sale_time desc";
 
         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
-            ':status' => $this->active_status,
+            ':location_id' => Yii::app()->getsetSession->getLocationId(),
+            ':status' => Yii::app()->params['num_one'],
+            ':str_zero' => Yii::app()->params['str_zero'],
             ':employee_id' => Yii::app()->session['employeeid']
         ));
 
@@ -513,7 +538,7 @@ class SaleOrder extends CActiveRecord
                 ':desk_id' => Yii::app()->orderingCart->getTableId(),
                 ':group_id' => Yii::app()->orderingCart->getGroupId(),
                 ':location_id' => Yii::app()->getsetSession->getLocationId(),
-                ':status' => $this->active_status
+                ':status' => Yii::app()->params['num_one']
             ));
 
         return isset($sale_order) ? $sale_order : null;
@@ -525,7 +550,7 @@ class SaleOrder extends CActiveRecord
             array(
                 ':sale_id' => $sale_id,
                 ':location_id' => $location_id,
-                ':status' => $this->active_status
+                ':status' => Yii::app()->params['num_one']
             ));
 
         return isset($sale_order) ? $sale_order : null;

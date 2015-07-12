@@ -194,12 +194,12 @@ class OrderingCart extends CApplicationComponent
 
     public function setDisGiftcard($giftcard_id)
     {
-        return SaleOrder::model()->setDisGiftcard($this->getTableId(), $this->getGroupId(), $giftcard_id, Yii::app()->getsetSession->getLocationId());
+        return SaleOrder::model()->setDisGiftcard($this->getSaleId(),Yii::app()->getsetSession->getLocationId(),$giftcard_id);
     }
 
     public function clearDisGiftcard()
     {
-        SaleOrder::model()->clearDisGiftcard($this->getTableId(), $this->getGroupId(),Yii::app()->getsetSession->getLocationId());
+        return SaleOrder::model()->clearDisGiftcard($this->getSaleId(),Yii::app()->getsetSession->getLocationId());
     }
     
     public function getZoneId()
