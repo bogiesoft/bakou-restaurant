@@ -9,7 +9,7 @@
 
 <div id="register_container">
 
-    <?php echo 'Sale ID ' .  $sale_id; ?>
+    <?php //echo 'Sale ID ' .  $sale_id; ?>
     <!-- #section:first.div.layout -->
     <div class="col-xs-12 col-sm-5 widget-container-col" id="grid_zone">
     <div class="widget-box">
