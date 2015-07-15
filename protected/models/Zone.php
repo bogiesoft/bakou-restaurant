@@ -126,23 +126,23 @@ class Zone extends CActiveRecord
 		return parent::model($className);
 	}
         
-        public function getAllZone($location_id) {
-            //$model=Zone::model()->findAll('location_id=:location_id', array(':location_id'=>$location_id));
-            
-            $model = Zone::model()->findAll(array(
-                            'order'=>'sort_order',
-                            'condition'=>'location_id=:location_id',
-                            'params'=>array(':location_id'=>$location_id)
-                    ));
-            return $model;
-        }
+    public function getAllZone($location_id) {
+        //$model=Zone::model()->findAll('location_id=:location_id', array(':location_id'=>$location_id));
+
+        $model = Zone::model()->findAll(array(
+                        'order'=>'zone_name',
+                        'condition'=>'location_id=:location_id',
+                        'params'=>array(':location_id'=>$location_id)
+                ));
+        return $model;
+    }
         
-        protected function getZoneInfo()
-        {
-            $location = Location::model()->findByPk($this->location_id);
-            
-            return $this->zone_name . ' ( ' . $location->name . ' ) ';
-        }
+    protected function getZoneInfo()
+    {
+        $location = Location::model()->findByPk($this->location_id);
+
+        return $this->zone_name . ' ( ' . $location->name . ' ) ';
+    }
         
         public function getZone()
         {

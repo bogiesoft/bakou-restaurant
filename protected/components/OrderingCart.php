@@ -427,7 +427,7 @@ class OrderingCart extends CApplicationComponent
 
     public function deleteItem($item_id,$item_parent_id)
     {
-        SaleOrder::model()->delOrderItem($item_id,$item_parent_id,$this->getSaleId(),Yii::app()->getsetSession->getLocationId());
+        SaleOrder::model()->delOrderItem($item_id,$item_parent_id,$this->getTableId(),$this->getGroupId(),Yii::app()->getsetSession->getLocationId());
     }
 
     public function outofStock($item_id)

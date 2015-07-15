@@ -230,25 +230,25 @@ class ZoneController extends Controller
                 throw new CHttpException(403, 'You are not authorized to perform this action');
             }
 	}
-        
-        public function actionUndoDelete($id)
-	{
-            if (Yii::app()->user->checkAccess('zone.delete')) {
-                if (Yii::app()->request->isPostRequest) {
-                    //$this->loadModel($id)->delete();
-                    Zone::model()->undodeleteZone($id);
-                    
-                    // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-                    if (!isset($_GET['ajax'])) {
-                            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-                    }
-		} else {
-			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
-		}
+
+    public function actionUndoDelete($id)
+    {
+        if (Yii::app()->user->checkAccess('zone.delete')) {
+            if (Yii::app()->request->isPostRequest) {
+                //$this->loadModel($id)->delete();
+                Zone::model()->undodeleteZone($id);
+
+                // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+                if (!isset($_GET['ajax'])) {
+                    $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+                }
             } else {
-                throw new CHttpException(403, 'You are not authorized to perform this action');
+                throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
             }
-	}
+        } else {
+            throw new CHttpException(403, 'You are not authorized to perform this action');
+        }
+    }
 
 	/**
 	 * Lists all models.
@@ -323,7 +323,7 @@ class ZoneController extends Controller
 
     protected function gridTableColumn($data, $row)
     {
-        $count_table = Desk::model()->count('zone_id=:zoneId', array(':zoneId' => $data->id));
+        $count_table = Desk::model()->count('zone_id=:zoneId and status=:status', array(':zoneId' => $data->id,':status' => Yii::app()->params['str_one']));
 
         if ( $data->status == "1" ) {
             echo CHtml::link($count_table . ' Tables',
