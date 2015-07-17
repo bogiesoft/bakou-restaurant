@@ -135,8 +135,9 @@ class SaleOrder extends CActiveRecord
                 WHERE sale_id=:sale_id
                 AND location_id=:location_id
                 AND status=:status
-                ORDER BY IF(item_parent_id=0, item_id, item_parent_id), item_parent_id!=0, item_id DESC";
-                // ORDER BY path,modified_date desc";
+                ORDER BY path,modified_date desc";
+                //ORDER BY IF(item_parent_id=0, item_id, item_parent_id), item_parent_id!=0, item_id DESC";
+                //ORDER BY path,modified_date desc";
 
         return Yii::app()->db->createCommand($sql)->queryAll(true, array(
                 ':sale_id' => $sale_id,

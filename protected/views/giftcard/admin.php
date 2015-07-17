@@ -85,7 +85,7 @@ $('.search-form form').submit(function(){
             'summaryText' => 'Showing {start}-{end} of {count} entries ' . $pageSizeDropDown . ' rows per page',
             'htmlOptions' => array('class' => 'table-responsive panel'),
             'columns' => array(
-                'id',
+                //'id',
                 'giftcard_number',
                 'discount_amount',
                 //'discount_type',
