@@ -19,38 +19,61 @@ $this->breadcrumbs=array(
                 <div class="col-xs-12">
                     <div class="row">
                         <div class="col-xs-12 widget-container-col summary_header">
-                            <div class="infobox infobox-green">
-                                <div class="infobox-icon">
-                                    <i class="ace-icon fa fa-shopping-cart"></i>
+                            <?php foreach($report->grossSaleAmount() as $record) { ?>
+                                <?php
+                                    $stat_css = $record['diff_percent'] > 0 ?  'stat-success' : 'stat-important';
+                                    $infobox_css = $record['diff_percent'] > 0 ?  'infobox-green' : 'infobox-red';
+                                ?>
+                                <div class="infobox <?= $infobox_css; ?>">
+                                    <div class="infobox-data">
+                                        <span class="infobox-data-number"><?= number_format($record['amount'],Yii::app()->shoppingCart->getDecimalPlace()); ?></span>
+                                        <div class="infobox-content"><?= CHtml::link('Today\'s Gross Sale', Yii::app()->createUrl("report/SaleReportTab")); ?></div>
+                                    </div>
+                                    <!-- /section:pages/dashboard.infobox.stat -->
+                                    <div class="stat <?= $stat_css; ?>">
+                                        <?= $record['diff_percent']; ?> %
+                                    </div>
                                 </div>
-                                <div class="infobox-data">
-                                    <span class="infobox-data-number"><?php echo 'ZYX' //number_format($report->totalSale2Y(),Yii::app()->shoppingCart->getDecimalPlace()); ?></span>
-                                    <div class="infobox-content"><?php echo CHtml::link('Today\'s Sale', Yii::app()->createUrl("report/SaleReportTab")); ?></div>
-                                </div>
-                            </div>
+                            <?php } ?>
 
-                            <div class="infobox infobox-blue">
-                                <div class="infobox-icon">
-                                    <i class="ace-icon fa fa-shopping-cart"></i>
-                                </div>
+                            <?php foreach($report->saleInvoice2dVsLW() as $record) { ?>
+                                <?php
+                                    $stat_css = $record['diff_percent'] > 0 ?  'stat-success' : 'stat-important';
+                                    $infobox_css = $record['diff_percent'] > 0 ?  'infobox-blue' : 'infobox-red';
+                                ?>
 
-                                <div class="infobox-data">
-                                    <span class="infobox-data-number"><?php echo 'XZY';//number_format($report->totalSale2D(),Yii::app()->shoppingCart->getDecimalPlace()); ?></span>
-
-                                    <div class="infobox-content">Total Sales</div>
+                                <div class="infobox <?= $infobox_css; ?>">
+                                    <div class="infobox-icon">
+                                        <i class="ace-icon fa fa-file"></i>
+                                    </div>
+                                    <div class="infobox-data">
+                                        <span class="infobox-data-number"><?= number_format($record['amount'],Yii::app()->shoppingCart->getDecimalPlace()); ?></span>
+                                        <div class="infobox-content"><?= CHtml::link('Today\'s # of Invoices', Yii::app()->createUrl("report/SaleReportTab")); ?></div>
+                                    </div>
+                                    <!-- /section:pages/dashboard.infobox.stat -->
+                                    <div class="stat <?= $stat_css; ?>">
+                                        <?= $record['diff_percent']; ?> %
+                                    </div>
                                 </div>
-                            </div>
+                            <?php } ?>
 
-                            <div class="infobox infobox-blue">
-                                <div class="infobox-icon">
-                                    <i class="ace-icon fa fa-users"></i>
-                                </div>
-                                <div class="infobox-data">
-                                    <span class="infobox-data-number"><?php echo 'ABC';//$report->countCustomer(); ?></span>
+                            <?php foreach($report->saleInvoice2dVsLW() as $record) { ?>
+                                <?php
+                                $stat_css = $record['diff_percent'] > 0 ?  'stat-success' : 'stat-important';
+                                $infobox_css = $record['diff_percent'] > 0 ?  'infobox-green' : 'infobox-red';
+                                ?>
 
-                                    <div class="infobox-content"><?php echo CHtml::link('Total Serving', Yii::app()->createUrl("client/admin")); ?></div>
+                                <div class="infobox <?= $infobox_css; ?>">
+                                    <div class="infobox-data">
+                                        <span class="infobox-data-number"><?= number_format($record['amount'],Yii::app()->shoppingCart->getDecimalPlace()); ?></span>
+                                        <div class="infobox-content"><?= CHtml::link('Average Invoices', Yii::app()->createUrl("report/SaleReportTab")); ?></div>
+                                    </div>
+                                    <!-- /section:pages/dashboard.infobox.stat -->
+                                    <div class="stat <?= $stat_css; ?>">
+                                        <?= $record['diff_percent']; ?> %
+                                    </div>
                                 </div>
-                            </div>
+                            <?php } ?>
 
                             <div class="infobox infobox-green">
                                 <div class="infobox-icon">

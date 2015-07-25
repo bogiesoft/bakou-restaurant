@@ -682,114 +682,7 @@ class Report extends CFormModel
 
         return $result;
     }
-    
-    public function dashtopFood()
-    {
-        $sql = "SELECT  @ROW := @ROW + 1 AS rank,item_name,qty,amount
-                    FROM (
-                    SELECT i.name item_name,SUM(si.quantity) qty,SUM(si.quantity*si.price) amount
-                    FROM sale s , sale_item si , item i 
-                    WHERE s.id=si.sale_id 
-                    AND si.item_id=i.id 
-                    AND YEAR(s.sale_time) = YEAR(NOW())
-                    AND s.status='1'
-                    AND category_id=9
-                    GROUP BY i.name
-                    ORDER BY qty DESC LIMIT 10
-                    ) t1, (SELECT @ROW := 0) r
-                ";
-        
-        $rawData = Yii::app()->db->createCommand($sql)->queryAll(true);
 
-        $dataProvider = new CArrayDataProvider($rawData, array(
-            'keyField' => 'rank',
-            'pagination' => false,
-        ));
-        
-        return $dataProvider;
-    }
-    
-    public function dashtopBeverage()
-    {
-        $sql = "SELECT  @ROW := @ROW + 1 AS rank,item_name,qty,amount
-                    FROM (
-                    SELECT i.name item_name,SUM(si.quantity) qty,SUM(si.quantity*si.price) amount
-                    FROM sale s , sale_item si , item i 
-                    WHERE s.id=si.sale_id 
-                    AND si.item_id=i.id 
-                    AND YEAR(s.sale_time) = YEAR(NOW())
-                    AND s.status='1'
-                    AND category_id=1
-                    GROUP BY i.name
-                    ORDER BY qty DESC LIMIT 10
-                    ) t1, (SELECT @ROW := 0) r
-                ";
-        
-        $rawData = Yii::app()->db->createCommand($sql)->queryAll(true);
-
-        $dataProvider = new CArrayDataProvider($rawData, array(
-            'keyField' => 'rank',
-            'pagination' => false,
-        ));
-        
-        return $dataProvider;
-    }
-
-    public function dashtopProduct()
-    {
-
-        $sql = "SELECT  @ROW := @ROW + 1 AS rank,item_name,qty,amount
-                FROM (
-                SELECT (SELECT NAME FROM item i WHERE i.id=si.item_id) item_name,COUNT(*) qty,SUM(price*quantity) amount
-                FROM sale_item si INNER JOIN sale s ON s.id=si.sale_id 
-                     AND sale_time between DATE_FORMAT(NOW() ,'%Y') AND NOW()
-                     AND IFNULL(s.status,'1')='1'
-                GROUP BY item_name
-                ORDER BY qty DESC LIMIT 10
-                ) t1, (SELECT @ROW := 0) r";
-
-        $rawData = Yii::app()->db->createCommand($sql)->queryAll(true);
-
-        $dataProvider = new CArrayDataProvider($rawData, array(
-            'keyField' => 'rank',
-            'sort' => array(
-                'attributes' => array(
-                    'sale_time',
-                ),
-            ),
-            'pagination' => false,
-        ));
-
-        return $dataProvider; // Return as array object
-    }
-
-    public function dashtopProductbyAmount()
-    {
-
-        $sql = "SELECT  @ROW := @ROW + 1 AS rank,item_name,qty,amount
-                FROM (
-                SELECT (SELECT NAME FROM item i WHERE i.id=si.item_id) item_name,COUNT(*) qty,SUM(price*quantity) amount
-                FROM sale_item si INNER JOIN sale s ON s.id=si.sale_id 
-                     AND sale_time between DATE_FORMAT(NOW() ,'%Y') AND NOW()
-                     AND IFNULL(s.status,'1')='1'
-                GROUP BY item_name
-                ORDER BY amount DESC LIMIT 10
-                ) t1, (SELECT @ROW := 0) r";
-
-        $rawData = Yii::app()->db->createCommand($sql)->queryAll(true);
-
-        $dataProvider = new CArrayDataProvider($rawData, array(
-            'keyField' => 'rank',
-            'sort' => array(
-                'attributes' => array(
-                    'sale_time',
-                ),
-            ),
-            'pagination' => false,
-        ));
-
-        return $dataProvider; // Return as array object
-    }
 
     public function itemAsset()
     {
@@ -845,21 +738,6 @@ class Report extends CFormModel
         ));
 
         return $dataProvider; // Return as array object
-    }
-
-    public function saleDailyChart()
-    {
-        $sql = "SELECT date_format(s.sale_time,'%d/%m/%y') date,sum(quantity) quantity,
-                   SUM(case when si.discount_type='%' then (quantity*price-(quantity*price*IFNULL(si.discount_amount,0))/100) 
-                                else (quantity*price)-si.discount_amount
-                    end) amount
-                   FROM sale s INNER JOIN sale_item si ON si.sale_id=s.id 
-                   WHERE ( s.sale_time between DATE_FORMAT(NOW() ,'%Y-%m-01') and NOW() )
-                   AND s.status=:status
-                   GROUP BY date_format(s.sale_time,'%d/%m/%y')
-                   ORDER BY 1";
-
-        return Yii::app()->db->createCommand($sql)->queryAll(true,array(':status'=>Yii::app()->params['sale_complete_status']));
     }
 
     public function saleItemSummary()
