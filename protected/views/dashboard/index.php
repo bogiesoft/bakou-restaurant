@@ -12,6 +12,7 @@ $this->breadcrumbs=array(
         $amount[] = floatval($record["amount"]);
         $date[] = $record["date"];
     }
+	echo "Hello worl";
 ?>
     <div class="">
             <div class="row">
@@ -42,12 +43,13 @@ $this->breadcrumbs=array(
                                     $infobox_css = $record['diff_percent'] > 0 ?  'infobox-blue' : 'infobox-red';
                                 ?>
 
+
                                 <div class="infobox <?= $infobox_css; ?>">
                                     <div class="infobox-icon">
                                         <i class="ace-icon fa fa-file"></i>
                                     </div>
                                     <div class="infobox-data">
-                                        <span class="infobox-data-number"><?= number_format($record['amount'],Yii::app()->shoppingCart->getDecimalPlace()); ?></span>
+                                        <span class="infobox-data-number"><?=  number_format($record['amount'],Yii::app()->shoppingCart->getDecimalPlace()); ?></span>
                                         <div class="infobox-content"><?= CHtml::link('Today\'s # of Invoices', Yii::app()->createUrl("report/SaleReportTab")); ?></div>
                                     </div>
                                     <!-- /section:pages/dashboard.infobox.stat -->
@@ -57,7 +59,7 @@ $this->breadcrumbs=array(
                                 </div>
                             <?php } ?>
 
-                            <?php foreach($report->saleInvoice2dVsLW() as $record) { ?>
+                            <?php foreach($report->avgInvoice2dVsLW() as $record) { ?>
                                 <?php
                                 $stat_css = $record['diff_percent'] > 0 ?  'stat-success' : 'stat-important';
                                 $infobox_css = $record['diff_percent'] > 0 ?  'infobox-green' : 'infobox-red';

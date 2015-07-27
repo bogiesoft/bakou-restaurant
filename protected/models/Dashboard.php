@@ -58,25 +58,27 @@ class Dashboard extends CFormModel
 
     public function avgInvoice2dVsLW()
     {
-        $sql = "SELECT SUM(amount) amount,SUM(lastweek_amount) lastweek_amount, FORMAT((SUM(amount) - SUM(lastweek_amount))/SUM(lastweek_amount)*100,0) diff_percent
+       $sql="SELECT SUM(amount) amount,SUM(lastweek_amount) lastweek_amount, FORMAT((SUM(amount) - SUM(lastweek_amount))/SUM(lastweek_amount)*100,0) diff_percent
+            FROM (
+                SELECT SUM(amount)/COUNT(sale_id) amount, 0 lastweek_amount
                 FROM (
-                 SELECT COUNT(t1.id) amount,0 lastweek_amount
-                 FROM v_sale_order t1
-                 WHERE location_id=:location_id
-                 AND DATE(t1.`sale_time`)=CURDATE()
-                 AND `status`=0
-                 UNION ALL
-                 SELECT 0 amount, COUNT(t1.id) lastweek_amount
-                 FROM v_sale_order t1
-                 WHERE location_id=:location_id
-                 AND DATE(t1.`sale_time`)=CURDATE()-7
-                 AND `status`=0
-                ) AS t";
+                SELECT t2.`sale_id`,SUM(t2.`price`*t2.`quantity`) amount
+                FROM sale_order t1 JOIN sale_order_item t2 ON t2.`sale_id`=t1.`id`
+                WHERE t1.`location_id`=:location_id
+                AND DATE(t1.`sale_time`)= CURDATE()
+                GROUP BY t2.`sale_id`
+                ) AS t1
+                UNION ALL
+                SELECT 0 amount,SUM(sub_total)/COUNT(id) lastweek_amount
+                FROM sale_order t1
+                WHERE t1.`location_id`=:location_id
+                AND t1.status=0
+                AND DATE(t1.`sale_time`)= CURDATE()-7
+            ) AS t1";
 
         return Yii::app()->db->createCommand($sql)->queryAll(true,
             array(':location_id' => Yii::app()->getsetSession->getLocationId()));
     }
-
 
 
     public function saleDailyChart()
