@@ -12,7 +12,6 @@ $this->breadcrumbs=array(
         $amount[] = floatval($record["amount"]);
         $date[] = $record["date"];
     }
-	echo "Hello worl";
 ?>
     <div class="">
             <div class="row">
@@ -20,93 +19,210 @@ $this->breadcrumbs=array(
                 <div class="col-xs-12">
                     <div class="row">
                         <div class="col-xs-12 widget-container-col summary_header">
-                            <?php foreach($report->grossSaleAmount() as $record) { ?>
-                                <?php
-                                    $stat_css = $record['diff_percent'] > 0 ?  'stat-success' : 'stat-important';
-                                    $infobox_css = $record['diff_percent'] > 0 ?  'infobox-green' : 'infobox-red';
-                                ?>
-                                <div class="infobox <?= $infobox_css; ?>">
-                                    <div class="infobox-data">
-                                        <span class="infobox-data-number"><?= number_format($record['amount'],Yii::app()->shoppingCart->getDecimalPlace()); ?></span>
-                                        <div class="infobox-content"><?= CHtml::link('Today\'s Gross Sale', Yii::app()->createUrl("report/SaleReportTab")); ?></div>
-                                    </div>
-                                    <!-- /section:pages/dashboard.infobox.stat -->
-                                    <div class="stat <?= $stat_css; ?>">
-                                        <?= $record['diff_percent']; ?> %
-                                    </div>
-                                </div>
-                            <?php } ?>
 
-                            <?php foreach($report->saleInvoice2dVsLW() as $record) { ?>
-                                <?php
-                                    $stat_css = $record['diff_percent'] > 0 ?  'stat-success' : 'stat-important';
-                                    $infobox_css = $record['diff_percent'] > 0 ?  'infobox-blue' : 'infobox-red';
-                                ?>
+                            <div class="tabbable">
+                                <ul class="nav nav-tabs" id="myTab">
+                                    <li class="active">
+                                        <a data-toggle="tab" href="#today">
+                                            <i class="green ace-icon fa fa-calendar-o bigger-120"></i>
+                                            <?= Yii::t('app','Today'); ?>
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a data-toggle="tab" href="#yesterday">
+                                            <i class="orange ace-icon fa fa-calendar-o bigger-120"></i>
+                                            <?= Yii::t('app','Yesterday'); ?>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="today" class="tab-pane fade in active">
+                                        <?php foreach($report->grossSaleAmount() as $record) { ?>
+                                            <?php
+                                                $stat_css = $record['diff_percent'] > 0 ?  'stat-success' : 'stat-important';
+                                                $infobox_css = $record['diff_percent'] > 0 ?  'infobox-green' : 'infobox-red';
+                                            ?>
+                                            <div class="infobox <?= $infobox_css; ?>">
+                                                <div class="infobox-data">
+                                                    <span class="infobox-data-number"><?= Yii::app()->settings->get('site', 'currencySymbol') . number_format($record['amount'],Yii::app()->shoppingCart->getDecimalPlace()); ?></span>
+                                                    <div class="infobox-content"><?= CHtml::link('Gross Sale', Yii::app()->createUrl("report/SaleReportTab")); ?></div>
+                                                </div>
+                                                <!-- /section:pages/dashboard.infobox.stat -->
+                                                <div class="stat <?= $stat_css; ?>">
+                                                    <?= $record['diff_percent']; ?> %
+                                                </div>
+                                            </div>
+                                        <?php } ?>
+
+                                        <?php foreach($report->saleInvoice2dVsLW() as $record) { ?>
+                                            <?php
+                                                $stat_css = $record['diff_percent'] > 0 ?  'stat-success' : 'stat-important';
+                                                $infobox_css = $record['diff_percent'] > 0 ?  'infobox-blue' : 'infobox-red';
+                                            ?>
 
 
-                                <div class="infobox <?= $infobox_css; ?>">
-                                    <div class="infobox-icon">
-                                        <i class="ace-icon fa fa-file"></i>
-                                    </div>
-                                    <div class="infobox-data">
-                                        <span class="infobox-data-number"><?=  number_format($record['amount'],Yii::app()->shoppingCart->getDecimalPlace()); ?></span>
-                                        <div class="infobox-content"><?= CHtml::link('Today\'s # of Invoices', Yii::app()->createUrl("report/SaleReportTab")); ?></div>
-                                    </div>
-                                    <!-- /section:pages/dashboard.infobox.stat -->
-                                    <div class="stat <?= $stat_css; ?>">
-                                        <?= $record['diff_percent']; ?> %
-                                    </div>
-                                </div>
-                            <?php } ?>
+                                            <div class="infobox <?= $infobox_css; ?>">
+                                                <div class="infobox-icon">
+                                                    <i class="ace-icon fa fa-file"></i>
+                                                </div>
+                                                <div class="infobox-data">
+                                                    <span class="infobox-data-number"><?=  number_format($record['amount'],Yii::app()->shoppingCart->getDecimalPlace()); ?></span>
+                                                    <div class="infobox-content"><?= CHtml::link('Number of Invoices', Yii::app()->createUrl("report/SaleReportTab")); ?></div>
+                                                </div>
+                                                <!-- /section:pages/dashboard.infobox.stat -->
+                                                <div class="stat <?= $stat_css; ?>">
+                                                    <?= $record['diff_percent']; ?> %
+                                                </div>
+                                            </div>
+                                        <?php } ?>
 
-                            <?php foreach($report->avgInvoice2dVsLW() as $record) { ?>
-                                <?php
-                                $stat_css = $record['diff_percent'] > 0 ?  'stat-success' : 'stat-important';
-                                $infobox_css = $record['diff_percent'] > 0 ?  'infobox-green' : 'infobox-red';
-                                ?>
+                                        <?php foreach($report->avgInvoice2dVsLW() as $record) { ?>
+                                            <?php
+                                            $stat_css = $record['diff_percent'] > 0 ?  'stat-success' : 'stat-important';
+                                            $infobox_css = $record['diff_percent'] > 0 ?  'infobox-green' : 'infobox-red';
+                                            ?>
 
-                                <div class="infobox <?= $infobox_css; ?>">
-                                    <div class="infobox-data">
-                                        <span class="infobox-data-number"><?= number_format($record['amount'],Yii::app()->shoppingCart->getDecimalPlace()); ?></span>
-                                        <div class="infobox-content"><?= CHtml::link('Average Invoices', Yii::app()->createUrl("report/SaleReportTab")); ?></div>
-                                    </div>
-                                    <!-- /section:pages/dashboard.infobox.stat -->
-                                    <div class="stat <?= $stat_css; ?>">
-                                        <?= $record['diff_percent']; ?> %
-                                    </div>
-                                </div>
-                            <?php } ?>
+                                            <div class="infobox <?= $infobox_css; ?>">
+                                                <div class="infobox-data">
+                                                    <span class="infobox-data-number"><?= Yii::app()->settings->get('site', 'currencySymbol') . number_format($record['amount'],Yii::app()->shoppingCart->getDecimalPlace()); ?></span>
+                                                    <div class="infobox-content"><?= CHtml::link('Average Invoices', Yii::app()->createUrl("report/SaleReportTab")); ?></div>
+                                                </div>
+                                                <!-- /section:pages/dashboard.infobox.stat -->
+                                                <div class="stat <?= $stat_css; ?>">
+                                                    <?= $record['diff_percent']; ?> %
+                                                </div>
+                                            </div>
+                                        <?php } ?>
 
-                            <div class="infobox infobox-green">
-                                <div class="infobox-icon">
-                                    <i class="ace-icon fa fa-user icon-animated-vertical"></i>
-                                </div>
-                                <div class="infobox-data">
-                                    <span class="infobox-data-number"><?php //echo $report->countCustReg2D(); ?></span>
+                                        <div class="infobox infobox-green">
+                                            <div class="infobox-icon">
+                                                <i class="ace-icon fa fa-user icon-animated-vertical"></i>
+                                            </div>
+                                            <div class="infobox-data">
+                                                <span class="infobox-data-number"><?php //echo $report->countCustReg2D(); ?></span>
 
-                                    <div class="infobox-content"><?php echo CHtml::link('New Ordering', Yii::app()->createUrl("client/admin")); ?></div>
-                                </div>
-                            </div>
+                                                <div class="infobox-content"><?php echo CHtml::link('New Ordering', Yii::app()->createUrl("client/admin")); ?></div>
+                                            </div>
+                                        </div>
 
-                            <div class="infobox infobox-orange2">
-                                <div class="infobox-icon">
-                                    <i class="ace-icon fa fa-square-o"></i>
-                                </div>
-                                <div class="infobox-data">
-                                    <span class="infobox-data-number"><?php //echo $report->outofStock(); ?></span>
+                                        <div class="infobox infobox-orange2">
+                                            <div class="infobox-icon">
+                                                <i class="ace-icon fa fa-square-o"></i>
+                                            </div>
+                                            <div class="infobox-data">
+                                                <span class="infobox-data-number"><?php //echo $report->outofStock(); ?></span>
 
-                                    <div class="infobox-content"><?php echo CHtml::link(Yii::t('app;','Order Cancelled'), Yii::app()->createUrl("report/inventory",array('filter'=>'outstock'))); ?></div>
-                                </div>
-                            </div>
+                                                <div class="infobox-content"><?php echo CHtml::link(Yii::t('app;','Order Cancelled'), Yii::app()->createUrl("report/inventory",array('filter'=>'outstock'))); ?></div>
+                                            </div>
+                                        </div>
 
-                            <div class="infobox infobox-red">
-                                <div class="infobox-icon">
-                                    <i class="ace-icon fa fa-minus-square icon-animated-bell""></i>
-                                </div>
-                                <div class="infobox-data">
-                                    <span class="infobox-data-number"><?php //echo $report->negativeStock(); ?></span>
+                                        <div class="infobox infobox-red">
+                                            <div class="infobox-icon">
+                                                <i class="ace-icon fa fa-minus-square icon-animated-bell""></i>
+                                            </div>
+                                            <div class="infobox-data">
+                                                <span class="infobox-data-number"><?php //echo $report->negativeStock(); ?></span>
 
-                                    <div class="infobox-content"><?php echo CHtml::link(Yii::t('app;','Checked Out'), Yii::app()->createUrl("report/inventory")); ?></div>
+                                                <div class="infobox-content"><?php echo CHtml::link(Yii::t('app;','Checked Out'), Yii::app()->createUrl("report/inventory")); ?></div>
+                                            </div>
+                                        </div>
+                                     </div>
+
+                                    <div id="yesterday" class="tab-pane fade">
+                                        <?php foreach($report->grossSaleAmount(1) as $record) { ?>
+                                            <?php
+                                                $stat_css = $record['diff_percent'] > 0 ?  'stat-success' : 'stat-important';
+                                                $infobox_css = $record['diff_percent'] > 0 ?  'infobox-green' : 'infobox-red';
+                                            ?>
+                                            <div class="infobox <?= $infobox_css; ?>">
+                                                <div class="infobox-data">
+                                                    <span class="infobox-data-number"><?= Yii::app()->settings->get('site', 'currencySymbol') . number_format($record['amount'],Yii::app()->shoppingCart->getDecimalPlace()); ?></span>
+                                                    <div class="infobox-content"><?= CHtml::link( date('l',time() - 60 * 60 * 24) . ' Gross Sale', Yii::app()->createUrl("report/SaleReportTab")); ?></div>
+                                                </div>
+                                                <!-- /section:pages/dashboard.infobox.stat -->
+                                                <div class="stat <?= $stat_css; ?>">
+                                                    <?= $record['diff_percent']; ?> %
+                                                </div>
+                                            </div>
+                                        <?php } ?>
+
+                                        <?php foreach($report->saleInvoice2dVsLW(1) as $record) { ?>
+                                            <?php
+                                                $stat_css = $record['diff_percent'] > 0 ?  'stat-success' : 'stat-important';
+                                                $infobox_css = $record['diff_percent'] > 0 ?  'infobox-blue' : 'infobox-red';
+                                            ?>
+
+
+                                            <div class="infobox <?= $infobox_css; ?>">
+                                                <div class="infobox-icon">
+                                                    <i class="ace-icon fa fa-file"></i>
+                                                </div>
+                                                <div class="infobox-data">
+                                                    <span class="infobox-data-number"><?=  number_format($record['amount'],Yii::app()->shoppingCart->getDecimalPlace()); ?></span>
+                                                    <div class="infobox-content"><?= CHtml::link(date('l',time() - 60 * 60 * 24) . ' # of Invoices', Yii::app()->createUrl("report/SaleReportTab")); ?></div>
+                                                </div>
+                                                <!-- /section:pages/dashboard.infobox.stat -->
+                                                <div class="stat <?= $stat_css; ?>">
+                                                    <?= $record['diff_percent']; ?> %
+                                                </div>
+                                            </div>
+                                        <?php } ?>
+
+                                        <?php foreach($report->avgInvoice2dVsLW(1) as $record) { ?>
+                                            <?php
+                                            $stat_css = $record['diff_percent'] > 0 ?  'stat-success' : 'stat-important';
+                                            $infobox_css = $record['diff_percent'] > 0 ?  'infobox-green' : 'infobox-red';
+                                            ?>
+
+                                            <div class="infobox <?= $infobox_css; ?>">
+                                                <div class="infobox-data">
+                                                    <span class="infobox-data-number"><?= Yii::app()->settings->get('site', 'currencySymbol') . number_format($record['amount'],Yii::app()->shoppingCart->getDecimalPlace()); ?></span>
+                                                    <div class="infobox-content"><?= CHtml::link(date('l',time() - 60 * 60 * 24) . ' Average Invoices', Yii::app()->createUrl("report/SaleReportTab")); ?></div>
+                                                </div>
+                                                <!-- /section:pages/dashboard.infobox.stat -->
+                                                <div class="stat <?= $stat_css; ?>">
+                                                    <?= $record['diff_percent']; ?> %
+                                                </div>
+                                            </div>
+                                        <?php } ?>
+
+                                        <?php foreach($report->avgInvoice2dVsLW(1) as $record) { ?>
+                                            <div class="infobox infobox-green">
+                                                <div class="infobox-icon">
+                                                    <i class="ace-icon fa fa-user icon-animated-vertical"></i>
+                                                </div>
+                                                <div class="infobox-data">
+                                                    <span class="infobox-data-number"><?php //echo $report->countCustReg2D(); ?></span>
+
+                                                    <div class="infobox-content"><?php echo CHtml::link('New Ordering', Yii::app()->createUrl("client/admin")); ?></div>
+                                                </div>
+                                            </div>
+                                        <?php } ?>
+
+                                        <div class="infobox infobox-orange2">
+                                            <div class="infobox-icon">
+                                                <i class="ace-icon fa fa-square-o"></i>
+                                            </div>
+                                            <div class="infobox-data">
+                                                <span class="infobox-data-number"><?php //echo $report->outofStock(); ?></span>
+
+                                                <div class="infobox-content"><?php echo CHtml::link(Yii::t('app;','Order Cancelled'), Yii::app()->createUrl("report/inventory",array('filter'=>'outstock'))); ?></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="infobox infobox-red">
+                                            <div class="infobox-icon">
+                                                <i class="ace-icon fa fa-minus-square icon-animated-bell""></i>
+                                            </div>
+                                            <div class="infobox-data">
+                                                <span class="infobox-data-number"><?php //echo $report->negativeStock(); ?></span>
+
+                                                <div class="infobox-content"><?php echo CHtml::link(Yii::t('app;','Checked Out'), Yii::app()->createUrl("report/inventory")); ?></div>
+                                            </div>
+                                        </div>
+                                     </div>
+
                                 </div>
                             </div>
 

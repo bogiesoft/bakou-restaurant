@@ -3,60 +3,57 @@
 class Dashboard extends CFormModel
 {
 
-    public function grossSaleAmount()
+    public function grossSaleAmount($interval=0)
     {
-        $sql = "SELECT date_report,amount,lastweek_amount,format((amount-lastweek_amount)/lastweek_amount*100,0) diff_percent
-        FROM (
-            SELECT DATE(t1.sale_time) date_report,SUM(t2.sub_total) amount,
-            (SELECT SUM(sub_total) amount FROM v_sale_order t1 WHERE location_id=:location_id AND DATE(t1.`sale_time`)=CURDATE()-7 AND `status`=0) lastweek_amount
-        FROM `v_sale_order` t1 JOIN `v_sale_order_tem_sum` t2
-            ON t2.sale_id = t1.id
-        WHERE location_id=:location_id
-            AND DATE(t1.`sale_time`)= CURDATE()
-        GROUP BY DATE(t1.sale_time)
-        ) AS t2";
-
         $sql="SELECT SUM(amount) amount,SUM(lastweek_amount) lastweek_amount, FORMAT((SUM(amount) - SUM(lastweek_amount))/SUM(lastweek_amount)*100,0) diff_percent
                 FROM (
                 SELECT SUM(t2.sub_total) amount,0 lastweek_amount
                 FROM `v_sale_order` t1 JOIN `v_sale_order_tem_sum` t2
                     ON t2.sale_id = t1.id
                 WHERE t1.location_id=:location_id
-                AND DATE(t1.`sale_time`)= CURDATE()
+                AND DATE(t1.`sale_time`)= CURDATE() - :interval
                 UNION ALL
                 SELECT 0 amount,SUM(sub_total) lastweek_amount
                 FROM v_sale_order t1
                 WHERE location_id=:location_id
-                AND DATE(t1.`sale_time`)=CURDATE()-7
+                AND DATE(t1.`sale_time`)=CURDATE()-7 - :interval
                 AND `status`=0
                 ) AS t2";
 
         return Yii::app()->db->createCommand($sql)->queryAll(true,
-            array(':location_id' => Yii::app()->getsetSession->getLocationId()));
+            array(
+                ':location_id' => Yii::app()->getsetSession->getLocationId(),
+                ':interval' => $interval,
+            )
+        );
     }
 
-    public function saleInvoice2dVsLW()
+    public function saleInvoice2dVsLW($interval=0)
     {
         $sql = "SELECT SUM(amount) amount,SUM(lastweek_amount) lastweek_amount, FORMAT((SUM(amount) - SUM(lastweek_amount))/SUM(lastweek_amount)*100,0) diff_percent
                 FROM (
                  SELECT COUNT(t1.id) amount,0 lastweek_amount
                  FROM v_sale_order t1
                  WHERE location_id=:location_id
-                 AND DATE(t1.`sale_time`)=CURDATE()
+                 AND DATE(t1.`sale_time`)=CURDATE()-:interval
                  AND `status`=0
                  UNION ALL
                  SELECT 0 amount, COUNT(t1.id) lastweek_amount
                  FROM v_sale_order t1
                  WHERE location_id=:location_id
-                 AND DATE(t1.`sale_time`)=CURDATE()-7
+                 AND DATE(t1.`sale_time`)=CURDATE()-7-:interval
                  AND `status`=0
                 ) AS t";
 
         return Yii::app()->db->createCommand($sql)->queryAll(true,
-            array(':location_id' => Yii::app()->getsetSession->getLocationId()));
+            array(
+                ':location_id' => Yii::app()->getsetSession->getLocationId(),
+                ':interval' => $interval,
+            )
+        );
     }
 
-    public function avgInvoice2dVsLW()
+    public function avgInvoice2dVsLW($interval=0)
     {
        $sql="SELECT SUM(amount) amount,SUM(lastweek_amount) lastweek_amount, FORMAT((SUM(amount) - SUM(lastweek_amount))/SUM(lastweek_amount)*100,0) diff_percent
             FROM (
@@ -65,7 +62,7 @@ class Dashboard extends CFormModel
                 SELECT t2.`sale_id`,SUM(t2.`price`*t2.`quantity`) amount
                 FROM sale_order t1 JOIN sale_order_item t2 ON t2.`sale_id`=t1.`id`
                 WHERE t1.`location_id`=:location_id
-                AND DATE(t1.`sale_time`)= CURDATE()
+                AND DATE(t1.`sale_time`)= CURDATE()-:interval
                 GROUP BY t2.`sale_id`
                 ) AS t1
                 UNION ALL
@@ -73,11 +70,31 @@ class Dashboard extends CFormModel
                 FROM sale_order t1
                 WHERE t1.`location_id`=:location_id
                 AND t1.status=0
-                AND DATE(t1.`sale_time`)= CURDATE()-7
+                AND DATE(t1.`sale_time`)= CURDATE()-7-:interval
             ) AS t1";
 
         return Yii::app()->db->createCommand($sql)->queryAll(true,
-            array(':location_id' => Yii::app()->getsetSession->getLocationId()));
+            array(
+                ':location_id' => Yii::app()->getsetSession->getLocationId(),
+                ':interval' => $interval,
+            )
+        );
+    }
+
+    public function ordering($interval=0)
+    {
+        $sql="SELECT COUNT(id) amount
+              FROM sale_order t1
+              WHERE location_id=:location_id
+              AND t1.status=1
+              AND DATE(t1.`sale_time`)= CURDATE()-:interval";
+
+        return Yii::app()->db->createCommand($sql)->queryAll(true,
+            array(
+                ':location_id' => Yii::app()->getsetSession->getLocationId(),
+                ':interval' => $interval,
+            )
+        );
     }
 
 
