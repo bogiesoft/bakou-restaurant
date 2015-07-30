@@ -81,21 +81,23 @@ class Dashboard extends CFormModel
         );
     }
 
-    public function ordering($interval=0)
+    public function ordering($interval=0,$status=1)
     {
-        $sql="SELECT COUNT(id) amount
+        $sql="SELECT COUNT(id) amount,0 lastweek_amount
               FROM sale_order t1
               WHERE location_id=:location_id
-              AND t1.status=1
+              AND `status`=:status
               AND DATE(t1.`sale_time`)= CURDATE()-:interval";
 
         return Yii::app()->db->createCommand($sql)->queryAll(true,
             array(
                 ':location_id' => Yii::app()->getsetSession->getLocationId(),
                 ':interval' => $interval,
+                ':status' => $status
             )
         );
     }
+
 
 
     public function saleDailyChart()

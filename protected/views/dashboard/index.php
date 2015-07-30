@@ -95,38 +95,26 @@ $this->breadcrumbs=array(
                                             </div>
                                         <?php } ?>
 
-                                        <div class="infobox infobox-green">
-                                            <div class="infobox-icon">
-                                                <i class="ace-icon fa fa-user icon-animated-vertical"></i>
-                                            </div>
-                                            <div class="infobox-data">
-                                                <span class="infobox-data-number"><?php //echo $report->countCustReg2D(); ?></span>
+                                        <?php foreach($report->ordering(0,1) as $record) { ?>
 
-                                                <div class="infobox-content"><?php echo CHtml::link('New Ordering', Yii::app()->createUrl("client/admin")); ?></div>
+                                            <div class="infobox infobox-orange2">
+                                                <div class="infobox-data">
+                                                    <span class="infobox-data-number"><?= number_format($record['amount'],Yii::app()->shoppingCart->getDecimalPlace()); ?></span>
+                                                    <div class="infobox-content"><?= CHtml::link('# of New Ordering', Yii::app()->createUrl("saleIndex")); ?></div>
+                                                </div>
                                             </div>
-                                        </div>
+                                        <?php } ?>
 
-                                        <div class="infobox infobox-orange2">
-                                            <div class="infobox-icon">
-                                                <i class="ace-icon fa fa-square-o"></i>
-                                            </div>
-                                            <div class="infobox-data">
-                                                <span class="infobox-data-number"><?php //echo $report->outofStock(); ?></span>
+                                        <?php foreach($report->ordering(0,0) as $record) { ?>
 
-                                                <div class="infobox-content"><?php echo CHtml::link(Yii::t('app;','Order Cancelled'), Yii::app()->createUrl("report/inventory",array('filter'=>'outstock'))); ?></div>
+                                            <div class="infobox infobox-green">
+                                                <div class="infobox-data">
+                                                    <span class="infobox-data-number"><?= number_format($record['amount'],Yii::app()->shoppingCart->getDecimalPlace()); ?></span>
+                                                    <div class="infobox-content"><?= CHtml::link('# of Checked Out', Yii::app()->createUrl("saleIndex")); ?></div>
+                                                </div>
                                             </div>
-                                        </div>
+                                        <?php } ?>
 
-                                        <div class="infobox infobox-red">
-                                            <div class="infobox-icon">
-                                                <i class="ace-icon fa fa-minus-square icon-animated-bell""></i>
-                                            </div>
-                                            <div class="infobox-data">
-                                                <span class="infobox-data-number"><?php //echo $report->negativeStock(); ?></span>
-
-                                                <div class="infobox-content"><?php echo CHtml::link(Yii::t('app;','Checked Out'), Yii::app()->createUrl("report/inventory")); ?></div>
-                                            </div>
-                                        </div>
                                      </div>
 
                                     <div id="yesterday" class="tab-pane fade">
@@ -187,40 +175,6 @@ $this->breadcrumbs=array(
                                             </div>
                                         <?php } ?>
 
-                                        <?php foreach($report->avgInvoice2dVsLW(1) as $record) { ?>
-                                            <div class="infobox infobox-green">
-                                                <div class="infobox-icon">
-                                                    <i class="ace-icon fa fa-user icon-animated-vertical"></i>
-                                                </div>
-                                                <div class="infobox-data">
-                                                    <span class="infobox-data-number"><?php //echo $report->countCustReg2D(); ?></span>
-
-                                                    <div class="infobox-content"><?php echo CHtml::link('New Ordering', Yii::app()->createUrl("client/admin")); ?></div>
-                                                </div>
-                                            </div>
-                                        <?php } ?>
-
-                                        <div class="infobox infobox-orange2">
-                                            <div class="infobox-icon">
-                                                <i class="ace-icon fa fa-square-o"></i>
-                                            </div>
-                                            <div class="infobox-data">
-                                                <span class="infobox-data-number"><?php //echo $report->outofStock(); ?></span>
-
-                                                <div class="infobox-content"><?php echo CHtml::link(Yii::t('app;','Order Cancelled'), Yii::app()->createUrl("report/inventory",array('filter'=>'outstock'))); ?></div>
-                                            </div>
-                                        </div>
-
-                                        <div class="infobox infobox-red">
-                                            <div class="infobox-icon">
-                                                <i class="ace-icon fa fa-minus-square icon-animated-bell""></i>
-                                            </div>
-                                            <div class="infobox-data">
-                                                <span class="infobox-data-number"><?php //echo $report->negativeStock(); ?></span>
-
-                                                <div class="infobox-content"><?php echo CHtml::link(Yii::t('app;','Checked Out'), Yii::app()->createUrl("report/inventory")); ?></div>
-                                            </div>
-                                        </div>
                                      </div>
 
                                 </div>
@@ -381,7 +335,7 @@ $this->breadcrumbs=array(
 
 <!--http://stackoverflow.com/questions/13668484/warn-user-when-new-data-is-inserted-on-database-->
 
-<!--<script>
+<script>
 (function worker() {
     $.ajax({
         url: 'AjaxRefresh',
@@ -394,5 +348,5 @@ $this->breadcrumbs=array(
         }
     });
 })();
-</script>-->
+</script>
 

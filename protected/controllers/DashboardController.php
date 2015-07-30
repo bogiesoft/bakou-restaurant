@@ -31,7 +31,7 @@ class DashboardController extends Controller
 				'users'=>array('@'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
+				'actions'=>array('create','update','AjaxRefresh'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -56,6 +56,12 @@ class DashboardController extends Controller
 		} else {
 			throw new CHttpException(403, 'You are not authorized to perform this action');
 		}
+	}
+
+	public function actionAjaxRefresh()
+	{
+		$report=new Dashboard;
+		$this->renderPartial('_index_ajax',array('report'=>$report));
 	}
 
 	
