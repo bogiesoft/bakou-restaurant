@@ -2,11 +2,13 @@
     <span class="label label-info label-xlg">
         <!--<i class="ace-icon fa fa-coffee"></i>-->
         <?php echo '<b>' .  $table_info->name  .' - ' . Common::GroupAlias(Yii::app()->orderingCart->getGroupId()) . '</b>'; ?>
-    </span>
-    <span class="label label-info label-xlg">
         <i class="ace-icon fa fa-clock-o"></i>
         <?= $time_go; ?>
     </span>
+   <!-- <span class="label label-info label-xlg">
+        <i class="ace-icon fa fa-clock-o"></i>
+        <?/*= $time_go; */?>
+    </span>-->
 <?php } ?>
 <?php if (isset($ordering_status)) { ?>
     <span class="<?php echo $ordering_status_span; ?>">

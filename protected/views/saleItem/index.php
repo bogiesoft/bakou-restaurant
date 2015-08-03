@@ -39,7 +39,6 @@
 
 </div>
 
-
 <div class="waiting"><!-- Place at bottom of page --></div>
 
 

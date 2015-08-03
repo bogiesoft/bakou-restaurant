@@ -151,7 +151,7 @@ $sale_order = new SaleOrder;
             },
             complete: function() {
                 // Schedule the next request when the current one's complete
-                setTimeout(worker, 100000);
+                setTimeout(worker, 5000);
             }
         });
     })();

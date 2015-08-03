@@ -105,10 +105,10 @@
                         ?>
                         <?php //} ?>
 
-                        <?php $this->endWidget(); ?> <!--/endformWidget-->
+                        <?php $this->endWidget(); ?>
                     </div>
 
-                    <div class="col-xs-12 col-sm-8" id="order_status">
+                    <div class="col-xs-12 col-sm-8 align-right" id="order_status">
                         <?php $this->renderPartial('partial/_right_status', array(
                             'model' => $model,
                             'table_info' => $table_info,
