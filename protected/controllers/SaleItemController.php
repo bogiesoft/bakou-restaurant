@@ -538,9 +538,9 @@ class SaleItemController extends Controller
             //Yii::app()->clientScript->scriptMap['*.js'] = false;
             Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false; 
             Yii::app()->clientScript->scriptMap['box.css'] = false; 
-            $this->renderPartial('touchscreen/admin_touchscreen', $data, false, true);
+            $this->renderPartial('index', $data, false, true);
         } else {
-            $this->render('touchscreen/admin_touchscreen', $data);
+            $this->render('index', $data);
         }
     }
 
@@ -589,9 +589,9 @@ class SaleItemController extends Controller
         echo CJSON::encode(array(
             'count_new_order' => $sale_order->countNewOrder(),
             //'div_order_navbar' => $this->renderPartial('touchscreen/_order_navbar', $data_navbar, true, true), // Got stuck if refreshing this drop-down menu always close every time refresh
-            'div_order_table' => $this->renderPartial('touchscreen/_order_table', $data, true, true),
-            'div_order_menu' => $this->renderPartial('touchscreen/_order_menu', $data, true, true),
-            'div_order_status' => $this->renderPartial('touchscreen/_order_status', $data, true, true),
+            'div_order_table' => $this->renderPartial('partial/_left_table', $data, true, true),
+            'div_order_menu' => $this->renderPartial('partial/_right_menu', $data, true, true),
+            'div_order_status' => $this->renderPartial('partial/_right_status', $data, true, true),
         ));
 
         //$this->renderPartial('touchscreen/_admin_touchscreen_ajax', $data, false, true);
