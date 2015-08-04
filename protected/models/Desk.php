@@ -156,7 +156,8 @@ class Desk extends CActiveRecord
              $sql="SELECT id,name,occupied busy_flag
                    FROM desk
                    WHERE zone_id=:zone_id
-                   AND status=:status"; 
+                   AND status=:status
+                   ORDER BY name";
             
             $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(':zone_id' =>$zone_id,':status'=>$this::_active_status));
             return $result;
@@ -182,7 +183,8 @@ class Desk extends CActiveRecord
             $sql="SELECT d.id,d.name,d.occupied busy_flag
                   FROM desk d INNER JOIN zone z ON z.id=d.zone_id
                             AND z.location_id=:location_id
-                  WHERE d.status=:status"; 
+                  WHERE d.status=:status
+                  ORDER BY d.name";
              
             //$result = Yii::app()->db->createCommand($sql)->queryAll(true, array(':location_id' =>(int)$location_id));
             $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(':location_id' =>$location_id,':status' =>$this::_active_status));
