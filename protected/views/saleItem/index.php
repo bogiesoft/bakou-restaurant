@@ -1,11 +1,11 @@
 <style>
-    .btn {
+    .table-btn {
         margin-left: 10px;
         margin-bottom: 12px;
     }
 </style>
 
-<?php $this->widget('ext.modaldlg.EModalDlg'); ?>
+<?php //$this->widget('ext.modaldlg.EModalDlg'); ?>
 
 <div id="register_container">
 
@@ -39,6 +39,5 @@
 
 </div>
 
-<div class="waiting"><!-- Place at bottom of page --></div>
 
 

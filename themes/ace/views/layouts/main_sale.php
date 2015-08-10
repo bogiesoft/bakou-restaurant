@@ -35,15 +35,16 @@
     <![endif]-->
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-skins.min.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-rtl.min.css" />
-    
+    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/jquery.gritter.css" />
+
     <!--[if lte IE 9]>
         <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-ie.min.css" />
     <![endif]-->
     
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/jquery-ui-1.10.4.custom.min.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/keyboard.css" />
+    <!--<link rel="stylesheet" type="text/css" href="<?php /*echo $baseUrl */?>/css/keyboard.css" />-->
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/loading_animation.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/jquery.bxslider.css" />
+    <!--<link rel="stylesheet" type="text/css" href="<?php /*echo $baseUrl */?>/css/jquery.bxslider.css" />-->
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/select2.css" />
     
     <!-- ace settings handler -->
@@ -58,6 +59,8 @@
         //$cs->registerScriptFile($baseUrl.'/js/jquery.colorbox-min.js',CClientScript::POS_END);
         $cs->registerScriptFile($baseUrl.'/js/ace-elements.min.js',CClientScript::POS_END);  
         $cs->registerScriptFile($baseUrl.'/js/ace.min.js',CClientScript::POS_END);
+        $cs->registerScriptFile($baseUrl.'/js/jquery.gritter.min.js',CClientScript::POS_END);
+        //$cs->registerScriptFile($baseUrl.'/js/bootbox.min.js',CClientScript::POS_END);
         //$cs->registerScriptFile($baseUrl.'/js/jquery.jkey.min.js',CClientScript::POS_END);
         //$cs->registerScriptFile($baseUrl.'/js/common.js',CClientScript::POS_END);
         //$cs->registerScriptFile($baseUrl.'/js/jquery.keyboard.min.js',CClientScript::POS_END);
@@ -65,7 +68,7 @@
         $cs->registerScriptFile($baseUrl.'/js/select2.min.js',CClientScript::POS_END);
         $cs->registerScriptFile($baseUrl.'/js/jquery.form.min.js',CClientScript::POS_END);
     ?>
-    
+
     <?php 
         if (Yii::app()->components['user']->loginRequiredAjaxResponse){
             Yii::app()->clientScript->registerScript('ajaxLoginRequired', '

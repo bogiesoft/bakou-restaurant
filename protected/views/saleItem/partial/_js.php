@@ -272,24 +272,6 @@ $(document).keydown(function(event)
 });
 </script>
 
-
-<!--<script type='text/javascript'>
-    $('#dropdown_all_order').on('click','a',function(e){
-        e.preventDefault();
-        var url=$(this).attr('href')
-        $.ajax({
-            url: url,
-            type : 'post',
-            beforeSend: function() { $('.waiting').show(); },
-            complete: function() { $('.waiting').hide(); },
-            success : function(data) {
-                $('#register_container').html(data);
-            }
-        });
-    });
-</script>
--->
-
-
-
 <?php Yii::app()->clientScript->registerScript('setFocus', '$("#SaleItem_item_id").focus();'); ?>
+
+<div class="waiting"><!-- Place at bottom of page --></div>

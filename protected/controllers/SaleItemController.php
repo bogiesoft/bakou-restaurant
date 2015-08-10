@@ -55,7 +55,7 @@ class SaleItemController extends Controller
 
         if (!Yii::app()->orderingCart->getTableId()) {
             //$data['warning'] = Yii::t('app','Plz, select at least a table');
-            Yii::app()->user->setFlash('info', "Plz, select at least a table");
+            Yii::app()->user->setFlash('warning', "Plz, select at least a table");
         } else {
             $result_id = Yii::app()->orderingCart->addItem($item_id);
             if ($result_id == 0 )  {

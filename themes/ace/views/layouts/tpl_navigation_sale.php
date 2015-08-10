@@ -146,8 +146,8 @@ $sale_order = new SaleOrder;
             success: function(data) {
                 $('.count_new_order').text(data.count_new_order);
                 $('#table_grid').html(data.div_order_table);
-                //$('#order_menu').html(data.div_order_menu);
-                $('#order_status').html(data.div_order_status);
+                    //$('#order_menu').html(data.div_order_menu);
+                $('.order-status').text('Horray');
             },
             complete: function() {
                 // Schedule the next request when the current one's complete
