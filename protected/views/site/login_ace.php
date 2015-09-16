@@ -10,10 +10,10 @@ $this->pageTitle=Yii::app()->name . ' - Login';
             <div class="center">
                 <h1>
                     <i class="ace-icon fa fa-leaf green"></i>
-                    <span class="red">POS</span>
-                    <span class="white" id="id-text2">Application</span>
+                    <span class="red"><?= Yii::t('app','VITKING HOUSE'); ?></span>
+                    <span class="white" id="id-text2"><?= Yii::t('app','Restaurant'); ?></span>
                 </h1>
-                <h4 class="blue" id="id-company-text">&copy; Bakou System</h4>
+                <h4 class="blue" id="id-company-text">&copy; <?= Yii::t('app','Bakou System'); ?></h4>
             </div>
            
             <div class="space-6"></div>
@@ -24,7 +24,7 @@ $this->pageTitle=Yii::app()->name . ' - Login';
                         <div class="widget-main">
                             <h4 class="header blue lighter bigger">
                                     <i class="ace-icon fa fa-coffee green"></i>
-                                    Please Enter Your Information
+                                    <?= Yii::t('app','Please Enter Your Information'); ?>
                             </h4>
 
                             <div class="space-6"></div>
@@ -40,7 +40,7 @@ $this->pageTitle=Yii::app()->name . ' - Login';
                                     <div class="control-group info">
                                     <label class="block clearfix required" for="LoginForm_username">
                                         <span class="block input-icon input-icon-right required">
-                                            <?php echo $form->textField($model,'username',array('class'=>'form-control','maxlength'=>30,'placeholder'=>Yii::t('app','Username'),'autocomplete'=>'off')); ?>
+                                            <?php echo $form->textField($model,'username',array('class'=>'span12','maxlength'=>30,'placeholder'=>Yii::t('app','User Name'),'autocomplete'=>'off')); ?>
                                             <i class="ace-icon fa fa-user"></i>
                                             <div class="control-group error">
                                             <?php echo $form->error($model,'username'); ?>
@@ -63,10 +63,9 @@ $this->pageTitle=Yii::app()->name . ' - Login';
                                     <div class="space"></div>
                                     
                                     <div class="clearfix">
-                                         <?php //echo TbHtml::checkBox($model,'rememberMe', array('label' => 'Remember me')); ?>
                                          <label class="inline">
                                                 <input type="checkbox" />
-                                                <span class="lbl"> Remember Me</span>
+                                                <span class="lbl"> <?= Yii::t('app','Remember Me'); ?></span>
                                         </label>
                                          <?php echo TbHtml::submitButton(Yii::t('app', 'Login'),array(
                                             'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
@@ -82,7 +81,7 @@ $this->pageTitle=Yii::app()->name . ' - Login';
 
 
                                 <div class="social-or-login center">
-                                        <span class="bigger-110">Or Login Using</span>
+                                        <span class="bigger-110"><?= Yii::t('app','Or Login Using') ?></span>
                                 </div>
                                 
                                 <div class="space-6"></div>
@@ -106,13 +105,13 @@ $this->pageTitle=Yii::app()->name . ' - Login';
                             <div>
                                 <a href="#" data-target="#forgot-box" class="forgot-password-link">
                                     <i class="ace-icon fa fa-arrow-left"></i>
-                                    I forgot my password
+                                    <?= Yii::t('app','I forgot my password'); ?>
                                 </a>
                             </div>
 
                             <div>
                                 <a href="#" class="user-signup-link">
-                                    I want to register
+                                    <?= Yii::t('app','I want to register'); ?>
                                     <i class="ace-icon fa fa-arrow-right"></i>
                                 </a>
                             </div>

@@ -109,9 +109,9 @@
     </div>
 
     <i class="ace-icon fa fa-book"></i>
-    <?php echo TbHtml::tooltip('Keyboard Shortcuts Help','#',
-        '[F2] => Set the focus to "Giftcard #" <br>
-             [F1] => Set the focus to "Payment Amount" [Enter] to make payment, Press another [Enter] to Complete Sale',
-        array('data-html' => 'true','placement' => TbHtml::TOOLTIP_PLACEMENT_TOP,)
+    <?php echo TbHtml::tooltip(Yii::t('app','Keyboard Shortcuts Help'),'#',
+        '[F2] => Set the focus to [Gift Card] <br>
+         [F1] => Set the focus to "Payment Amount" [Enter] to make payment, Press another [Enter] to Complete Sale',
+         array('data-html' => 'true','placement' => TbHtml::TOOLTIP_PLACEMENT_TOP,)
     ); ?>
 </div> <!--/end.left.div-->

@@ -14,7 +14,7 @@ $this->breadcrumbs=array(
 <div class="col-xs-12 widget-container-col ui-sortable">
     
 <?php $box = $this->beginWidget('yiiwheels.widgets.box.WhBox', array(
-              'title' => Yii::t('app','form.item.admin.header_title'),
+              'title' => Yii::t('app','List of Items'),
               'headerIcon' => 'ace-icon fa fa-list',
               'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
 )); ?>
@@ -45,7 +45,7 @@ $('.search-form form').submit(function(){
 
         <?php if (Yii::app()->user->checkAccess('item.create')) { ?>
 
-            <?php echo TbHtml::linkButton(Yii::t('app', 'New Item'), array(
+            <?php echo TbHtml::linkButton(Yii::t('app', 'Add New'), array(
                 'color' => TbHtml::BUTTON_COLOR_PRIMARY,
                 'size' => TbHtml::BUTTON_SIZE_SMALL,
                 'icon' => 'ace-icon fa fa-plus white',

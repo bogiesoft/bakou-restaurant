@@ -56,7 +56,7 @@ class PriceTier extends CActiveRecord
     {
         return array(
             'id' => 'ID',
-            'tier_name' => 'Tier Name',
+            'tier_name' => Yii::t('app','Name'),
             'modified_date' => 'Modified Date',
             'status' => 'Status',
         );

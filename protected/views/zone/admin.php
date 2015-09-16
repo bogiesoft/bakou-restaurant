@@ -8,8 +8,8 @@
 /* @var $model Zone */
 
 $this->breadcrumbs=array(
-	'Zones'=>array('admin'),
-	'Manage',
+	Yii::t('app','Zone') => array('admin'),
+	Yii::t('app','Manage'),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -45,13 +45,13 @@ $('.search-form form').submit(function(){
 
         <?php if (Yii::app()->user->checkAccess('zone.create')) { ?>
 
-            <?php echo TbHtml::linkButton(Yii::t('app', 'New Zone'), array(
+            <?php echo TbHtml::linkButton(Yii::t('app', 'Add New'), array(
                 'color' => TbHtml::BUTTON_COLOR_PRIMARY,
                 'size' => TbHtml::BUTTON_SIZE_SMALL,
                 'icon' => 'glyphicon-plus white',
                 'url' => $this->createUrl('create'),
                 'class' => 'update-dialog-open-link',
-                'data-update-dialog-title' => Yii::t('app', 'New Zone'),
+                'data-update-dialog-title' => Yii::t('app', 'Add New'),
                 'data-refresh-grid-id' => 'zone-grid',
             )); ?>
 
@@ -64,7 +64,8 @@ $('.search-form form').submit(function(){
                 'onclick' => "$.fn.yiiGridView.update('zone-grid',{data:{ZoneArchived:$(this).is(':checked')}});"
             )); ?>
 
-            Show archived/deleted zone
+
+            <?= Yii::t('app','Show archived/deleted'); ?> <b><?= Yii::t('app','Zone'); ?> </b>
 
         <?php } ?>
 
@@ -84,8 +85,8 @@ $('.search-form form').submit(function(){
     $pageSize = Yii::app()->user->getState( 'zone_pageSize', Yii::app()->params[ 'defaultPageSize' ] );
     $pageSizeDropDown = CHtml::dropDownList(
         'pageSize',
-        $pageSize,
-        array( 10 => 10, 25 => 25, 50 => 50, 100 => 100 ),
+        Yii::app()->user->getState('pageSize', Common::defaultPageSize()) ,
+        Common::arrayFactory('page_size'),
         array(
             'class'  => 'change-pagesize',
             'onchange' => "$.fn.yiiGridView.update('zone-grid',{data:{pageSize:$(this).val()}});",
@@ -109,19 +110,19 @@ $('.search-form form').submit(function(){
                 'type'  => 'raw',
                 //'filter' =>  CHtml::listData(Zone::model()->findAll(array('condition' => 'location_id=:location_id','params' => array(':location_id'=> Yii::app()->getsetSession->getLocationId() ))), 'id', 'zone_name'),
             ),
-            array(//'name' =>'room',
-                'header' => 'Tables',
+            array(//'name' =>'desks',
+                'header' => Yii::t('app','Table'),
                 'value' => array($this, "gridTableColumn"),
                 'type' => 'raw',
             ),
             array(
                 'name' => 'location_id',
-                'header' => 'Branch',
+                //'header' => 'Branch',
                 'value' => '($data->location_id!==null)? $data->location->name : "N/A"',
                 'filter' =>  CHtml::listData(Location::model()->findAll(array('order'=>'name')), 'id', 'name'),
             ),
             array(//'name' =>'room',
-                'header' => 'Price Tier',
+                'header' => Yii::t('app','Price Tier'),
                 'value' => array($this, "gridPriceTierColumn"),
             ),
             array('name'=>'sort_order',

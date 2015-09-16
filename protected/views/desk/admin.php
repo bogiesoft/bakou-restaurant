@@ -1,9 +1,9 @@
 <?php
 
-$this->breadcrumbs=array(
-        'Zone'=>array('zone/admin'),
-	'Desk'=>array('admin'),
-	'Manage',
+$this->breadcrumbs = array(
+    Yii::t('app', 'Zone') => array('zone/admin'),
+    Yii::t('app', 'Desk') => array('admin'),
+    Yii::t('app', 'Manage'),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -24,7 +24,7 @@ $('.search-form form').submit(function(){
 
     <?php $box = $this->beginWidget('yiiwheels.widgets.box.WhBox', array(
                    'title' => Yii::t( 'app', 'List of Table' ),
-                   'headerIcon' => 'ace-icon fa fa-beer',
+                   'headerIcon' => 'ace-icon fa fa-square-o',
                    'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
      ));?>
 
@@ -39,7 +39,7 @@ $('.search-form form').submit(function(){
 
         <?php if (Yii::app()->user->checkAccess('zone.create')) { ?>
 
-            <?php echo TbHtml::linkButton(Yii::t('app', 'New Table'), array(
+            <?php echo TbHtml::linkButton(Yii::t('app', 'Add New'), array(
                 'color' => TbHtml::BUTTON_COLOR_PRIMARY,
                 'size' => TbHtml::BUTTON_SIZE_SMALL,
                 'icon' => 'glyphicon-plus white',
@@ -60,15 +60,15 @@ $('.search-form form').submit(function(){
             'onclick' => "$.fn.yiiGridView.update('desk-grid',{data:{DeskArchived:$(this).is(':checked')}});"
         )); ?>
 
-        Show archived/deleted desk
+        <?= Yii::t('app','Show archived/deleted'); ?> <b><?= Yii::t('app','Desk'); ?> </b>
     </div>
 
     <?php
     $pageSize = Yii::app()->user->getState( 'desk_PageSize', Yii::app()->params[ 'defaultPageSize' ] );
     $pageSizeDropDown = CHtml::dropDownList(
         'pageSize',
-        $pageSize,
-        array( 10 => 10, 25 => 25, 50 => 50, 100 => 100 ),
+        Yii::app()->user->getState('pageSize', Common::defaultPageSize()) ,
+        Common::arrayFactory('page_size'),
         array(
             'class'  => 'change-pagesize',
             'onchange' => "$.fn.yiiGridView.update('desk-grid',{data:{pageSize:$(this).val()}});",
@@ -100,7 +100,7 @@ $('.search-form form').submit(function(){
             ),
             array(
                 'class' => 'bootstrap.widgets.TbButtonColumn',
-                'header' => Yii::t('app', 'Edit'),
+                'header' => Yii::t('app', 'Action'),
                 'template' => '<div class="btn-group">{update}{delete}{undeleted}</div>',
                 'htmlOptions' => array('class' => 'nowrap'),
                 'buttons' => array(

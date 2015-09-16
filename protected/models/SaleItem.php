@@ -88,23 +88,24 @@ class SaleItem extends CActiveRecord
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLabels()
-	{
-		return array(
-			'sale_id' => Yii::t('model','model.saleitem.sale_id'), //'Sale',
-			'item_id' => Yii::t('model','model.saleitem.item_id'), //'Item',
-			'description' => Yii::t('model','model.saleitem.description'), //'Description',
-			'line' => Yii::t('model','model.saleitem.line'), //'Line',
-			'quantity' => Yii::t('model','model.saleitem.quantity'), //'Quantity',
-			'cost_price' => Yii::t('model','model.saleitem.cost_price'), //'Cost Price',
-			'unit_price' => Yii::t('model','model.saleitem.unit_price'), // 'Unit Price',
-			'price' => Yii::t('model','model.saleitem.price'), //'Price',
-			'discount_amount' => Yii::t('model','model.saleitem.discount_amount'), // 'Discount Amount',
-			'discount_type' => Yii::t('model','model.saleitem.discount_type'),//'Discount Type',
-                        'name' => Yii::t('model','model.saleitem.name'),
-                        'payment_type' => Yii::t('model','model.saleitem.paymentype'),
-		);
-	}
+    public function attributeLabels()
+    {
+        return array(
+            'sale_id' => Yii::t('app', 'Sale'), //'Sale',
+            'item_id' => Yii::t('app', 'Item'), //'Item',
+            'description' => Yii::t('app', 'Description'), //'Description',
+            'line' => Yii::t('app', 'Line'), //'Line',
+            'quantity' => Yii::t('app', 'Quantity'), //'Quantity',
+            'cost_price' => Yii::t('app', 'Buy price'), //'Cost Price',
+            'unit_price' => Yii::t('app', 'Sale Price'), // 'Unit Price',
+            'price' => Yii::t('app', 'Price'), //'Price',
+            'discount_amount' => Yii::t('app', 'Discount Amount'), // 'Discount Amount',
+            'discount_type' => Yii::t('app', 'Discount Type'),//'Discount Type',
+            'name' => Yii::t('model', 'Name'),
+            'payment_type' => Yii::t('app', 'Payment Type'),
+            'group' => Yii::t('app','Group')
+        );
+    }
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
@@ -128,8 +129,8 @@ class SaleItem extends CActiveRecord
 		//$criteria->compare('discount_amount',$this->discount_amount);
 		//$criteria->compare('discount_type',$this->discount_type);
                 
-                $criteria->condition="sale_id=:sale_id";
-                $criteria->params = array(':sale_id' => $sale_id);
+        $criteria->condition="sale_id=:sale_id";
+        $criteria->params = array(':sale_id' => $sale_id);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

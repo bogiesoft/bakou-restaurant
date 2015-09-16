@@ -4,10 +4,5 @@
 /protected/config/main.php
 *.log
 /ximages
-/.idea/*
-/.idea/*
+/.idea/
 /.idea/workspace.xml
-protected/runtime/application.log
-protected/runtime/application.log
-protected/runtime/application.log
-*.sql

@@ -71,10 +71,10 @@ class Desk extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Table Name',
-			'zone_id' => 'Zone Name',
-			'sort_order' => 'Sort Order',
-			'status' => 'Status',
+			'name' => Yii::t('app','Table Name'),
+			'zone_id' => Yii::t('app','Zone Name'),
+			'sort_order' => Yii::t('app','Sort Order'),
+			'status' => Yii::t('app','Status'),
 			'modified_date' => 'Modified Date',
 		);
 	}

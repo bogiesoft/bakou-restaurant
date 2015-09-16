@@ -4,9 +4,12 @@
         <div class="col-sm-9">
         <?php 
             if ($key === 'language') {
-                echo CHtml::dropDownList(get_class($model) . '[' . $category . '][' . $key . ']',$val,array('th_th'=>Yii::t('app','Khmer'),'en'=>Yii::t('app','English')));
+                echo CHtml::dropDownList(get_class($model) . '[' . $category . '][' . $key . ']',$val,array('kh'=>Yii::t('app','Khmer'),'en'=>Yii::t('app','English')));
             } else if ($key === 'decimalPlace') {
-                echo CHtml::dropDownList(get_class($model) . '[' . $category . '][' . $key . ']',$val,array(0=>'0',1=>'1',2=>'2',3=>'3',4=>'4'));  
+                echo CHtml::dropDownList(get_class($model) . '[' . $category . '][' . $key . ']',$val,array(0=>'0',1=>'1',2=>'2',3=>'3',4=>'4'));
+            } else if ($key === 'itemNumberPerPage') {
+                echo CHtml::dropDownList(get_class($model) . '[' . $category . '][' . $key . ']',$val,  Common::arrayFactory('page_size'));
+
             } else  {
                 echo CHtml::textField(get_class($model) . '[' . $category . '][' . $key . ']', $val, array('class'=>'span4')); 
             }

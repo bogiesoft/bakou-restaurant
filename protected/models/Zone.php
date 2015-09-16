@@ -67,14 +67,15 @@ class Zone extends CActiveRecord
 	 */
 	public function attributeLabels()
 	{
-		return array(
-			'id' => 'ID',
-			'zone_name' => 'Zone Name',
-                        'location_id' => 'Branch',
-			'sort_order' => 'Sort Order',
-			'status' => 'Status',
-			'modified_date' => 'Modified Date',
-		);
+        return array(
+            'id' => 'ID',
+            'zone_name' => Yii::t('app','Name'),
+            'location_id' => Yii::t('app','Branch'),
+            'sort_order' => Yii::t('app','Sort Order'),
+            'status' => Yii::t('app','Status'),
+            'modified_date' => Yii::t('app','Modified Date'),
+            'desks' => Yii::t('app','Desk'),
+        );
 	}
 
 	/**

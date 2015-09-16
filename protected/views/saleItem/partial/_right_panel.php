@@ -6,7 +6,7 @@
     <div class="grid-view widget-box" id="grid_cart">
         <div class="widget-header widget-header-flat">
             <i class="ace-icon fa fa-shopping-cart"></i>
-            <h5 class="widget-title">Ordering Cart</h5>
+            <h5 class="widget-title"><?= Yii::t('app','Ordering Cart'); ?></h5>
 
             <div class="widget-toolbar">
 
@@ -36,13 +36,13 @@
 
                 <?php if (isset($table_info)) { ?>
 
-                    <?php echo TbHtml::linkButton('Change Table', array(
+                    <?php echo TbHtml::linkButton(Yii::t('app','Change Table'), array(
                         'color' => TbHtml::BUTTON_COLOR_INVERSE,
                         'size' => TbHtml::BUTTON_SIZE_MINI,
                         'icon' => 'glyphicon-refresh',
                         'url' => $this->createUrl('Desk/ChangeDesk/', array('location_id' => $location_id)),
                         'class' => 'update-dialog-open-link',
-                        'data-update-dialog-title' => Yii::t('app', 'Changing Table'),
+                        'data-update-dialog-title' => Yii::t('app', 'Change Table'),
                     )); ?>
 
                 <?php } else { ?>
@@ -101,15 +101,15 @@
                                     ));
                                     ?>
 
-                                    <?php $this->renderPartial('partial/_right_status', array(
-                                        'model' => $model,
-                                        'table_info' => $table_info,
-                                        'time_go' => $time_go,
-                                        'ordering_status' => $ordering_status,
-                                        'ordering_msg' => $ordering_msg,
-                                        'ordering_status_span' => $ordering_status_span,
-                                        'ordering_status_icon' => $ordering_status_icon,
-                                    )); ?>
+                                <?php $this->renderPartial('partial/_right_status', array(
+                                    'model' => $model,
+                                    'table_info' => $table_info,
+                                    'time_go' => $time_go,
+                                    'ordering_status' => $ordering_status,
+                                    'ordering_msg' => $ordering_msg,
+                                    'ordering_status_span' => $ordering_status_span,
+                                    'ordering_status_icon' => $ordering_status_icon,
+                                )); ?>
                             </td>
                             <td>
                                 <?php $this->endWidget(); ?>
@@ -140,13 +140,14 @@
                         'amount_due' => $amount_due,
                         'count_payment' => $count_payment,
                         'count_item' => $count_item,
+                        'form' => $form,
                     )); ?>
                 </div>
 
                 <div class="row">
                     <div class="col-sm-5 pull-right">
                         <h4 class="pull-right">
-                            <?php echo Yii::t('app', 'form.sale.payment_lbl_total'); ?>
+                            <?php echo Yii::t('app', 'Total'); ?>
                             <span class="label label-xlg label-primary"><?php echo Yii::app()->settings->get('site',
                                         'currencySymbol') . number_format($sub_total,
                                         Yii::app()->shoppingCart->getDecimalPlace(), '.', ','); ?></span>

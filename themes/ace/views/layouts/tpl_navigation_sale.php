@@ -38,7 +38,7 @@ $sale_order = new SaleOrder;
                         <li class="grey">
                             <a href="<?php echo Yii::app()->createUrl('dashboard/view') ?>">
                                 <i class="glyphicon glyphicon-off"></i>
-                                <small>Exit</small>
+                                <small><?= Yii::t('app','Exit'); ?></small>
                             </a>
                         </li>
 
@@ -101,23 +101,23 @@ $sale_order = new SaleOrder;
                                 <a data-toggle="dropdown" href="#" class="dropdown-toggle">
                                     <!-- <img class="nav-user-photo" alt="Jasos Photo" src="<?php //echo Yii::app()->theme->baseUrl . '/avatars/user.jpg'; ?>" /> -->
                                     <span class="user-info">
-                                            <small>Welcome,</small>
+                                            <small><?= Yii::t('app','Welcome'); ?> ,</small>
                                             <?php echo CHtml::encode(ucwords(Yii::app()->user->name)); ?>
                                     </span>
                                     <i class="ace-icon fa fa-caret-down"></i>
                                 </a>
 
                             <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
-                                    <li>
-                                        <a href="<?php echo Yii::app()->urlManager->createUrl('Employee/View', array('id' => Yii::app()->session['employeeid'])); ?>">
+                                    <!--<li>
+                                        <a href="<?php /*echo Yii::app()->urlManager->createUrl('Employee/View', array('id' => Yii::app()->session['employeeid'])); */?>">
                                                 <i class="ace-icon fa fa-user"></i>
                                                 Profile
                                         </a>
-                                    </li>
+                                    </li>-->
                                     <li>
                                         <a href="<?php echo Yii::app()->urlManager->createUrl('RbacUser/Update', array('id' => Yii::app()->user->id)); ?>">
                                                 <i class="ace-icon fa fa-key"></i>
-                                                Change Password
+                                                <?= Yii::t('app','Change Password'); ?>
                                         </a>
                                     </li>
 
@@ -126,7 +126,7 @@ $sale_order = new SaleOrder;
                                     <li>
                                         <a href="<?php echo Yii::app()->createUrl('site/logout'); ?>">
                                             <i class="ace-icon fa fa-power-off"></i>
-                                            Logout
+                                            <?= Yii::t('app','Logout'); ?>
                                         </a>
                                     </li>
                                 </ul>
@@ -138,7 +138,7 @@ $sale_order = new SaleOrder;
     </div><!-- /.navbar-container -->
 </div>
 
-<script>
+<!--<script>
     (function worker() {
         $.ajax({
             url: 'AjaxRefresh',
@@ -146,16 +146,16 @@ $sale_order = new SaleOrder;
             success: function(data) {
                 $('.count_new_order').text(data.count_new_order);
                 $('#table_grid').html(data.div_order_table);
-                    //$('#order_menu').html(data.div_order_menu);
-                $('.order-status').text('Horray');
+                //$('#order_menu').html(data.div_order_menu);
+                //$('.order-status').text('Horray');
             },
             complete: function() {
                 // Schedule the next request when the current one's complete
-                setTimeout(worker, 5000);
+                setTimeout(worker, 9000);
             }
         });
     })();
-</script>
+</script>-->
 
 <script type='text/javascript'>
     $('#navigation_bar').on('click','a.dropdown-new-order',function(e){

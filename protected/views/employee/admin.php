@@ -7,14 +7,14 @@
 <div class="row" id="employee_cart">
     <div class="col-xs-12 widget-container-col ui-sortable">
         <?php $box = $this->beginWidget('yiiwheels.widgets.box.WhBox', array(
-            'title' => Yii::t('app', 'form.employee.admin.header_title'),
+            'title' => Yii::t('app', 'List of Employees'),
             'headerIcon' => 'ace-icon fa fa-users',
             'htmlHeaderOptions' => array('class' => 'widget-header-flat widget-header-small'),
         )); ?>
 
         <?php
         $this->breadcrumbs = array(
-            Yii::t('menu', 'Employee') => array('admin'),
+            Yii::t('app', 'Employee') => array('admin'),
             Yii::t('app', 'Manage'),
         );
 
@@ -42,7 +42,7 @@
 
             <?php if (Yii::app()->user->checkAccess('employee.create')) { ?>
 
-            <?php echo TbHtml::linkButton(Yii::t('app', 'New Employee'), array(
+            <?php echo TbHtml::linkButton(Yii::t('app', 'Add New'), array(
                 'color' => TbHtml::BUTTON_COLOR_PRIMARY,
                 'size' => TbHtml::BUTTON_SIZE_SMALL,
                 'icon' => 'glyphicon-plus white',
@@ -60,16 +60,15 @@
                 'onclick' => "$.fn.yiiGridView.update('employee-grid',{data:{archived:$(this).is(':checked')}});"
             )); ?>
 
-            Show archived/deleted <b> Employee </b>
+            <?= Yii::t('app','Show archived/deleted'); ?> <b><?= Yii::t('app','Employee'); ?> </b>
 
         </div>
 
         <?php
-        $pageSize = Yii::app()->user->getState( 'employee_pageSize', Yii::app()->params[ 'defaultPageSize' ] );
         $pageSizeDropDown = CHtml::dropDownList(
             'pageSize',
-            $pageSize,
-            array( 10 => 10, 25 => 25, 50 => 50, 100 => 100 ),
+            Yii::app()->user->getState('pageSize', Common::defaultPageSize()) ,
+            Common::arrayFactory('page_size'),
             array(
                 'class'  => 'change-pagesize',
                 'onchange' => "$.fn.yiiGridView.update('employee-grid',{data:{pageSize:$(this).val()}});",

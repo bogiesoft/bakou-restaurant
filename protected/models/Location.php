@@ -84,19 +84,20 @@ class Location extends CActiveRecord
     {
         return array(
             'id' => 'ID',
-            'name' => 'Name',
-            'name_kh' => 'Name Kh',
-            'loc_code' => 'Loc Code',
-            'address' => 'Address',
-            'address1' => 'Address1',
-            'address2' => 'Address2',
-            'phone' => 'Phone',
-            'phone1' => 'Phone1',
-            'wifi_password' => 'Wifi Password',
-            'email' => 'Email',
-            'printer_food' => 'Food Printer Name',
-            'printer_beverage' => 'Beverage Printer Name',
-            'printer_receipt' => 'Receipt Printer Name'
+            'name' => Yii::t('app','Name'),
+            'name_kh' => Yii::t('app','Name Kh'),
+            'loc_code' => Yii::t('app','Location Code'),
+            'address' => Yii::t('app','Address'),
+            'address1' => Yii::t('app','Address1'),
+            'address2' => Yii::t('app','Address2'),
+            'phone' => Yii::t('app','Phone'),
+            'phone1' => Yii::t('app','Phone1'),
+            'wifi_password' => Yii::t('app','Wifi Password'),
+            'email' => Yii::t('app','Email'),
+            'printer_food' => Yii::t('app','Food Printer Name'),
+            'printer_beverage' => Yii::t('app','Beverage Printer Name'),
+            'printer_receipt' => Yii::t('app','Receipt Printer Name'),
+            'status' => Yii::t('app','Status'),
         );
     }
 

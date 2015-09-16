@@ -81,7 +81,7 @@
             </ul>
         </div>
 
-        <?php echo TbHtml::linkButton(Yii::t('app', 'Save Order'), array(
+        <?php echo TbHtml::linkButton(Yii::t('app', 'Confirm Order'), array(
             'color' => TbHtml::BUTTON_COLOR_PRIMARY,
             'size' => TbHtml::BUTTON_SIZE_SMALL,
             'icon' => ' ace-icon fa fa-floppy-o white',

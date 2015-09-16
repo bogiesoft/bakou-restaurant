@@ -2,12 +2,12 @@
 class SettingsForm extends CFormModel
 {
     
-    public $exchange_rate = array(
+   /* public $exchange_rate = array(
         'USD2KHR' => '',
         //'USD2THB' => '',
         //'THB2KHR' =>'',
-    );
-    public $site = array(
+    );*/
+    /*public $site = array(
         'companyName' => '',
         'companyAddress' => '',
         'companyAddress1' => '',
@@ -16,12 +16,13 @@ class SettingsForm extends CFormModel
         'altcurrencySymbol' => '',
         'email' => '',
         'returnPolicy' => '',
-    );
+    );*/
     public $system = array(
         'language' => '',
         'decimalPlace'=>'',
+        'itemNumberPerPage' => '',
     );
-    public $sale = array(
+    /*public $sale = array(
         'saleCookie'=>'',
         'receiptPrint' => '',
         'receiptPrintDraftSale'=>'',
@@ -36,7 +37,7 @@ class SettingsForm extends CFormModel
         'printcompanyPhone'=>'',
         'printtransactionTime'=>'',
         'printSignature'=>'',
-    );
+    );*/
    
     /**
      * Declares customized attribute labels.
@@ -59,6 +60,7 @@ class SettingsForm extends CFormModel
             'receiptPrintDraftSale'=> Yii::t('app','Print Receipt Draft Sale'),
             'USD2KHR' => Yii::app()->settings->get('site', 'currencySymbol') . ' To '  . Yii::app()->settings->get('site', 'altcurrencySymbol'),
             'decimalPlace' => Yii::t('app','Number of Decimal Place'),
+            'itemNumberPerPage' => Yii::t('app','Item Number Per Page'),
             'touchScreen' => Yii::t('app','Touch Screen Sale'),
             'saleCookie' => Yii::t('app','Do you want to remember customer\'s item on sale ?'),
             'discount' => Yii::t('app','Have Discount in Sale Grid?'),

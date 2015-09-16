@@ -1,10 +1,10 @@
 <?php
 $this->breadcrumbs=array(
-	'Shop Setting'=>array('index'),
-	'Manage',
+	Yii::t('app','Shop Setting')=>array('index'),
+	Yii::t('app','Manage'),
 );
 ?>
-<?php 
+<?php
     $box = $this->beginWidget('yiiwheels.widgets.box.WhBox', array(
               'title' => Yii::t('app','Shop Setting'),
               'headerIcon' => 'menu-icon fa fa-cog',
@@ -17,36 +17,36 @@ $this->breadcrumbs=array(
         'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
         'htmlOptions'=>array('data-validate'=>'parsley'),
 )); ?>
-    
+
 <ul class="nav nav-tabs" id="site-settings">
     <?php
 
     $tabs = array();
     $i = 0;
     foreach ($model->attributes as $category => $values):?>
-        <li<?php echo !$i?' class="active"':''?>><a href="#<?php echo $category?>" data-toggle="tab"><?php echo ucwords(str_replace('_',' ',$category))?></a></li>
-    <?php 
+        <li<?php echo !$i?' class="active"':''?>><a href="#<?php echo $category ; ?>" data-toggle="tab"><?php echo Yii::t('app',ucwords(str_replace('_',' ',$category))); ?></a></li>
+    <?php
     $i ++;
     endforeach;?>
 </ul>
 
-<div class="tab-content"> 
-    <?php 
+<div class="tab-content">
+    <?php
     $i = 0;
     foreach ($model->attributes as $category => $values):?>
         <div class="tab-pane<?php echo !$i?' active':''?>" id="<?php echo $category; ?>">
             <?php
             $this->renderPartial(
-                    '_'.$category, 
+                    '_'.$category,
                     array('model' => $model, 'values' => $values, 'category' => $category)
                 );
             ?>
         </div>
-    <?php 
+    <?php
     $i ++;
     endforeach;?>
 </div>
-    
+
 <?php $this->widget('bootstrap.widgets.TbAlert', array(
         'block'=>true, // display a larger alert block?
         'fade'=>true, // use transitions?
@@ -57,7 +57,7 @@ $this->breadcrumbs=array(
 )); ?>
 
 <div class="form-actions">
-     <?php echo TbHtml::submitButton(Yii::t( 'app', 'form.button.save' ),array(
+     <?php echo TbHtml::submitButton(Yii::t( 'app', 'Save' ),array(
         'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
         //'size'=>TbHtml::BUTTON_SIZE_SMALL,
     )); ?>

@@ -7,8 +7,8 @@
     <div class="col-xs-12 widget-container-col ui-sortable">
         <?php
         $this->breadcrumbs = array(
-            'Item' => array('item/admin'),
-            'Category',
+            Yii::t('app','Item') => array('item/admin'),
+            Yii::t('app','Category'),
         );
 
         Yii::app()->clientScript->registerScript('search', "
@@ -28,7 +28,7 @@
         <?php $this->widget('ext.modaldlg.EModalDlg'); ?>
 
         <?php $box = $this->beginWidget('yiiwheels.widgets.box.WhBox', array(
-            'title' => Yii::t('app', 'form.category.admin.header_title'),
+            'title' => Yii::t('app', 'List of Categories'),
             'htmlHeaderOptions' => array('class' => 'widget-header-flat widget-header-small'),
             'headerIcon' => 'ace-icon fa fa-list',
         )); ?>
@@ -44,7 +44,7 @@
 
             <?php if (Yii::app()->user->checkAccess('item.create')) { ?>
 
-                <?php echo TbHtml::linkButton(Yii::t('app', 'New Category'), array(
+                <?php echo TbHtml::linkButton(Yii::t('app', 'Add New'), array(
                     'color' => TbHtml::BUTTON_COLOR_PRIMARY,
                     'size' => TbHtml::BUTTON_SIZE_SMALL,
                     'icon' => 'ace-icon fa fa-plus white',
@@ -62,8 +62,8 @@
         $pageSize = Yii::app()->user->getState('category_pageSize', Yii::app()->params['defaultPageSize']);
         $pageSizeDropDown = CHtml::dropDownList(
             'pageSize',
-            $pageSize,
-            array(10 => 10, 25 => 25, 50 => 50, 100 => 100),
+            Yii::app()->user->getState('pageSize', Common::defaultPageSize()) ,
+            Common::arrayFactory('page_size'),
             array(
                 'class' => 'change-pagesize',
                 'onchange' => "$.fn.yiiGridView.update('category-grid',{data:{pageSize:$(this).val()}});",

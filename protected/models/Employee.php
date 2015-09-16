@@ -95,6 +95,7 @@ class Employee extends CActiveRecord
             'notes' => Yii::t('app', 'Notes'), //'Notes',
             'search' => Yii::t('app', 'Search') . Yii::t('app', 'Employee'),
             'dob' => Yii::t('app','Date of Birth'),
+            'status' => Yii::t('app','Status'),
         );
     }
 

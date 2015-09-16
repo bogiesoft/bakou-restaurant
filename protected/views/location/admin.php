@@ -7,8 +7,8 @@
 <?php
 
 $this->breadcrumbs=array(
-	'Locations'=>array('admin'),
-	'Manage',
+	Yii::t('app','Branch')=>array('admin'),
+	Yii::t('app','Manage'),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -45,7 +45,7 @@ $('.search-form form').submit(function(){
 
         <?php if (Yii::app()->user->checkAccess('branch.create')) { ?>
 
-            <?php echo TbHtml::linkButton(Yii::t( 'app', 'New Branch' ),array(
+            <?php echo TbHtml::linkButton(Yii::t( 'app', 'Add New' ),array(
                 'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
                 'size'=>TbHtml::BUTTON_SIZE_SMALL,
                 'icon'=>'ace-icon fa fa-plus white',
@@ -63,15 +63,15 @@ $('.search-form form').submit(function(){
             'onclick' => "$.fn.yiiGridView.update('location-grid',{data:{Archived:$(this).is(':checked')}});"
         )); ?>
 
-        Show archived/deleted location
+        <?= Yii::t('app','Show archived/deleted'); ?> <b><?= Yii::t('app','Branch'); ?> </b>
     </div>
 
     <?php
     $pageSize = Yii::app()->user->getState( 'location_PageSize', Yii::app()->params[ 'defaultPageSize' ] );
     $pageSizeDropDown = CHtml::dropDownList(
         'pageSize',
-        $pageSize,
-        array( 10 => 10, 25 => 25, 50 => 50, 100 => 100 ),
+        Yii::app()->user->getState('pageSize', Common::defaultPageSize()) ,
+        Common::arrayFactory('page_size'),
         array(
             'class'  => 'change-pagesize',
             'onchange' => "$.fn.yiiGridView.update('location-grid',{data:{pageSize:$(this).val()}});",

@@ -1,16 +1,17 @@
 <?php
 $this->breadcrumbs=array(
-	'Dashboard',
+	Yii::t('app','Dashboard'),
 );
 ?>
 <?php
-    $records=$report->saleDailyChart();
     $date = array();
-    $amount = array();
-    foreach($records as $record) 
+    $sub_total = array();
+    $total = array();
+    foreach($report->saleDailyChart() as $record)
     {
-        $amount[] = floatval($record["amount"]);
         $date[] = $record["date"];
+        $sub_total[] = floatval($record["sub_total"]);
+        $total[] = floatval($record["total"]);
     }
 ?>
     <div class="">
@@ -191,7 +192,7 @@ $this->breadcrumbs=array(
                                 <div class="widget-header widget-header-flat">
                                     <h5 class="widget-title bigger lighter">
                                         <i class="ace-icon fa fa-bar-chart-o"></i>
-                                        <?php echo Yii::t('app','Sale\'s Chart'); ?>
+                                        <?php echo Yii::t('app','Daily Sale\'s Chart'); ?>
                                     </h5>
                                     <div class="widget-toolbar">
                                         <a href="#" data-action="collapse">
@@ -206,7 +207,7 @@ $this->breadcrumbs=array(
                                         array(
                                             'pluginOptions' => array(
                                                 //'chart'=> array('type'=>'bar'),
-                                                'title'  => array('text' => Yii::t('app','Daily Sales')),
+                                                'title'  => array('text' => Yii::t('app','Daily Sale') - date('M Y')),
                                                 'xAxis'  => array(
                                                     'categories' => $date
                                                 ),
@@ -214,7 +215,8 @@ $this->breadcrumbs=array(
                                                     'title' => array('text' => 'Amount in Riel')
                                                 ),
                                                 'series' => array(
-                                                    array('name'=>'Date - ' .  date('M Y'),'data' => $amount),
+                                                    array('name'=> 'Sub Total' , 'data' => $sub_total),
+                                                    array('name'=> 'Total' ,'data' => $total),
                                                 )
                                             )
                                         )
@@ -335,7 +337,7 @@ $this->breadcrumbs=array(
 
 <!--http://stackoverflow.com/questions/13668484/warn-user-when-new-data-is-inserted-on-database-->
 
-<script>
+<!--<script>
 (function worker() {
     $.ajax({
         url: 'AjaxRefresh',
@@ -348,5 +350,5 @@ $this->breadcrumbs=array(
         }
     });
 })();
-</script>
+</script>-->
 

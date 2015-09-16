@@ -9,8 +9,8 @@
         <?php
 
         $this->breadcrumbs = array(
-            'Price Tier' => array('admin'),
-            'Manage',
+            Yii::t('app','Price Tier') => array('admin'),
+            Yii::t('app','Manage'),
         );
 
         Yii::app()->clientScript->registerScript('search', "
@@ -40,7 +40,7 @@ $('.search-form form').submit(function(){
 
             <?php if (Yii::app()->user->checkAccess('item.create')) { ?>
 
-            <?php echo TbHtml::linkButton(Yii::t('app', 'New Price Tier'), array(
+            <?php echo TbHtml::linkButton(Yii::t('app', 'Add New'), array(
                 'color' => TbHtml::BUTTON_COLOR_PRIMARY,
                 'size' => TbHtml::BUTTON_SIZE_SMALL,
                 'icon' => 'ace-icon fa fa-plus white',
@@ -70,8 +70,8 @@ $('.search-form form').submit(function(){
         $pageSize = Yii::app()->user->getState('pageSize', Yii::app()->params['defaultPageSize']);
         $pageSizeDropDown = CHtml::dropDownList(
             'pageSize',
-            $pageSize,
-            array(10 => 10, 25 => 25, 50 => 50, 100 => 100),
+            Yii::app()->user->getState('pageSize', Common::defaultPageSize()) ,
+            Common::arrayFactory('page_size'),
             array(
                 'class' => 'change-pagesize',
                 'onchange' => "$.fn.yiiGridView.update('price-tier-grid',{data:{pageSize:$(this).val()}});",
@@ -89,7 +89,7 @@ $('.search-form form').submit(function(){
             'dataProvider' => $model->search(),
             'columns' => array(
                 array(
-                    'name' => 'first_name',
+                    'name' => 'tier_name',
                     'value' => '$data->status=="1" ? $data->tier_name : "<span class=\"text-muted\">  $data->tier_name <span>" ',
                     'type' => 'raw',
                 ),

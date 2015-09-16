@@ -102,16 +102,26 @@ class Dashboard extends CFormModel
 
     public function saleDailyChart()
     {
-        $sql = "SELECT date_format(s.sale_time,'%d/%m/%y') date,sum(quantity) quantity,
+        /*$sql = "SELECT date_format(s.sale_time,'%d/%m/%y') date,sum(quantity) quantity,
                    SUM(CASE WHEN si.discount_type='%' THEN (quantity*price-(quantity*price*IFNULL(si.discount_amount,0))/100)
                                 ELSE (quantity*price)-si.discount_amount
                     END) amount
-                   FROM sale s INNER JOIN sale_item si ON si.sale_id=s.id
+                   FROM sale s INNER JOIN sale_item si
+                    ON si.sale_id=s.id
+                    and si.location_id=s.location_id
                    WHERE s.location_id =:location_id
                    AND ( s.sale_time BETWEEN DATE_FORMAT(NOW() ,'%Y-%m-01') AND NOW() )
                    AND s.status=:status
                    GROUP BY date_format(s.sale_time,'%d/%m/%y')
-                   ORDER BY 1";
+                   ORDER BY 1";*/
+
+        $sql = "SELECT date_format(s.sale_time,'%d/%m/%y') date,sum(sub_total) sub_total,sum(sub_total-discount_amount) total
+                FROM v_sale s
+                WHERE s.location_id =:location_id
+                AND ( s.sale_time BETWEEN DATE_FORMAT(NOW() ,'%Y-%m-01') AND NOW() )
+                AND s.status=:status
+                GROUP BY date_format(s.sale_time,'%d/%m/%y')
+                ORDER BY 1";
 
         return Yii::app()->db->createCommand($sql)->queryAll(true, array(
             ':status' => Yii::app()->params['sale_complete_status'],

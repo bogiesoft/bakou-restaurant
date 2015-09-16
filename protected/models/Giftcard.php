@@ -67,11 +67,11 @@ class Giftcard extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'giftcard_number' => 'Giftcard Number',
-			'discount_amount' => 'Amount',
-			'discount_type' => 'Discount Type',
-			'status' => 'Status',
-			'client_id' => 'Client',
+			'giftcard_number' => Yii::t('app','Gift Card Number'),
+			'discount_amount' => Yii::t('app','Amount'),
+			'discount_type' => Yii::t('app','Discount Type'),
+			'status' => Yii::t('app','Status'),
+			'client_id' => Yii::t('app','Client'),
 		);
 	}
 

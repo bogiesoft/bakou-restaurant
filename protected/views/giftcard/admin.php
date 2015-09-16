@@ -1,7 +1,7 @@
 <?php
 $this->breadcrumbs = array(
-    'Gift Card' => array('admin'),
-    'Manage',
+    Yii::t('app','Gift Card') => array('admin'),
+    Yii::t('app','Manage'),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -40,13 +40,13 @@ $('.search-form form').submit(function(){
 
             <?php if (Yii::app()->user->checkAccess('giftcard.create')) { ?>
 
-                <?php echo TbHtml::linkButton(Yii::t('app', 'New Gift Card'), array(
+                <?php echo TbHtml::linkButton(Yii::t('app', 'Add New'), array(
                     'color' => TbHtml::BUTTON_COLOR_PRIMARY,
                     'size' => TbHtml::BUTTON_SIZE_SMALL,
                     'icon' => 'glyphicon-plus white',
                     'url' => $this->createUrl('create'),
                     'class' => 'update-dialog-open-link',
-                    'data-update-dialog-title' => Yii::t('app', 'New Giftcard'),
+                    'data-update-dialog-title' => Yii::t('app', 'New Gift Card'),
                     'data-refresh-grid-id' => 'giftcard-grid',
                 )); ?>
 
@@ -69,8 +69,8 @@ $('.search-form form').submit(function(){
         $pageSize = Yii::app()->user->getState('giftcard_PageSize', Yii::app()->params['defaultPageSize']);
         $pageSizeDropDown = CHtml::dropDownList(
             'pageSize',
-            $pageSize,
-            array(10 => 10, 25 => 25, 50 => 50, 100 => 100),
+            Yii::app()->user->getState('pageSize', Common::defaultPageSize()) ,
+            Common::arrayFactory('page_size'),
             array(
                 'class' => 'change-pagesize',
                 'onchange' => "$.fn.yiiGridView.update('giftcard-grid',{data:{pageSize:$(this).val()}});",

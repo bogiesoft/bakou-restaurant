@@ -63,7 +63,7 @@ if ($location) {
                         <li class="light-blue">
                                 <a data-toggle="dropdown" href="#" class="dropdown-toggle">
                                     <span class="user-info">
-                                            <small>Welcome,</small>
+                                            <small><?= Yii::t('app','Welcome'); ?>,</small>
                                             <?php echo CHtml::encode(ucwords(Yii::app()->user->name)); ?>
                                     </span>
                                     <i class="ace-icon fa fa-caret-down"></i>
@@ -73,7 +73,7 @@ if ($location) {
                                     <li>
                                         <a href="<?php echo Yii::app()->urlManager->createUrl('RbacUser/Update', array('id' => Yii::app()->user->id)); ?>">
                                                 <i class="ace-icon fa fa-key"></i>
-                                                Change Password
+                                                <?= Yii::t('app','Change Password'); ?>
                                         </a>
                                     </li>
                                     <li class="divider"></li>
@@ -81,7 +81,7 @@ if ($location) {
                                     <li>
                                         <a href="<?php echo Yii::app()->createUrl('site/logout'); ?>">
                                             <i class="ace-icon fa fa-power-off"></i>
-                                            Logout
+                                            <?= Yii::t('app','Logout'); ?>
                                         </a>
                                     </li>
                                   

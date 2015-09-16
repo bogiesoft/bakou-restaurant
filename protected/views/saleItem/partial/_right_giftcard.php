@@ -12,7 +12,7 @@
             'source'=>$this->createUrl('request/suggestGiftcard'),
             'htmlOptions'=>array(
                 'size'=>'20',
-                'placeholder'=>Yii::t('app','Gift Card #'),
+                'placeholder'=>Yii::t('app','Gift Card'),
             ),
             'options'=>array(
                 'showAnim'=>'fold',

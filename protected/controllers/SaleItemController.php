@@ -55,11 +55,11 @@ class SaleItemController extends Controller
 
         if (!Yii::app()->orderingCart->getTableId()) {
             //$data['warning'] = Yii::t('app','Plz, select at least a table');
-            Yii::app()->user->setFlash('warning', "Plz, select at least a table");
+            Yii::app()->user->setFlash('warning', Yii::t('app','Please, Select a Table'));
         } else {
             $result_id = Yii::app()->orderingCart->addItem($item_id);
             if ($result_id == 0 )  {
-                Yii::app()->user->setFlash('warning', "Unable to add, correct item number or name and try again");
+                Yii::app()->user->setFlash('warning', Yii::t('app','Product was not found in the system'));
             }
         }
         $this->reload($data);
@@ -305,7 +305,7 @@ class SaleItemController extends Controller
         $data=$this->sessionInfo();
         $data['printer'] = $category_id == 9 ?  Yii::app()->getsetSession->getLocationPrinterFood() :  Yii::app()->getsetSession->getLocationPrinterBeverage();
         $data['sale_id'] = Yii::app()->orderingCart->getSaleId();
-        $this->render('touchscreen/_receipt_kitchen', $data);
+        $this->render('partial/_receipt_kitchen', $data);
 
     }
 
@@ -323,7 +323,7 @@ class SaleItemController extends Controller
             $this->reload($data);
         } else {
             Yii::app()->session->close();
-            $this->render('touchscreen/_receipt_customer', $data);
+            $this->render('partial/_receipt_customer', $data);
         }
 
     }
@@ -704,7 +704,7 @@ class SaleItemController extends Controller
                     $data['ordering_status_span'] = 'label label-success label-xlg';
                     //$data['desk_icon'] = 'fa fa-print icon-animated-bell bigger-110'; //ace-icon fa fa-ban bigger-110
                 } elseif ($data['ordering_status'] == '2') {
-                    $data['ordering_msg'] = Yii::t('app', 'Adding Order');
+                    $data['ordering_msg'] = Yii::t('app', 'Ordering');
                     $data['ordering_status_icon'] = 'fa fa-spinner fa-spin white';
                     $data['ordering_status_span'] = 'label label-warning label-xlg';
                     //$data['desk_icon'] = 'fa fa-print icon-animated-bell bigger-110';
