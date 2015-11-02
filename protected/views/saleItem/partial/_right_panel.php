@@ -137,7 +137,7 @@
                         'table_info' => $table_info,
                         'items' => $items,
                         'sub_total' => $sub_total,
-                        'amount_due' => $amount_due,
+                        //'amount_due' => $amount_due,
                         'count_payment' => $count_payment,
                         'count_item' => $count_item,
                         'form' => $form,
@@ -195,6 +195,7 @@
                         array(
                             'model' => $model,
                             'count_payment' => $count_payment,
+                            'amount_due' => $amount_due,
                             'form' => $form,
                             'print_categories' => $print_categories
                         ));

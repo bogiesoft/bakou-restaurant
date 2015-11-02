@@ -642,6 +642,7 @@ class SaleItemController extends Controller
         $data['count_payment'] = 0;
         $data['items'] = array();
         $data['print_categories'] = array();
+        $data['payments'] = array();
 
         $data['location_id'] = Yii::app()->getsetSession->getLocationId();
         $data['zone_id'] = Yii::app()->orderingCart->getZoneId();

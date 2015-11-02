@@ -468,7 +468,6 @@ class OrderingCart extends CApplicationComponent
      * To add payment to payment session $_SESSION['payment']
      * @param string $payment_id as payment type, float $payment_amount amount of payment 
      */
-
     public function addPayment($payment_id, $payment_amount)
     {
         $this->setSession(Yii::app()->session);

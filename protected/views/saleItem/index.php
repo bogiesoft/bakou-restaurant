@@ -25,6 +25,7 @@
         'sub_total' => $sub_total,
         'amount_due' => $amount_due,
         'count_payment' => $count_payment,
+        'payments' => $payments,
         'count_item' => $count_item,
         'location_id' => $location_id,
         'time_go' => $time_go,
